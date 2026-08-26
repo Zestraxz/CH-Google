@@ -80,10 +80,19 @@ FIDELITY 54 (T3=86) / TECHNICAL 41 (T3=81) → adjudicated **41**; 14 new verifi
 (W1–W14), 0 refuted. Key external verifications (2026-08-27, reproduced by two panels + fixer):
 `gemini-3.7/3.6/3.5-flash` current on ai.google.dev models page; `gemini-1.5-flash` retired;
 no "20 RPD" free-tier figure locatable; `Slide.duplicate()` inserts after the original.
+**Pass 3 (confirming, terminal):** STRATEGIC 44 (T3=82) / TECHNICAL 39 (T3=82) / FIDELITY 56
+(T3=79) → adjudicated **39**. Loop **stopped honestly** on plateau/regression + out-of-constraint:
+the bound is held by the immutable T2 export and cannot reach the 90 bar without editing or
+excluding the founding PDFs (forbidden). Batch 3 (UNMEASURED, MODERATE/MINOR only) swept the
+D1–D8 ref drift, hard-errored the blank-template path, escalated grounding misses to digest
+alerts, and made topic-parking durable (col I); final audit `c786b38`: PASS_WITH_NOTES, zero
+regressions. Fix commits: `9ecd4d0` → `825155b` → `e6ec503` → `37c08ea` → `c786b38`.
+
 Structural note: the panel minimum binds on the immutable exports — the adjudicated verdict has a
 hard ceiling regardless of repo quality; per-target T3 trajectory is the meaningful metric
-(41/40/36 → 72/86/81). Full pass logs: session-local `_runs/critic_google-establishment_pass<N>.json`
-(git-ignored); durable summary: `docs/01-session/SESSION-2026-08-27-critic-google-establishment.md`.
+(41/40/36 → 72/86/81 → 82/82/79, STRONG band; fresh-clone rebuild test passed in pass 3). Full
+pass logs: session-local `_runs/critic_google-establishment_pass<N>.json` (git-ignored); durable
+summary: `docs/01-session/SESSION-2026-08-27-critic-google-establishment.md`.
 
 ### 2026-08-26 â€” Setup (baseline, not a Radar run)
 

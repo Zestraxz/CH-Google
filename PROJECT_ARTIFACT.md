@@ -65,6 +65,7 @@ Runbook: [src/apps-script/README.md](src/apps-script/README.md).
 | ---- | -------------------------------------------------- | ------ |
 | 2026-08-16 | Designed both systems in Gemini sessions -> exported blueprints to `.resource/` -> LEARNING: chat exports are not a durable or verified record | (pre-repo) |
 | 2026-08-27 | Ran `/critic` pass 1 (3-lens panel) -> adjudicated 36/100, 2 CRITICAL + 7 MAJOR verified -> rewrote establishment docs + corrected script v3.1 -> IMPACT: repo now actually records the work; script defects fixed before deployment | first commit, this date |
+| 2026-08-27 | Completed the loop: passes 2-3 + fix batches 2/2b/3, each independently audited -> terminal adjudicated 39 (bound by the immutable exports; honest stop), establishment sub-score 82/82/79 (up from 41/40/36), fresh-clone rebuild test passed -> LEARNING: min-of-panel over immutable inputs caps the verdict — track the per-target trajectory -> IMPACT: deployable corrected record + named owner actions (live-flow check, remote, validation protocol) | `9ecd4d0`..`c786b38` |
 
 ## 7. Experiments, tests & failures
 

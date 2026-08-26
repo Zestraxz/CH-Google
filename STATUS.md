@@ -41,8 +41,12 @@ Legend: ✅ done · 🟡 in progress/partial · 🔴 blocked · ⬜ not started 
 
 ## Recent decisions
 
-- 2026-08-27 — First `/critic` loop run on the establishment (pass-1 adjudicated verdict 36/100;
-  fixes applied — see `docs/01-session/SESSION-2026-08-27-critic-google-establishment.md`).
+- 2026-08-27 — First `/critic` loop completed on the establishment: 3 passes (36 → 41 → 39
+  adjudicated; the min-of-panel bound sits on the immutable `.resource/` exports and cannot reach
+  the 90 bar — honest stop). The establishment itself (T3) scored 82/82/79 in the final pass, up
+  from 41/40/36. 5 fix commits, 3 independent fix audits (all PASS_WITH_NOTES, final one zero
+  regressions). See `docs/01-session/SESSION-2026-08-27-critic-google-establishment.md` +
+  `docs/04-quality/critic/COVERAGE.md` §E.
 - See [docs/04-quality/adr/](docs/04-quality/adr/) for the ADR ledger.
 
 ## Notes

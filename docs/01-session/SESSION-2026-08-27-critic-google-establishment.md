@@ -1,7 +1,8 @@
 # SESSION 2026-08-27 — /critic loop on the Google AI Studio + Flow + Apps Script establishment
 
-> **Status: IN PROGRESS** (interim entry written at the Stop gate; will be finalized at true session
-> end). Machine: PC2. Live task state: [`TASK_STATE.md`](../../TASK_STATE.md).
+> **Status: COMPLETE.** Machine: PC2. The loop ran 3 passes + 3 audited fix batches and stopped
+> honestly below the bar (structural ceiling — see §3). TASK_STATE.md deleted per its own
+> lifecycle rule; this ledger + `docs/04-quality/critic/COVERAGE.md` §E are the durable record.
 
 ---
 
@@ -54,6 +55,50 @@
   instructions reproduced into the runbook as the canonical tracked copy).
 - Next: pass-2 re-score by a fresh 3-lens panel.
 - Remote: none configured (L-008) — owner decision; local commits only this session.
+
+## 3. Passes 2–3, batches 2/2b/3, terminal verdict (completed)
+
+- **Pass 2:** STRATEGIC 56 (T1 64/T2 56/T3 72) · FIDELITY 54 (65/54/86) · TECHNICAL 41 (53/41/81)
+  → adjudicated **41** (+5). 14 new verified findings (W1–W14, incl. W1: System 1 had zero tracked
+  capture — the fresh-clone rebuild failed; W2: priority inversion on the possibly-live
+  uncorrected DWR flow), 0 refuted. **Batch 2** (`e6ec503`): flow-step table + compact-converter
+  prompt transcribed into the runbook (D1–D8 pre-applied), incident-priority live-flow item,
+  AGENTS.md identity, code hardening (getSheetByName, score validation, Synthesis lock, manifest),
+  grounding schema documented UNVERIFIED (3 doc fetches inconclusive) with a dated deployment
+  check. **Audit 2: PASS_WITH_NOTES** → **batch 2b** (`37c08ea`): userinfo.email scope (pinning
+  scopes had broken the alert-recipient fallback — auditor catch), runbook §4 intro renumbering.
+- **Pass 3 (confirming):** STRATEGIC 44 (59/44/82) · TECHNICAL 39 (49/39/82) · FIDELITY 56
+  (66/56/79) → adjudicated **39**. Fresh-clone rebuild test **passed** for both systems. New
+  residuals all verified and fixed in **batch 3** (`c786b38`, UNMEASURED — MODERATE/MINOR only):
+  repo-wide D1–D8 ref sweep, blank-template hard error, grounding-miss digest alerts, durable
+  topic-parking (tracker col I), cite fixes, 2 new open questions. **Audit 3: PASS_WITH_NOTES,
+  zero regressions.**
+- **Terminal verdict: stopped honestly at adjudicated 39 / bar 90.** Stop conditions: plateau/
+  regression (+5 then −2, resampling noise on immutable targets) and out-of-constraint — the
+  min-of-panel bound is held by the immutable `.resource/` chat exports, which cannot be edited
+  (D-014) and whose exclusion mid-loop would be score-gaming. **The improvable artifact (T3, the
+  establishment) went 41/40/36 → 82/82/79 — STRONG band; every one of its externally checkable
+  claims survived three independent panels.**
+- **Audit-noted polish, recorded not silently fixed** (would be unaudited edits): pre-copy
+  template check would avoid orphaning one deck copy on the new hard-error path; Synthesizer
+  neither resets nor digests `groundingMisses_` (inert while its grounding stays off); Brain-side
+  stale stub `PROJECTS/Google/PROJECT.md` — deleted this session (real pack: `PROJECTS/CH-Google/`).
+- **Owner actions standing (top of ROADMAP):** (1) verify the live DWR flow today — assume live
+  until verified; (2) remote + push (L-008/D-016); (3) deploy v3.1 with runbook §1.7 + §3
+  validation and capture evidence.
+
+## Reasoning Trail — addendum (passes 2–3)
+
+- Pass-2 revealed the structural ceiling (immutable exports bind the min). **Options:** (a) keep
+  looping to max-5 passes (rejected: the bound cannot move — churn); (b) redefine the target to
+  exclude the PDFs and clear the bar (rejected: mid-loop redefinition to pass is the gaming vector
+  the kit forbids); (c) fix everything fixable, run the required confirming pass, stop honestly
+  below the bar with the per-target trajectory reported (**chosen** — matches the kit's "honest
+  88 beats a gamed 96" and its would-harm/plateau stops).
+- **Pivot:** batch-2b/3 evidence that my own fixes drift (stale-ref sweep missed 4 spots; pinned
+  scopes broke a fallback) → adopted the auditor-recommended "grep before closing a renumber fix"
+  as a runbook rule; kept every fix batch under independent audit — two of three audits caught
+  real regressions in my work, vindicating the kit's symmetric-scrutiny design.
 
 ## Reasoning Trail
 
