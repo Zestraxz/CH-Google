@@ -28,15 +28,32 @@
   CH-Power-Automate — Workspace cutover June 2026, Apps Script conventions, Gmail 429 hazard;
   CH-Extreme-90x — API-key exposure lesson).
 
-## 2. Current state / next actions
+## 2. Pass 1 — panel, adjudication, fixes, audit (completed)
 
-- 🟡 Waiting on the 3 critic JSONs → then: adjudicate (verify every finding against the
-  extractions), verdict = min adjudicated score, fix verified findings in tracked docs, audit the
-  fixes independently, re-score. Pass logs → `_runs/critic_google-establishment_pass<N>.json`.
-- **STATUS.md deliberately NOT updated in this interim entry** — it is inside the artifact set (T3)
-  the panel is scoring right now; editing it mid-pass would contaminate the measurement. It is
-  updated as part of fix batch 1. (Named gap, not an oversight.)
-- Remote: none configured (L-008) — add origin before any push.
+- **Panel returned:** STRATEGIC 41 (T1=67 T2=63 T3=41) · FIDELITY 40 (T1=78 T2=56 T3=40) ·
+  TECHNICAL 36 (T1=64 T2=50 T3=36). **Adjudicated verdict = min = 36 (UNACCEPTABLE).**
+  15 verified finding clusters (V1–V15: 2 CRITICAL, 7 MAJOR), **0 refuted**, 3 not_actioned
+  (owner/Google-side). Full log: git-ignored `_runs/critic_google-establishment_pass1.json`.
+- **Verification records (FACT, this session):**
+  - WebFetch of `ai.google.dev/gemini-api/docs/models` (2026-08-27): `gemini-3.7-flash` (New
+    Stable), `gemini-3.6-flash`, `gemini-3.5-flash` all currently documented; `gemini-1.5-flash`
+    absent (retired). Confirms two independent critic fetches; contradicts the assistant's own
+    training prior — model IDs in the blueprint are real.
+  - `git log`: zero commits before this session; `git remote -v`: none; 260 files staged.
+  - Node parse check on `src/apps-script/Code.gs` (`new Function(source)` — `node --check`
+    rejects the `.gs` extension): **pass**, re-run after fix batch 1b: **pass**.
+- **Fix batch 1 (F1–F9):** ARCHITECTURE/STATUS/PROJECT_ARTIFACT/README/ROADMAP/PHASE1_NOTES
+  rewritten evidence-honest; corrected script v3.1 + runbook added (`src/apps-script/`); commits
+  `caefbc9` (pre-fix baseline) → `9ecd4d0` (fixes) so the batch is a reviewable diff.
+- **Fix audit (independent, fresh-context): PASS_WITH_NOTES** — all changes CONFIRMED, no coverage
+  gaps, adjudication downgrades judged justified; found 2 MODERATE + 6 MINOR issues in the fixes
+  themselves (Synthesizer retry masking non-retryable errors; "checks grounding metadata" doc
+  overclaim; "first-run crash" asserted against my own downgrade; dangling §12 evidence pointers;
+  stale committed TASK_STATE; appendSlide-fallback ordering; blank alert recipient; budget
+  granularity). **Fix batch 1b applied for all 8** (code + docs + this ledger entry + the Gem
+  instructions reproduced into the runbook as the canonical tracked copy).
+- Next: pass-2 re-score by a fresh 3-lens panel.
+- Remote: none configured (L-008) — owner decision; local commits only this session.
 
 ## Reasoning Trail
 

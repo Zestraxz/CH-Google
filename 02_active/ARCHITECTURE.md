@@ -45,8 +45,9 @@ flowchart TB
 
 - **The Brain (Gem "DWR Commander"):** system instructions enforce evidence discipline
   (CONFIRMED / INFERRED / UNKNOWN labels, no invented work, cross-source consolidation, a fixed
-  12-section report format). The full instructions are reproduced in the founding blueprint
-  (`.resource/` PDF 1, pp. 5–9) and, corrected, in `src/apps-script/README.md` §4.
+  12-section report format). The full instructions — with the injection guard added — are
+  reproduced in [`src/apps-script/README.md` §4](../src/apps-script/README.md), which is the
+  canonical tracked copy (origin: `.resource/` PDF 1, pp. 5–9).
 - **The Orchestrator (Studio Flow "DWR Auto Generator"):** flow steps per the blueprint's
   configuration table (PDF 1, pp. 10–11), **with the corrections below applied**.
 
@@ -96,14 +97,19 @@ flowchart TB
 
 1. **Web grounding actually enabled** — the blueprint's prompts say "Scan the web" but its payload
    carries no grounding tool, so all "market intelligence" was model priors. v3.1 sends
-   `tools: [{ google_search: {} }]` on Scout/Research calls and checks grounding metadata.
+   `tools: [{ google_search: {} }]` on Scout/Research calls and **logs a loud warning when a
+   response returns no grounding metadata** (it does not block on it — the runbook's validation
+   §3.2 is the end-to-end grounding check).
 2. **No silent failure** — every layer-level catch now alerts by email and writes the error into
    the tracker's Execution Notes; catch-log-continue previously also suppressed Apps Script's own
    trigger-failure emails.
 3. **Fail-fast on non-retryable errors** — the blueprint's client-error `throw` was swallowed by
    its own `catch`; 400s sat in the retryable set. v3.1 classifies response codes.
-4. **First-run crash fixed** — empty Next-Run cells were date-formatted before the emptiness guard
-   could run, outside any try.
+4. **First-run failure path fixed** — empty Next-Run cells were date-formatted before the
+   emptiness guard could run, outside any try. (Whether Apps Script's `formatDate` throws or
+   returns garbage on an Invalid Date is unverified — a crash or a mis-handled guard respectively;
+   the structural defect is real either way, and v3.1 checks emptiness/`isNaN` before any date
+   math.)
 5. **Deck order + placeholder residue fixed** — `duplicate()` inserts after the master, so
    iterating forward reversed the deck; multi-line `replaceAllText` reliability is unproven and
    its fallback left "Bullet point 2/3" residue. v3.1 duplicates in reverse and replaces bullets

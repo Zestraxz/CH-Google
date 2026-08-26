@@ -68,8 +68,9 @@ Runbook: [src/apps-script/README.md](src/apps-script/README.md).
 
 ## 7. Experiments, tests & failures
 
-- 2026-08-27 — `node` parse check on `src/apps-script/Code.gs`: **pass** (V8-compatible syntax).
-  Runtime behavior NOT yet exercised — Apps Script execution requires the owner's Google account.
+- 2026-08-27 — Node `new Function` parse check on `src/apps-script/Code.gs`: **pass**
+  (V8-compatible syntax; re-run after audit fix batch 1b: pass). Runtime behavior NOT yet
+  exercised — Apps Script execution requires the owner's Google account.
 - Recorded failure (design-time, caught by critic before deployment): v3.0's first run on a fresh
   tracker crashes on empty Next-Run cells; v3.0 decks render slides in reverse order with
   "Bullet point 2/3" residue. Neither was ever caught by a test because no test run was recorded.
@@ -117,8 +118,8 @@ synthesis become review-only tasks once both systems run with evidence.
 | ----- | ------------------------------------------------------------ |
 | Blueprints exist (2026-08-16) | `.resource/` PDFs 1 & 4 (untracked; cited in prose per D-014) |
 | Critic pass 1 verdict 36/100, findings verified | git-ignored `_runs/critic_google-establishment_pass1.json` + session ledger `docs/01-session/SESSION-2026-08-27-critic-google-establishment.md` |
-| v3.1 script parses | Node `new Function` parse check, 2026-08-27 (session ledger) |
-| Model IDs current / 1.5-flash retired | WebFetch of ai.google.dev/gemini-api/docs/models, 2026-08-27 (recorded in session ledger) |
+| v3.1 script parses | Node `new Function` parse check, 2026-08-27 — recorded in session ledger §2 |
+| Model IDs current / 1.5-flash retired | WebFetch of ai.google.dev/gemini-api/docs/models, 2026-08-27 — recorded in session ledger §2 + `_runs/critic_google-establishment_pass1.json` |
 | DWR deployed | **none — unevidenced owner claim** |
 
 _No evidence, no portfolio claim._

@@ -23,6 +23,8 @@ const CONFIG = {
   // limits and the 6-minute execution cap.
   SYNTHESIS_MAX_CHARS: 100000,
   RESEARCH_FAIL_LIMIT: 3, // consecutive failures before a topic is parked
+  // Checked between rows only — one long grounded call can still overshoot;
+  // if that happens the hard kill surfaces via the trigger-failure email.
   EXECUTION_BUDGET_MS: 5.5 * 60 * 1000 // stop cleanly before the 6-min cap
 };
 
@@ -39,7 +41,13 @@ function notifyFailure_(context, err) {
   const msg = context + ": " + (err && err.message ? err.message : err);
   Logger.log("FAILURE " + msg);
   try {
+    // getActiveUser().getEmail() can be blank in some trigger contexts —
+    // set CONFIG.ALERT_EMAIL explicitly (runbook §1) so alerts never dead-end.
     const to = CONFIG.ALERT_EMAIL || Session.getActiveUser().getEmail();
+    if (!to) {
+      Logger.log("NO ALERT RECIPIENT — set CONFIG.ALERT_EMAIL. Alert not sent.");
+      return;
+    }
     MailApp.sendEmail(to, "PIPELINE FAILURE - Research Engine", msg);
   } catch (mailErr) {
     Logger.log("Alert email also failed: " + mailErr);
@@ -56,8 +64,9 @@ function callGeminiWithFallback(prompt, useGrounding) {
   const apiKey = PropertiesService.getScriptProperties().getProperty("GEMINI_API_KEY");
   if (!apiKey) throw new Error("GEMINI_API_KEY missing from Script Properties.");
 
+  const grounding = useGrounding === undefined ? CONFIG.USE_WEB_GROUNDING : useGrounding;
   const payload = { contents: [{ parts: [{ text: prompt }] }] };
-  if (useGrounding === undefined ? CONFIG.USE_WEB_GROUNDING : useGrounding) {
+  if (grounding) {
     payload.tools = [{ google_search: {} }];
   }
   const options = {
@@ -91,6 +100,12 @@ function callGeminiWithFallback(prompt, useGrounding) {
           const result = JSON.parse(responseText);
           if (result.candidates && result.candidates.length > 0 &&
               result.candidates[0].content && result.candidates[0].content.parts) {
+            if (grounding && !result.candidates[0].groundingMetadata) {
+              // Grounding was requested but the response carries no grounding
+              // metadata — the model answered from priors. Warn loudly; the
+              // runbook's validation §3.2 spot-checks this end-to-end.
+              Logger.log("WARNING [" + currentModel + "]: no groundingMetadata in response — treat output as UNGROUNDED.");
+            }
             Logger.log("SUCCESS using model: [" + currentModel + "]");
             return result.candidates[0].content.parts.map(function (p) {
               return p.text || "";
@@ -278,8 +293,12 @@ function runSynthesisLayer() {
 
     let data = null;
     for (let jsonRetries = 0; !data && jsonRetries < 3; jsonRetries++) {
+      // API call sits OUTSIDE the parse try: non-retryable errors (bad key,
+      // cascade exhausted) propagate immediately with their real message
+      // instead of being re-labeled as JSON-parse failures after 3 retries.
+      const rawText = callGeminiWithFallback(prompt, false);
       try {
-        data = parseModelJson_(callGeminiWithFallback(prompt, false));
+        data = parseModelJson_(rawText);
       } catch (parseErr) {
         if (jsonRetries >= 2) throw new Error("Failed to parse valid JSON after 3 attempts.");
         Utilities.sleep(2000);
@@ -303,9 +322,11 @@ function runSynthesisLayer() {
     slides[0].replaceAllText("Subtitle Placeholder", "Generated: " + todayStr);
 
     const masterContentSlide = slides.length > 1 ? slides[1] : null;
-    // Reverse: each duplicate lands immediately after the master, so the last
-    // one duplicated ends up first — reverse input yields in-order output.
-    data.slides.slice().reverse().forEach(function (slideData) {
+    // duplicate() inserts immediately after the master, so the last duplicate
+    // ends up first — reverse input yields an in-order deck. appendSlide()
+    // appends at the end, so the fallback path iterates FORWARD instead.
+    const orderedInput = masterContentSlide ? data.slides.slice().reverse() : data.slides;
+    orderedInput.forEach(function (slideData) {
       const newSlide = masterContentSlide ? masterContentSlide.duplicate()
         : deck.appendSlide(SlidesApp.PredefinedLayout.BLANK);
       newSlide.replaceAllText("Slide Title Placeholder", slideData.title || "");
