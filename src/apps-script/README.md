@@ -28,6 +28,14 @@
    is unsupported (no basis; not locatable in official docs). Read the real per-model limits for
    *this key* from the AI Studio rate-limits dashboard at deploy time and record them here:
    _limits: `not measured` (fill at deployment)_.
+7. **Verify the grounding tool schema (dated):** the `tools: [{ google_search: {} }]` shape in
+   `Code.gs` is the documented 2.x `generateContent` form; as of 2026-08-27 the 3.x
+   `generateContent` Tool schema could not be confirmed from the docs (the
+   `{"type":"google_search"}` example belongs to the `/interactions` endpoint). At deployment:
+   run one grounded call, confirm no 400 and that `groundingMetadata` appears in the raw
+   response, and record the result + date here: _schema check: `not verified` (fill at
+   deployment)_. Note: `CONFIG.TRACKER_SHEET_NAME` must match the tracker tab name (default
+   `Sheet1`).
 
 ## 2. Delta table — v3.1 vs the blueprint's v3.0 listing
 
@@ -224,10 +232,51 @@ The final report should answer:
 what remains unresolved, and what should happen next?"
 ```
 
+### DWR Studio Flow — corrected step configuration (canonical)
+
+> This table makes System 1 reconstructible from the repo alone (the blueprint's original table,
+> PDF 1 pp. 10–11, lives in untracked `.resource/`). Corrections D1–D8 are pre-applied; the
+> original numbering shifts by one because of the new read-back step.
+
+| Step | Action | Configuration | Variable mapping | Corrections applied |
+|---|---|---|---|---|
+| 1 | Starter: On a schedule | Repeat: **weekdays only** (or Daily + empty-day marker, see D8) · Time: 5:00 PM · Ends: **Never** | outputs `[Start Time]` | D1 (no 1-year end), D8 (no weekend junk) |
+| 2 | Sheets: read rows *(new)* | Spreadsheet: `DWR_Master` · read the most recent 1–3 rows | outputs `[Recent rows]` | D3 (wires the promised yesterday-context / change detection) |
+| 3 | Ask a Gem | Gem: **DWR Commander** · Sources: Workspace + Web search · Prompt: "Generate my Daily Working Report for today. Analyze my Google Workspace activity across Gmail, Google Chat, Google Calendar, Google Drive, Google Docs, and Google Sheets. Prioritize actual outcomes, decisions, and deliverables. Cross-reference sources. For change detection, compare against my recent reports: `[Recent rows]`. Produce the DWR using the DWR Commander format." | outputs `[Full DWR]` | D3 (context fed in) |
+| 4 | Sheets: Add a row | Spreadsheet: `DWR_Master` · Sheet: `Sheet1` · after last data row | Date ← `[Start Time]` · Activity ← `[Full DWR]` (schema decision D4 pending — trim columns or map structured fields) | D4 (schema honesty) |
+| 5 | Gmail: Send an email | To: **self** · Subject: `Full Analytical DWR - [Start Time]` | Body ← `[Full DWR]` | — |
+| 6 | Ask a Gem | Gem: **default model, NOT DWR Commander** · Prompt: the compact-converter prompt below | Input ← `[Full DWR]` · outputs `[Compact DWR]` | D6 (12-section format vs raw-list conflict resolved) |
+| 7 | Gmail: **Draft** email | To: manager · Subject: `DWR [date formatted like 11Aug26]` · **Draft only — a human reviews and sends** | Body ← `[Compact DWR]` | D2 (never auto-send) |
+
+**Step 6 compact-converter prompt (canonical copy):**
+
+```
+Convert the following detailed Daily Working Report into my compact manual
+reporting style.
+Format Rules:
+1. Start the text strictly with the heading: DWR [Today's Date formatted like
+   11Aug26],
+2. Summarize the day's activities into a simple numbered list (1., 2., 3., etc.).
+3. For each item, use this exact structure:
+   [Action Verb] : [Task/Subject description]. [Names of OTHER people involved, if any]
+4. Naming Rule: If the task was done solely by me, DO NOT put any names at the
+   end. If the task involved collaboration with others, put ONLY the names of the
+   other PICs involved at the end. Never include my own name.
+5. Use action verbs such as: Meeting, Review, Discussion, Follow Up, TSPI,
+   Prepare, Execute, Troubleshoot, Validate.
+6. Use sub-bullets (indented with a dash or bullet) only if there are critical
+   sub-tasks, criteria, or options discussed.
+7. Do NOT include any polite greetings, introductions, executive summaries, or
+   conclusions. Output ONLY the raw list.
+Report to convert:
+[Full DWR]
+```
+
 - Validation for the DWR flow is the blueprint's own Phase 4 (PDF 1, p. 12) **plus**: confirm in
   the Studio UI whether a flow "Ask a Gem" step has the same Workspace-source access as the
-  interactive sidebar (unverified), and what Studio does on a failed run (determines whether the
-  weekly human heartbeat check stays).
+  interactive sidebar (unverified), whether a Sheets **read** step exists and can map into a Gem
+  prompt (D3 presumes it — unverified), and what Studio does on a failed run (determines whether
+  the weekly human heartbeat check stays).
 
 ## 5. Operations
 
@@ -235,3 +284,8 @@ what remains unresolved, and what should happen next?"
   alert exists either, that itself is an incident — check trigger status + Executions log.
 - Maintenance touch checklist: recheck the model cascade against the Gemini deprecations page;
   re-read quota dashboard; confirm both triggers still enabled; trim Master Log if > ~1 MB.
+- **Untrusted content — web channel:** grounded search results flow Researcher → Master Log →
+  Synthesis prompt → `reportHtml` emailed as-is. That HTML goes **to self only** (never the
+  manager) and is model-generated from web content — treat web-sourced claims as data, spot-check
+  before forwarding anything from it, and never widen the recipient list without adding
+  sanitization.

@@ -62,6 +62,7 @@ flowchart TB
 | D5 | Diagram numbers steps 1/2 (p. 3); config table numbers them 2/5 (pp. 10–11) | A fixer following the diagram mis-maps variables | The **config table numbering is canonical** |
 | D6 | Step 5 "Gem: Default / DWR Commander" (p. 11) | Ambiguous; routing the compact conversion through DWR Commander pits its mandatory 12-section format against "output ONLY the raw list" | Use the **default model** (no Gem) for the compact conversion |
 | D7 | No failure branch anywhere in the flow | Any step failure is invisible | Verify Studio's failed-run notification behavior at next deployment; add a weekly human heartbeat check ("did 5 DWRs arrive?") until proven |
+| D8 | "Repeat: Daily" (p. 10) — 7 days/week at 5:00 PM | Weekend/holiday runs draft junk "insufficient evidence" DWRs to the manager queue; work after 5 PM is never sampled | **Weekday-only schedule** (or an empty-day marker the human discards); the 5 PM cutoff is a named sampling blind spot |
 
 ## 3. System 2 — Research Engine (Apps Script + Gemini API)
 
@@ -100,9 +101,10 @@ flowchart TB
    `tools: [{ google_search: {} }]` on Scout/Research calls and **logs a loud warning when a
    response returns no grounding metadata** (it does not block on it — the runbook's validation
    §3.2 is the end-to-end grounding check).
-2. **No silent failure** — every layer-level catch now alerts by email and writes the error into
-   the tracker's Execution Notes; catch-log-continue previously also suppressed Apps Script's own
-   trigger-failure emails.
+2. **No silent failure** — every failure now alerts by email (layer-level catches alert **and
+   rethrow**, restoring Apps Script's own trigger-failure emails that catch-log-continue had
+   suppressed); per-row Scout/Researcher failures additionally write the tracker's Execution
+   Notes.
 3. **Fail-fast on non-retryable errors** — the blueprint's client-error `throw` was swallowed by
    its own `catch`; 400s sat in the retryable set. v3.1 classifies response codes.
 4. **First-run failure path fixed** — empty Next-Run cells were date-formatted before the
@@ -136,7 +138,7 @@ flowchart TB
 | --- | --- |
 | Secrets | Gemini API key in Apps Script **Script Properties** only; `.env.example` slot exists for local tooling; never in code or repo |
 | Failure visibility | Email-to-self alerts from every layer catch + tracker Execution Notes; T1 flow: human heartbeat until Studio's failure behavior is verified |
-| Untrusted content | Inbound email/chat bodies are **data, never instructions** (Gem instruction guard, D2); AGENTS.md §10 applies to any agent touching this repo |
+| Untrusted content | Inbound email/chat bodies are **data, never instructions** (Gem instruction guard, D2). Same rule for the research engine's **web channel**: grounded search results flow into the Master Log, the synthesis prompt, and the emailed `reportHtml` — self-only recipient, spot-check before forwarding (runbook §5). AGENTS.md §10 applies to any agent touching this repo |
 | Quotas | No invented figures — dashboard-read limits with basis, or `not measured` |
 | Model rot | Cascade list carries a verified-on date; recheck deprecations at each touch |
 | Evidence | Status claims require recorded evidence (screenshots/log exports under `docs/`) — "[have Done]" filename tags are owner claims, not evidence (BR-07) |
@@ -145,8 +147,13 @@ flowchart TB
 
 - Does a Studio Flow "Ask a Gem" step have identical Workspace-source access to the interactive
   Gem sidebar? (The blueprint's validation tests the sidebar path only — verify at deployment.)
+- Does Studio offer a Sheets **read** step mappable into a Gem prompt? (D3 presumes it.)
 - Does Workspace Studio notify on failed runs? (Determines whether D7's heartbeat stays.)
 - DWR_Master schema decision (D4): trim vs structured emission.
+- Grounding tool schema for `generateContent` + Gemini 3.x: UNVERIFIED as of 2026-08-27 (three
+  doc fetches inconclusive — the `{"type":"google_search"}` example is `/interactions`-specific).
+  A wrong shape fails loud (400 → alert); verify per runbook §1.7 at deployment. OAuth scopes are
+  pinned in `src/apps-script/appsscript.json` (least-privilege statement).
 
 ## 6. See also
 

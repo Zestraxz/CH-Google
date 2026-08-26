@@ -25,9 +25,9 @@
 
 ## In progress
 
-- [ ] `01_setup/run.ps1` + `run.sh` bootstrap scripts
-- [ ] CI workflow (`.github/workflows/ci.yml`)
-- [ ] Sample `apps/api` + `apps/web` + `packages/shared` stubs
+- [x] `01_setup/run.ps1` + `run.sh` bootstrap scripts *(exist and tracked — reconciled 2026-08-27; never executed on a fresh clone)*
+- [x] CI workflow (`.github/workflows/ci.yml`) *(file exists and tracked; CI has never run — no remote)*
+- [x] Sample `apps/api` + `apps/web` + `packages/shared` stubs *(exist and tracked)*
 
 ## Blocked
 
@@ -35,7 +35,8 @@ _None._
 
 ## Notes
 
-- Choice to default to pnpm workspaces over npm/yarn — see [../docs/04-quality/adr/0002-package-manager.md](../docs/04-quality/adr/0002-package-manager.md).
+- Choice to default to pnpm workspaces over npm/yarn — template-inherited note; the referenced
+  ADR-0002 was never written (only ADR-0001 exists), so the pnpm choice is recorded here only.
 - Choice to keep `src/` AND `apps/` directories in template (delete one when you instantiate) — gives flexibility without forcing a monorepo decision upfront.
 
 ## Phase 1 → Phase 2 handoff

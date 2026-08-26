@@ -10,6 +10,10 @@ const CONFIG = {
   MASTER_DOC_ID: "YOUR_MASTER_DOC_ID_HERE",
   TARGET_FOLDER_ID: "YOUR_FOLDER_ID_HERE",
   TEMPLATE_ID: "YOUR_TEMPLATE_ID_HERE",
+  // Name of the tracker tab. getActiveSheet() in trigger context binds to the
+  // last UI-active tab — adding a second tab would silently corrupt the wrong
+  // sheet. Empty string = first sheet in the spreadsheet (deterministic).
+  TRACKER_SHEET_NAME: "Sheet1",
   ALERT_EMAIL: "", // empty = Session.getActiveUser(); failure alerts go here
   // Verified current on ai.google.dev/gemini-api/docs/models (2026-08-27).
   // gemini-1.5-flash removed: retired, was a permanent-404 tier.
@@ -17,6 +21,13 @@ const CONFIG = {
   MODEL_CASCADE: ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash"],
   // Scout/Research prompts promise web recency, so grounding must actually be
   // on. v3.0 sent bare generateContent — "market intelligence" was model priors.
+  // NOTE (2026-08-27): the tools:[{ google_search: {} }] shape below is the
+  // documented generateContent form for 2.x-era models; the current docs'
+  // {"type":"google_search"} example belongs to the /interactions endpoint and
+  // the generateContent Tool schema for 3.x could not be confirmed — VERIFY at
+  // deployment (runbook §1.7). A rejected shape fails LOUD (400 → fail-fast →
+  // alert); silent non-grounding is caught by the groundingMetadata warning
+  // and the runbook §3.2 spot-check.
   USE_WEB_GROUNDING: true,
   // Synthesis reads only the newest slice of the ever-growing Master Log
   // (log is newest-first). Whole-history prompts eventually exceed model
@@ -31,6 +42,19 @@ const CONFIG = {
 // Tracker sheet columns (1-based): B=Topic, E=Last Run, F=Next Run,
 // G=Priority Score, H=Execution Notes.
 const COL = { TOPIC: 2, LAST_RUN: 5, NEXT_RUN: 6, SCORE: 7, NOTES: 8 };
+
+// Deterministic tracker-sheet resolution (never getActiveSheet in triggers).
+function getTrackerSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (CONFIG.TRACKER_SHEET_NAME) {
+    const sheet = ss.getSheetByName(CONFIG.TRACKER_SHEET_NAME);
+    if (!sheet) {
+      throw new Error('Tracker sheet "' + CONFIG.TRACKER_SHEET_NAME + '" not found — check CONFIG.TRACKER_SHEET_NAME.');
+    }
+    return sheet;
+  }
+  return ss.getSheets()[0];
+}
 
 // ============================================================================
 // FAILURE VISIBILITY — no silent failure (ARCHITECTURE.md §4).
@@ -106,12 +130,17 @@ function callGeminiWithFallback(prompt, useGrounding) {
               // runbook's validation §3.2 spot-checks this end-to-end.
               Logger.log("WARNING [" + currentModel + "]: no groundingMetadata in response — treat output as UNGROUNDED.");
             }
-            Logger.log("SUCCESS using model: [" + currentModel + "]");
-            return result.candidates[0].content.parts.map(function (p) {
+            const text = result.candidates[0].content.parts.map(function (p) {
               return p.text || "";
             }).join("");
+            if (text.trim()) {
+              Logger.log("SUCCESS using model: [" + currentModel + "]");
+              return text;
+            }
+            // 200 with empty text (e.g. thought-only / filtered parts) is
+            // NOT success — filing it would log an empty report as SUCCESS.
           }
-          Logger.log("[" + currentModel + "] 200 but empty/blocked candidates. Cascading...");
+          Logger.log("[" + currentModel + "] 200 but empty/blocked/textless candidates. Cascading...");
         } catch (parseErr) {
           Logger.log("[" + currentModel + "] unparseable 200 body. Cascading...");
         }
@@ -155,7 +184,7 @@ function runScoutLayer() {
   if (!lock.tryLock(30000)) { notifyFailure_("Scout", "could not acquire lock"); return; }
   const started = Date.now();
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    const sheet = getTrackerSheet_();
     const data = sheet.getDataRange().getValues();
     const tz = Session.getScriptTimeZone();
     const todayStr = Utilities.formatDate(new Date(), tz, "yyyy-MM-dd");
@@ -185,6 +214,12 @@ function runScoutLayer() {
         'Respond ONLY with a valid JSON object using this exact format: {"score": 8, "notes": "Brief explanation"}';
       try {
         const aiResponse = parseModelJson_(callGeminiWithFallback(prompt, true));
+        // Parseable is not valid: a missing/non-numeric score would make the
+        // Researcher's `score >= 7` silently false forever — reject instead.
+        if (typeof aiResponse.score !== "number" || isNaN(aiResponse.score) ||
+            aiResponse.score < 0 || aiResponse.score > 10) {
+          throw new Error("Invalid score in model response: " + JSON.stringify(aiResponse.score));
+        }
         sheet.getRange(i + 1, COL.SCORE).setValue(aiResponse.score);
         sheet.getRange(i + 1, COL.NOTES).setValue(aiResponse.notes);
         sheet.getRange(i + 1, COL.LAST_RUN).setValue(new Date());
@@ -217,7 +252,7 @@ function runDeepResearchLayer() {
   if (!lock.tryLock(30000)) { notifyFailure_("Researcher", "could not acquire lock"); return; }
   const started = Date.now();
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    const sheet = getTrackerSheet_();
     const data = sheet.getDataRange().getValues();
     const tz = Session.getScriptTimeZone();
     const todayStr = Utilities.formatDate(new Date(), tz, "yyyy-MM-dd");
@@ -277,6 +312,10 @@ function runDeepResearchLayer() {
 // v3.0's fallback left "Bullet point 2/3" residue); PPTX export checked.
 // ============================================================================
 function runSynthesisLayer() {
+  // Same lock as the other layers: a Researcher run drifting past 8 AM must
+  // not have the Monday synthesis read a mid-write Master Log.
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(60000)) { notifyFailure_("Synthesizer", "could not acquire lock"); return; }
   try {
     const fullText = DocumentApp.openById(CONFIG.MASTER_DOC_ID).getBody().getText();
     // Log is newest-first: the leading slice is the most recent research.
@@ -364,5 +403,7 @@ function runSynthesisLayer() {
   } catch (err) {
     notifyFailure_("Synthesizer", err);
     throw err;
+  } finally {
+    lock.releaseLock();
   }
 }

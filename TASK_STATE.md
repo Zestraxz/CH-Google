@@ -16,7 +16,9 @@
 | 2. Pass 1 adjudication (verify every finding vs sources) | ✅ done | Verdict = min(41,40,36) = **36**. 15 verified clusters (V1–V15), 0 refuted, 3 not_actioned (owner/Google-side). Log: `_runs/critic_google-establishment_pass1.json` |
 | 3. Fix batch 1 (verified findings, CRITICAL→NITPICK) | ✅ done | F1–F9 applied. Commits: `caefbc9` (pre-fix baseline) → `9ecd4d0` (fixes). Code.gs v3.1 parse-checked |
 | 4. Fix audit 1 (independent critic) | ✅ done | **PASS_WITH_NOTES**: all changes CONFIRMED, 0 coverage gaps, downgrades justified; 2 MODERATE + 6 MINOR issues in the fixes → **batch 1b applied** (Synthesizer retry no longer masks API errors; grounding-metadata warning added + doc claim corrected; first-run wording honest; §12 pointers fixed via ledger update; Gem instructions reproduced in runbook §4; appendSlide-fallback order; blank-recipient guard; budget comment). Parse re-checked OK |
-| 5. Pass 2 re-score | 🟡 next | Fresh 3-lens panel on the post-fix artifact |
+| 5. Pass 2 re-score | ✅ done | STRATEGIC 56 (T1 64/T2 56/T3 72) · FIDELITY 54 (65/54/86) · TECHNICAL 41 (53/41/81) → adjudicated **41** (+5). 14 new verified (W1–W14), 0 refuted. Log: `_runs/critic_google-establishment_pass2.json`. Structural ceiling confirmed: min binds on immutable exports |
+| 6. Fix batch 2 (W1–W14) | ✅ done | Flow table + compact prompt transcribed (W1); ROADMAP/STATUS incident-priority live-flow item (W2); AGENTS.md identity (W4); PHASE1 full reconcile + ADR link + transcripts dir (W5); Execution-Notes wording + STATUS phrasing (W6); COVERAGE.md §E tracked evidence (W7); getSheetByName (W8); grounding-schema documented UNVERIFIED + runbook §1.7 (W9); score validation + empty-text cascade (W10); Synthesis lock (W11); appsscript.json (W12); D8 weekday row (W13); untrusted-web row (W14). Parse OK, manifest OK |
+| 7. Fix audit 2 + pass 3 confirming panel | 🟡 next | Audit first, then final confirming pass (measurement hygiene — batch 2 answered MAJOR findings) |
 | Session end (ledger `docs/01-session/`, STATUS, artifact, EXCHANGE note, commit) | ⬜ | |
 
 ## Resume pointers

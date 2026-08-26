@@ -8,15 +8,23 @@
 
 ### Now (this week)
 
+- **Owner, incident-priority: verify the live DWR flow's actual state.** The "[have Done]" tag
+  means an uncorrected flow (auto-send to manager, no injection guard, 1-year expiry) may be
+  running daily at 5 PM **today** — assume live until verified off. Either turn it off / confirm
+  it was never activated, or apply D2 (Draft-only) + the injection guard immediately (a ~10-minute
+  Studio UI action). Record the verified state in STATUS.md.
 - Finish the `/critic` loop on the establishment (fix → audit → re-score to the bar or an honest stop).
-- First commit + configure git remote (owner: name/visibility, D-016 identity check) and push.
+- Configure git remote and push (owner: name/visibility, D-016 identity check; if naming stalls,
+  push to a private placeholder now — D-016 requires identity verification before push, not
+  name-perfection before backup).
 
 ### Next (1–4 weeks)
 
 - Owner: deploy corrected `Code.gs` v3.1 into the live Apps Script project; run the validation
-  protocol (`src/apps-script/README.md` §3); capture evidence into `docs/` and PROJECT_ARTIFACT §12.
-- Owner: apply flow corrections D1–D7 in the Workspace Studio UI (Draft-only Step 6 + injection
-  guard first); re-run the blueprint's Phase-4 validation; capture evidence.
+  protocol (`src/apps-script/README.md` §3) **including the §1.7 grounding-schema check**; capture
+  evidence into `docs/` and PROJECT_ARTIFACT §12.
+- Owner: apply the remaining flow corrections D1–D8 in the Workspace Studio UI (whatever wasn't
+  done in the incident-priority pass); re-run the blueprint's Phase-4 validation; capture evidence.
 - Record real quota limits (AI Studio dashboard) with basis in the runbook.
 - Resolve open questions: Studio "Ask a Gem" source access; Studio failed-run behavior;
   DWR_Master schema decision (D4).

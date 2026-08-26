@@ -69,6 +69,22 @@ elsewhere. Pick layers that could each independently be the place nobody has loo
 > Newest first. Each scheduled run appends one dated block (â‰¤60 lines). Human triage rejections stay
 > here **with reasons** â€” the next run reads them and must not re-raise without new evidence.
 
+### 2026-08-27 — /critic Microscope run on the Google establishment (tracked evidence record)
+
+Target: the two `.resource/` founding blueprints (immutable Gemini chat exports) + the repo docs
+establishing them. Bar ≥ 90, min-of-panel binding. **Pass 1:** STRATEGIC 41 / FIDELITY 40 /
+TECHNICAL 36 → adjudicated **36**; 15 verified clusters (2 CRITICAL + 7 MAJOR), 0 refuted, 3
+not_actioned (owner/Google-side). Fixes: commits `caefbc9` (pre-fix baseline) → `9ecd4d0` →
+`825155b` (audit batch 1b; audit verdict PASS_WITH_NOTES). **Pass 2:** STRATEGIC 56 (T3=72) /
+FIDELITY 54 (T3=86) / TECHNICAL 41 (T3=81) → adjudicated **41**; 14 new verified findings
+(W1–W14), 0 refuted. Key external verifications (2026-08-27, reproduced by two panels + fixer):
+`gemini-3.7/3.6/3.5-flash` current on ai.google.dev models page; `gemini-1.5-flash` retired;
+no "20 RPD" free-tier figure locatable; `Slide.duplicate()` inserts after the original.
+Structural note: the panel minimum binds on the immutable exports — the adjudicated verdict has a
+hard ceiling regardless of repo quality; per-target T3 trajectory is the meaningful metric
+(41/40/36 → 72/86/81). Full pass logs: session-local `_runs/critic_google-establishment_pass<N>.json`
+(git-ignored); durable summary: `docs/01-session/SESSION-2026-08-27-critic-google-establishment.md`.
+
 ### 2026-08-26 â€” Setup (baseline, not a Radar run)
 
 Self-Critic kit installed and bound to .CH-Google. No sweep has run yet.

@@ -9,7 +9,7 @@
 
 - **Phase:** Establishment — capturing and correcting the Google-side automation systems in the repo
 - **Last updated:** 2026-08-27
-- **Last commit:** first commit made 2026-08-27 (this was a zero-commit repo until then)
+- **Last commit:** see `git log -1` — history starts 2026-08-27 (`caefbc9` scaffold baseline → critic-loop fix commits; zero commits existed before that date)
 - **Active owner:** Chan Hoe
 - **Next milestone:** deploy corrected Research Engine v3.1 + capture DWR validation evidence
 
@@ -30,6 +30,10 @@ Legend: ✅ done · 🟡 in progress/partial · 🔴 blocked · ⬜ not started 
 
 ## Blockers
 
+- **⚠ Live-flow state unverified (incident-priority):** if "[have Done]" is true, the
+  *uncorrected* DWR flow (auto-send to manager, no injection guard) runs daily at 5 PM — assume
+  live until the owner verifies off or applies D2 + the guard (ROADMAP → Now, top item). Record
+  the verified state here when done: _state: `not verified`_.
 - **No git remote** (L-008/D-016): repo is local-only; configure origin (owner decision on
   name/visibility) before any push. The README's OpenSSF badge repo identity is unconfirmed.
 - **No deployment evidence**: neither system has a captured test run (screenshots/log exports);

@@ -8,10 +8,13 @@
 
 ## 1. Project identity
 
-- **Name:** Google
-- **One-liner:** TODO: one-line description of Google
+- **Name:** CH-Google
+- **One-liner:** Google Workspace-native AI automation — a Gemini Gem + Workspace Studio Flow
+  daily-report (DWR) agent and an Apps Script + Gemini API research/synthesis engine.
 - **Owner:** Chan Hoe
-- **Stack:** TypeScript + Python (hybrid)
+- **Stack:** Google Workspace runtime (Gemini Gems, Workspace Studio Flows, Apps Script V8,
+  Sheets/Docs/Slides/Gmail) + Gemini API. The TypeScript/Python web-app scaffold in this repo is
+  template baseline, not the deliverable — see [02_active/ARCHITECTURE.md](02_active/ARCHITECTURE.md).
 - **Status:** see [STATUS.md](STATUS.md)
 
 ## 1b. The Brain - portfolio knowledge layer (binding)
@@ -190,7 +193,8 @@ Shipped launchers (profile-gated):
   re-submit the original prompt.
 - **Default model:** Claude Sonnet 4.6 for code, Claude Opus 4.7 for planning/architecture.
 - **Prompt caching:** enabled for repeated context (AGENTS.md, schemas).
-- **Cost target:** TODO.
+- **Cost target:** zero paid infrastructure — subscription/free tiers only (D-008); metered API
+  usage requires explicit owner approval.
 - **Provider keys:** in `.env` only. Never committed.
 
 ## 12. Session bootstrap checklist
