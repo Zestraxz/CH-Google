@@ -1,4 +1,4 @@
-# Google — Roadmap
+# CH-Google — Roadmap
 
 > Phases, milestones, dependencies. Updated as the project moves.
 
@@ -6,49 +6,50 @@
 
 ## Now / Next / Later
 
-### Now (this week / sprint)
+### Now (this week)
 
-- {{NOW_ITEM_1}}
-- {{NOW_ITEM_2}}
+- Finish the `/critic` loop on the establishment (fix → audit → re-score to the bar or an honest stop).
+- First commit + configure git remote (owner: name/visibility, D-016 identity check) and push.
 
 ### Next (1–4 weeks)
 
-- {{NEXT_ITEM_1}}
-- {{NEXT_ITEM_2}}
+- Owner: deploy corrected `Code.gs` v3.1 into the live Apps Script project; run the validation
+  protocol (`src/apps-script/README.md` §3); capture evidence into `docs/` and PROJECT_ARTIFACT §12.
+- Owner: apply flow corrections D1–D7 in the Workspace Studio UI (Draft-only Step 6 + injection
+  guard first); re-run the blueprint's Phase-4 validation; capture evidence.
+- Record real quota limits (AI Studio dashboard) with basis in the runbook.
+- Resolve open questions: Studio "Ask a Gem" source access; Studio failed-run behavior;
+  DWR_Master schema decision (D4).
 
 ### Later (1–6 months)
 
-- {{LATER_ITEM_1}}
-- {{LATER_ITEM_2}}
+- Measure results with basis (DWR authoring time; briefings produced) and fill PROJECT_ARTIFACT §8.
+- Evaluate merging the Research Engine with CH-Research's radar layer (overlapping
+  scout → score → deep-research ladder — one engine, two frontends).
+- Extract the DWR Commander Gem prompt (+ injection guard) as a reusable portfolio asset via the
+  Brain EXCHANGE queue.
 
 ---
 
 ## Phases
 
-### Phase 1 — Scaffold
+### Phase A — Establishment (current)
 
-**Goal:** Repo skeleton, conventions, bootstrap.
-**Exit criteria:** `START_HERE.cmd` runs clean on a fresh clone. CI green on empty PR.
+**Goal:** the repo durably records both systems, corrected.
+**Exit criteria:** critic loop closed (bar or honest stop); first commit + remote + push; docs
+canonical over the `.resource/` exports.
 
-### Phase 2 — Domain model
+### Phase B — Evidenced deployment
 
-**Goal:** Schemas, enums, state machine live in `packages/shared/`. DB migrations in place.
-**Exit criteria:** Schema covers all entities in [ARCHITECTURE.md §3](ARCHITECTURE.md#3-components). Migrations forward-only, reversible.
+**Goal:** both systems live, validated, with captured evidence.
+**Exit criteria:** validation protocols run and recorded; STATUS matrix rows flip to ✅ with
+evidence links; failure alerts proven to fire (forced-failure test).
 
-### Phase 3 — MVP
+### Phase C — Measured operation
 
-**Goal:** Smallest end-to-end path from frontend → API → DB → frontend works.
-**Exit criteria:** One happy-path user journey demoable. ≥1 integration test green.
-
-### Phase 4 — Polish
-
-**Goal:** Error handling, validation, observability, tests at 70% coverage.
-**Exit criteria:** Sentry catches errors. Logs structured. Coverage report ≥ target.
-
-### Phase 5 — Production
-
-**Goal:** Deploy to prod with monitoring, backups, runbook.
-**Exit criteria:** [docs/03-deployment/RUNBOOK.md](../docs/03-deployment/RUNBOOK.md) complete. Healthchecks green for 7 days.
+**Goal:** results with basis; sustained unattended operation.
+**Exit criteria:** PROJECT_ARTIFACT §8 has real numbers with period/denominator/scope; one month
+of operation with zero silent gaps (every miss has an alert).
 
 ---
 
@@ -56,25 +57,24 @@
 
 | Phase | Depends on | Blocks |
 | ----- | ---------- | ------ |
-| 2     | 1          | 3, 4   |
-| 3     | 2          | 4      |
-| 4     | 3          | 5      |
-| 5     | 4          | —      |
+| B     | A (corrected code/docs) + owner Google-account actions | C |
+| C     | B | portfolio/deck claims |
 
 ---
 
 ## Risks
 
-| Risk       | Likelihood | Impact | Mitigation       |
-| ---------- | ---------- | ------ | ---------------- |
-| {{RISK_1}} | Med        | High   | {{MITIGATION_1}} |
-| {{RISK_2}} | Low        | Med    | {{MITIGATION_2}} |
+| Risk | Likelihood | Impact | Mitigation |
+| ---- | ---------- | ------ | ---------- |
+| Ungrounded output reaches management (grounding regression or Studio Gem lacks web access) | Med | High | Validation §3 grounding spot-check; Draft-only manager email |
+| Silent pipeline death (model retirement, quota change, trigger expiry) | Med | Med | v3.1 email alerts; maintenance checklist; no "Ends: 1 year" schedule |
+| Prompt injection via inbound email/chat into the Gem | Low-Med | High | Gem injection guard + human review of the manager draft |
+| Knowledge loss (repo local-only) | Med until remote exists | High | First commit done; remote + push is the top Next item |
 
 ---
 
 ## Out of scope
 
-Explicit non-goals (in case stakeholders ask):
-
-- {{NON_GOAL_1}}
-- {{NON_GOAL_2}}
+- Any web app / hosted service (the `apps/`, docker, localhost scaffold is template baseline, not roadmap).
+- Auto-sending anything to the manager without human review.
+- Metered API usage beyond the free/subscription tiers without explicit owner approval (D-008).

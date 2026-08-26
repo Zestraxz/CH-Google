@@ -1,4 +1,4 @@
-# Google - Project Artifact
+# CH-Google - Project Artifact
 
 > **Living intelligence record** - the project's memory, learning record, evidence, results,
 > and portfolio source. Update on meaningful events (discovery, decision, milestone, failure,
@@ -7,101 +7,156 @@
 > Rules: results not activities (ACTION -> RESULT -> LEARNING -> IMPACT) / separate
 > FACT / ASSUMPTION / INFERENCE / DECISION / RESULT / LESSON / every number carries its basis
 > or says `not measured` - never fabricate metrics, users, savings, or impact.
->
-> Tier check: full artifact for active/flagship work. A throwaway experiment may keep only
-> §1, §8, §11 - but say so here rather than leaving sections silently empty.
 
 ---
 
 ## 1. Executive summary
 
-TODO: one-line description of Google
-
-_3-6 lines: what, for whom, current status, headline result (with basis)._
+Google Workspace-native AI automation for the owner's recurring work: a **DWR Agent** (Gemini Gem
+"DWR Commander" + Workspace Studio Flow — daily 5 PM work-report generation, sheet logging,
+two-tier email) and a **Research Engine** (Apps Script + Gemini API — scout-score-research-
+synthesize pipeline producing weekly executive decks). Designed 2026-08-16 in Gemini sessions;
+established in this repo and hardened by a `/critic` loop on 2026-08-27. Current status: designs
+corrected and captured (v3.1 script in `src/apps-script/`); **no deployment evidence captured yet**
+— headline result: `not measured`.
 
 ## 2. Problem / opportunity & context
 
-_What hurt, for whom, why now. Initial assumptions - labeled ASSUMPTION until verified._
+Daily working reports and recurring market/supply-chain research were manual, repetitive owner
+tasks scattered across Gmail/Chat/Calendar/Drive. The org runs on Google Workspace (cutover June
+2026 — see Brain pack CH-Power-Automate), so Workspace-native automation (Gems, Studio Flows, Apps
+Script) needs zero new infrastructure and no new vendor. ASSUMPTION (unverified): a daily
+auto-generated DWR is acceptable to the manager as a reporting medium once human-reviewed.
 
 ## 3. Research & key findings
 
-_FACT vs INFERENCE marked. Sources linked._
+- FACT: the founding blueprints are **Gemini chat exports** (untracked `.resource/`, D-014) — not
+  verified sources. The same lesson stands in the Brain's CH-Research pack.
+- FACT (verified 2026-08-27 against ai.google.dev/gemini-api/docs/models): `gemini-3.7-flash`,
+  `gemini-3.6-flash`, `gemini-3.5-flash` are real current stable models; `gemini-1.5-flash` is
+  retired — the blueprint's cascade tail was dead weight.
+- FACT: the blueprint's v3.0 script promised web scanning but sent bare `generateContent` calls
+  with no grounding tool — its "market intelligence" was model priors (critic finding V2,
+  CRITICAL; fixed in v3.1).
+- FACT: the blueprint's "20 requests/day free-tier cap" figure has no basis and could not be
+  located in official docs — recorded as unsupported, real limits `not measured` until read from
+  the AI Studio dashboard.
+- INFERENCE: both systems as originally designed fail silently (catch-log-continue; no failure
+  branches; 1-year schedule end) — absence-of-output was the only failure signal.
 
 ## 4. Decisions & why
 
 | Date | Decision | Why | Rejected alternative | Why not |
 | ---- | -------- | --- | -------------------- | ------- |
-
-_Or point at `docs/04-quality/adr/` - don't maintain two decision ledgers._
+| 2026-08-16 | Two-layer DWR: Gem brain + Studio Flow orchestrator | Reasoning stays in the Gem; scheduling/distribution in the no-code flow | Single Apps Script for everything | Flow gives native Workspace actions + UI-managed schedule |
+| 2026-08-16 | Research engine: Apps Script + Gemini API, zero paid infra | Lives entirely in Workspace; free/subscription tiers | External runner/VPS | Cost + credential surface |
+| 2026-08-27 | Repo (not the chat exports) is the system of record; corrected v3.1 script is canonical | `.resource/` is untracked and immutable; critic pass 1 found the v3.0 listing defective | Treat PDFs as the record | Violates the portfolio's evidence/durability rules; exports are unfixable |
+| 2026-08-27 | Manager-facing DWR is **Draft-only, never auto-Send** | Unreviewed LLM output + prompt-injection surface → reputational risk | Full autonomy per blueprint | One bad send to a superior outweighs the 30s saved |
 
 ## 5. Architecture / solution design
 
-_Diagram-first: architecture, data flow, topology. Text explains the diagram._
+See [02_active/ARCHITECTURE.md](02_active/ARCHITECTURE.md) (diagrams + the D1–D7 flow corrections
+and the v3.1 delta table pointer). Code: [src/apps-script/Code.gs](src/apps-script/Code.gs).
+Runbook: [src/apps-script/README.md](src/apps-script/README.md).
 
 ## 6. Implementation progress
 
 | Date | Milestone (ACTION -> RESULT -> LEARNING -> IMPACT) | Commit |
 | ---- | -------------------------------------------------- | ------ |
+| 2026-08-16 | Designed both systems in Gemini sessions -> exported blueprints to `.resource/` -> LEARNING: chat exports are not a durable or verified record | (pre-repo) |
+| 2026-08-27 | Ran `/critic` pass 1 (3-lens panel) -> adjudicated 36/100, 2 CRITICAL + 7 MAJOR verified -> rewrote establishment docs + corrected script v3.1 -> IMPACT: repo now actually records the work; script defects fixed before deployment | first commit, this date |
 
 ## 7. Experiments, tests & failures
 
-_What was tried, what it showed, what failed and why. Failures are first-class entries._
+- 2026-08-27 — `node` parse check on `src/apps-script/Code.gs`: **pass** (V8-compatible syntax).
+  Runtime behavior NOT yet exercised — Apps Script execution requires the owner's Google account.
+- Recorded failure (design-time, caught by critic before deployment): v3.0's first run on a fresh
+  tracker crashes on empty Next-Run cells; v3.0 decks render slides in reverse order with
+  "Bullet point 2/3" residue. Neither was ever caught by a test because no test run was recorded.
+- Pending: the 5-step validation protocol in `src/apps-script/README.md` §3 (fresh-tracker run,
+  grounding spot-check, forced-failure alert, synthesis dry run, evidence capture).
 
 ## 8. Results / metrics
 
 | Metric | Before | After | Basis (period, denominator, scope) |
 | ------ | ------ | ----- | ---------------------------------- |
-|        |        |       | `not measured` until it is         |
+| DWR authoring time | — | — | `not measured` |
+| Research briefings produced | — | — | `not measured` |
+| Pipeline failure visibility | silent (log-only) | email-alert designed | design property, unverified in production |
 
 ## 9. Business / operational impact
 
-_Time saved / cost / error reduction / adoption / scale. Projections labeled as projections._
+`not measured`. Projection (labeled as projection): daily DWR authoring and weekly research
+synthesis become review-only tasks once both systems run with evidence.
 
 ## 10. Reusable knowledge extracted
 
-_Patterns, prompts, scripts, checklists worth generalizing. This portfolio runs a persistent
-knowledge brain (AGENTS.md Sec 1b): stage each item as a queue note in the Brain's
-`EXCHANGE/<machine-id>_TO_SHARED/` for promotion, and keep only the promoted extract here.
-Never copy the Brain's policies into this file - point at them._
+- **Model fallback cascade + JSON sanitizer** pattern for Apps Script → Gemini API
+  (`src/apps-script/Code.gs`) — with the v3.1 corrections (fail-fast classification, header auth,
+  grounding flag). Staged for Brain promotion via `EXCHANGE/PC2_TO_SHARED/`.
+- **DWR Commander Gem prompt** (blueprint pp. 5–9): CONFIRMED/INFERRED/UNKNOWN epistemics,
+  cross-source consolidation, fixed 12-section format — reusable beyond this project (add the §4
+  injection guard from the runbook before reuse).
 
 ## 11. Current status, gaps & next actions
 
-- **Status:**
-- **Known gaps:**
-- **Next 3 actions:**
-- **Future opportunities:**
+- **Status:** establishment complete in-repo; corrected code parse-checked; nothing deployed with
+  evidence.
+- **Known gaps:** no deployment evidence for either system ("[have Done]" is an owner claim); no
+  git remote (L-008); Studio Flow step semantics (source access, failure behavior) unverified;
+  DWR_Master schema decision (D4) open.
+- **Next 3 actions:** (1) owner: paste v3.1 into the live Apps Script project and run the §3
+  validation protocol, capturing evidence into `docs/`; (2) owner: apply D1–D7 in the Studio UI
+  (Draft-only Step 6 first); (3) configure git remote per D-016, then push.
+- **Future opportunities:** merge with CH-Research's radar layer (overlapping scout→score→research
+  ladder — one engine, two frontends); extract the Gem prompt as a portfolio asset.
 
 ## 12. Evidence
 
 | Claim | Evidence (commit / file / screenshot / test run / dashboard) |
 | ----- | ------------------------------------------------------------ |
+| Blueprints exist (2026-08-16) | `.resource/` PDFs 1 & 4 (untracked; cited in prose per D-014) |
+| Critic pass 1 verdict 36/100, findings verified | git-ignored `_runs/critic_google-establishment_pass1.json` + session ledger `docs/01-session/SESSION-2026-08-27-critic-google-establishment.md` |
+| v3.1 script parses | Node `new Function` parse check, 2026-08-27 (session ledger) |
+| Model IDs current / 1.5-flash retired | WebFetch of ai.google.dev/gemini-api/docs/models, 2026-08-27 (recorded in session ledger) |
+| DWR deployed | **none — unevidenced owner claim** |
 
 _No evidence, no portfolio claim._
 
 ## 13. Portfolio / Deck Intelligence
 
-- **Problem & why it mattered:**
-- **Starting point:**
-- **Insight / key innovation:**
-- **Solution in one paragraph:**
-- **Before -> after:**
-- **Measurable impact:** (basis, or `not measured`)
-- **Lessons learned:**
-- **Reusable methodology:**
-- **Visual opportunities:** (architecture, flow, before/after, KPI, timeline)
-- **Executive takeaway:**
-
-_Maps onto the 13-slide narrative: exec summary / problem / current state / insights /
-solution / architecture / implementation / demo/evidence / results/KPI / impact / lessons /
-reusable framework / roadmap. Render decks locally (Marp / pptx tooling) - $0 per deck._
+- **Problem & why it mattered:** daily reporting + recurring research consumed owner time on
+  repetitive synthesis across six Workspace surfaces.
+- **Starting point:** two Gemini-authored blueprints, one claimed deployed, zero repo capture.
+- **Insight / key innovation:** Workspace-native automation needs zero infrastructure — but
+  chat-authored blueprints ship confident, untested defects; a critic loop before deployment
+  caught 2 CRITICAL + 7 MAJOR issues including a core capability (web grounding) that didn't exist.
+- **Solution in one paragraph:** a Gem-brain/Flow-orchestrator DWR agent (human-gated manager
+  draft) plus a three-layer Apps Script research engine with grounded Gemini calls, fail-fast
+  error classification, and email-alert failure visibility — established, corrected, and
+  version-controlled in this repo.
+- **Before -> after:** untracked chat exports with silent-failure designs → tracked, corrected,
+  parse-checked canonical system with an evidence-gated status ledger.
+- **Measurable impact:** `not measured` (deployment evidence pending).
+- **Lessons learned:** see §10 + ISSUES_AND_LEARNINGS; headline — *"generated by an AI that
+  describes itself" is not "verified": the blueprint claimed web scanning its own code never
+  requested.*
+- **Reusable methodology:** critic-loop-before-deployment on AI-generated blueprints.
+- **Visual opportunities:** two architecture diagrams (in ARCHITECTURE.md), before/after defect
+  table, critic-loop flow.
+- **Executive takeaway:** AI-generated automation blueprints are drafts, not deliverables — an
+  adversarial review loop turned two plausible-but-defective exports into a deployable, observable
+  system before any executive saw a wrong number.
 
 ## 14. Completion gate
 
 _Implementation finished != project complete. Before marking COMPLETE:_
 
-- [ ] Brain pack + index row exist (`PROJECTS/Google/PROJECT.md`)
-- [ ] artifact current - [ ] exec summary - [ ] findings - [ ] decisions - [ ] architecture
-- [ ] results (with basis) - [ ] lessons - [ ] evidence linked - [ ] portfolio section filled
-- [ ] STATUS.md updated - [ ] future opportunities named - [ ] deck-ready story exists
+- [x] Brain pack + index row exist (`PROJECTS/CH-Google/PROJECT.md`, added 2026-08-27)
+- [x] artifact current - [x] exec summary - [x] findings - [x] decisions - [x] architecture
+- [ ] results (with basis) - [x] lessons - [x] evidence linked - [x] portfolio section filled
+- [x] STATUS.md updated - [x] future opportunities named - [ ] deck-ready story exists (needs
+      deployment evidence for the demo/results slides)
+- **Named gaps:** results `not measured`; deployment evidence absent; remote unconfigured.
 
 _Unmet items are named gaps - a project with gaps is not COMPLETE._

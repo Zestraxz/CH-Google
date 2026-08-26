@@ -1,8 +1,14 @@
-# Phase 1 — Scaffold
+# Phase 1 — Scaffold (superseded by Phase A — Establishment)
 
-**Period:** YYYY-MM-DD → YYYY-MM-DD
-**Goal:** Stand up the repository skeleton with conventions, governance, and one-click bootstrap.
-**Exit criteria:** `START_HERE.cmd` runs clean on a fresh clone. CI green on an empty PR.
+> **Reconciliation (2026-08-27):** this file described the generic scaffold phase and had drifted
+> from STATUS.md (docker-compose marked done here, "not started" there — the files exist, this
+> file was right). **STATUS.md is now canonical for current state**; the project's real phases are
+> in [ROADMAP.md](ROADMAP.md) (A: Establishment → B: Evidenced deployment → C: Measured
+> operation). Kept for the scaffold record below.
+
+**Period:** 2026-08 (scaffold instantiation) → 2026-08-27 (establishment reframe)
+**Goal (original):** Stand up the repository skeleton with conventions, governance, and one-click bootstrap.
+**Exit criteria (original):** `START_HERE.cmd` runs clean on a fresh clone. CI green on an empty PR — CI has never run (no remote yet).
 
 ---
 

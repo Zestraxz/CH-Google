@@ -1,109 +1,81 @@
-# Google
+# CH-Google
 
-> TODO: one-line description of Google — TODO: target user.
+> Google Workspace-native AI automation for the owner's recurring work: a **DWR Agent** (Gemini
+> Gem + Workspace Studio Flow — daily working report) and a **Research Engine** (Apps Script +
+> Gemini API — scout → deep-research → executive-deck pipeline).
 
-[![CI](https://img.shields.io/badge/CI-pending-lightgrey)](#)
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Zestraxz/google/badge)](https://scorecard.dev/viewer/?uri=github.com/Zestraxz/google)
+[![Status](https://img.shields.io/badge/status-Establishment-orange)](STATUS.md)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![Status](https://img.shields.io/badge/status-Phase%201-orange)](STATUS.md)
 
-> Target OpenSSF Scorecard >= 8/10. Improvements live in [docs/02-governance/SECURITY.md](docs/02-governance/SECURITY.md).
+<!-- OpenSSF Scorecard / CI badges deliberately removed until a git remote exists (D-016):
+     the previous badge named an unconfirmed repo identity (github.com/Zestraxz/google). -->
 
 ---
 
 ## What it does
 
-TODO: paragraph describing Google
+Two automations that live entirely inside the owner's Google account — no servers, no paid infra:
+
+1. **DWR Agent** — a Gemini Gem ("DWR Commander") reconstructs the actual workday from
+   Gmail/Chat/Calendar/Drive/Docs/Sheets and a Workspace Studio Flow runs it daily at 5 PM: logs to
+   a `DWR_Master` sheet, emails the full analytical report to self, and **drafts** (never
+   auto-sends) a compact version for the manager.
+2. **Research Engine** — an Apps Script bound to a tracker sheet: daily topic scoring (web-grounded
+   Gemini calls), daily deep-research reports appended to a master doc for topics scoring ≥ 7, and
+   a weekly synthesized executive report + PPTX deck by email.
+
+**Start here:** [02_active/ARCHITECTURE.md](02_active/ARCHITECTURE.md) (real architecture +
+blueprint corrections) → [src/apps-script/README.md](src/apps-script/README.md) (deploy, validate,
+operate) → [STATUS.md](STATUS.md) (what is actually evidenced vs claimed).
+
+> The founding blueprints are Gemini chat exports in untracked `.resource/` (cited in prose, never
+> committed — D-014). They contain verified defects; **do not deploy from them**. The corrected,
+> canonical record is this repo: `02_active/ARCHITECTURE.md` + `src/apps-script/Code.gs` (v3.1).
 
 ## Project intelligence — where everything lives
 
 > Stable pointers only - no numbers, no status words (those rot; they live in the files below).
-> Same heading and shape in every CH repo, so one glance works anywhere.
 
 | What you want                                  | Where                                                                      | Kept fresh by                                             |
 | ---------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------- |
 | Current state & phase                          | [STATUS.md](STATUS.md)                                                     | every meaningful commit                                   |
 | Living record - decisions / results / evidence | [PROJECT_ARTIFACT.md](PROJECT_ARTIFACT.md)                                 | artifact duty (AGENTS.md §13), every meaningful event     |
-| Session transcripts (redacted)                 | `docs/01-session/transcripts/`                                             | session-end backup (`scripts/04-sync/backup-session.ps1`) |
+| Architecture + blueprint corrections           | [02_active/ARCHITECTURE.md](02_active/ARCHITECTURE.md)                     | any load-bearing change                                   |
+| Deploy / validate / operate                    | [src/apps-script/README.md](src/apps-script/README.md)                     | each deployment touch                                     |
+| Session transcripts (redacted)                 | `docs/01-session/transcripts/`                                             | session-end backup                                        |
 | Quality audits & coverage                      | `docs/04-quality/critic/`                                                  | weekly Radar + `/critic`                                  |
-| Portfolio brain (read first)                   | the Brain repo - `MEMORY/CURRENT_PRIORITIES.md`, `MEMORY/PROJECT_INDEX.md` | learning loop (AGENTS.md Sec 1b)                          |
-| This project's knowledge pack                  | Brain `PROJECTS/Google/PROJECT.md`                               | session end, every meaningful event                       |
-| Session ledger (Reasoning Trail)               | `docs/01-session/`                                                         | session end (AGENTS.md Sec 13)                            |
+| Portfolio brain (read first)                   | the Brain repo - `MEMORY/CURRENT_PRIORITIES.md`, `MEMORY/PROJECT_INDEX.md` | learning loop (AGENTS.md §1b)                             |
+| This project's knowledge pack                  | Brain `PROJECTS/CH-Google/PROJECT.md`                                      | session end, every meaningful event                       |
+| Session ledger (Reasoning Trail)               | `docs/01-session/`                                                         | session end (AGENTS.md §13)                               |
 | Binding conventions                            | [AGENTS.md](AGENTS.md)                                                     | canonical                                                 |
 
-## Quick start
+## Deploying the systems
 
-### Windows (one-click)
+There is nothing to run locally — both systems deploy into Google surfaces:
 
-```cmd
-.\START_HERE.cmd            REM bootstrap + start everything (no choices)
-.\OPEN_ARTIFACTS.cmd        REM open README + docs + URLs
-.\tools-gui\Setup-Env.cmd   REM GUI wizard to fill .env from .env.example (first run)
-```
+- **Research Engine:** follow [src/apps-script/README.md](src/apps-script/README.md) §1
+  (Drive setup → paste `Code.gs` → Script Properties key → triggers) and **run the §3 validation
+  protocol before trusting any output**.
+- **DWR Agent:** built in the Workspace Studio UI per the blueprint **with corrections D1–D7**
+  ([ARCHITECTURE.md §2](02_active/ARCHITECTURE.md)) — Draft-only manager email and the injection
+  guard are non-negotiable.
 
-### Cross-platform
+## Stack
 
-```bash
-# PowerShell
-.\01_setup\run.ps1
+- **Runtime:** Google Workspace (Gemini Gems, Workspace Studio Flows, Apps Script, Sheets/Docs/Slides/Gmail)
+- **AI:** Gemini API (key from Google AI Studio, stored in Apps Script Script Properties only) — model cascade `gemini-3.7-flash → 3.6 → 3.5`
+- **Repo tooling:** Claude Code + the `.Critic/` quality kit; docs tree `docs/00-99`
 
-# Bash
-./01_setup/run.sh
-```
+<details>
+<summary>Template scaffold (generic CH-repo baseline — not used by the Google-side systems)</summary>
 
-Opens at:
+This repo was instantiated from the CH full-stack scaffold; the web-app portions (`apps/`,
+`packages/`, docker-compose files, `01_setup/run.*`, GUI launchers in `tools-gui/`, the
+pre-production checklist in earlier revisions) are **template baseline, not part of this project's
+deliverable**. They stay for potential future use; nothing listens on localhost:3000/8000 here.
+Full tree: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md).
 
-- App: http://localhost:3000
-- API: http://localhost:8000 (if applicable)
-- API docs: http://localhost:8000/docs
-
-## One-click GUI launchers (`tools-gui/`)
-
-For tasks where you make choices (commit messages, ADR titles, env values), double-click the matching `.cmd` to open a small WinForms wizard:
-
-| Launcher                                    | What it does                                                                   |
-| ------------------------------------------- | ------------------------------------------------------------------------------ |
-| `tools-gui/Setup-Env.cmd`                   | Fill `.env` from `.env.example` via a form. Auto-generates secrets             |
-| `tools-gui/GitPush.cmd`                     | Compose Conventional Commits message + pick files + run pre-commit gate + push |
-| `tools-gui/New-ADR.cmd`                     | New auto-numbered ADR from template                                            |
-| `tools-gui/New-RFC.cmd` (standard+)         | New auto-numbered RFC from template                                            |
-| `tools-gui/Upgrade-Profile.cmd` (standard+) | Compare current to higher profile; generate diff report                        |
-
-See `tools-gui/README.md` for the pattern + how to add your own.
-
-## Project layout
-
-```
-Google/
-├── 01_setup/         # Bootstrap scripts (run me first)
-├── 02_active/        # Current phase notes, architecture, roadmap
-├── 03_history/       # Read-only versioned snapshots
-├── 04_tools/         # Production-validated automation
-├── 05_archive/       # Locked legacy (do not touch)
-│
-├── apps/             # Runnable applications (if monorepo)
-├── packages/         # Shared libraries (if monorepo)
-├── src/              # Single-app source (if not monorepo)
-├── tests/            # Test suite (unit, integration, e2e)
-│
-├── docs/             # Numbered documentation tree (00-99)
-├── scripts/          # Lifecycle scripts by phase (00-04)
-│
-├── .claude/          # Claude Code config
-├── agents/           # Custom subagents
-├── skills/           # Skills
-├── commands/         # Slash commands
-├── hooks/            # Hooks
-├── mcp-configs/      # MCP server templates
-├── rules/            # Layered AI rules (common/ + overrides)
-│
-├── CLAUDE.md         # AI assistant governance (single source of truth)
-├── AGENTS.md         # Codex CLI mirror
-├── STATUS.md         # Current phase tracking
-└── PROJECT_STRUCTURE.md
-```
-
-Full tree explanation: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md).
+</details>
 
 ## Documentation
 
@@ -111,32 +83,11 @@ Full tree explanation: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md).
 | -------------------------------------------- | ----------------------------------------------------------------------- |
 | [AGENTS.md](AGENTS.md)                       | Canonical AI-assistant brief (per [agents.md spec](https://agents.md/)) |
 | [STATUS.md](STATUS.md)                       | Where the project stands right now                                      |
-| [docs/00-start-here/](docs/00-start-here/)   | Onboarding & install                                                    |
+| [02_active/](02_active/)                     | Architecture, roadmap, phase notes, issues & learnings                  |
+| [src/apps-script/](src/apps-script/)         | Canonical Research Engine code + runbook                                |
 | [docs/02-governance/](docs/02-governance/)   | Contributing, governance, security                                      |
-| [docs/03-deployment/](docs/03-deployment/)   | Runbook & deployment                                                    |
 | [docs/04-quality/adr/](docs/04-quality/adr/) | Architecture Decision Records                                           |
-| [docs/05-workflows/](docs/05-workflows/)     | Repeatable prompt routines                                              |
-| [evals/](evals/)                             | LLM evaluations (if app uses LLMs at runtime)                           |
-
-## Stack
-
-- **Backend:** TODO
-- **Frontend:** TODO
-- **Data:** PostgreSQL + Redis
-- **Infra:** Docker Compose (dev) → TODO: cloud / k8s / VPS
-- **AI:** Claude Code + Codex CLI + GitHub Copilot
-
-## Pre-production checklist
-
-- [ ] All secrets in `.env` (never committed); `.env.example` reflects every variable
-- [ ] `CORS_ORIGINS`, `JWT_SECRET`, `DATABASE_URL` set for production
-- [ ] HTTPS enforced at the edge
-- [ ] Database migrations versioned and tested
-- [ ] Healthchecks return 200 for all services
-- [ ] Logs flow to centralized aggregator
-- [ ] Backup + restore tested
-
-See [docs/03-deployment/RUNBOOK.md](docs/03-deployment/RUNBOOK.md) for full procedures.
+| [docs/04-quality/critic/](docs/04-quality/critic/) | Self-critic coverage map + refuted ledger                         |
 
 ## Contributing
 
