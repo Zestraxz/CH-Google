@@ -75,11 +75,13 @@ Unchanged good ideas from v3.0, kept deliberately: cascade + jittered exponentia
 
 ## 4. DWR agent — flow-side corrections (owner actions in the Studio UI)
 
-The DWR system is built in the Workspace Studio UI, not in this repo; apply corrections **D1–D7 in
-[`ARCHITECTURE.md §2`](../../02_active/ARCHITECTURE.md)** when next touching the flow. The two
-non-negotiables:
+The DWR system is built in the Workspace Studio UI, not in this repo; apply corrections **D1–D8 in
+[`ARCHITECTURE.md §2`](../../02_active/ARCHITECTURE.md)** when next touching the flow. (Step numbers
+below follow the corrected table — the manager email is **Step 7** there; it was Step 6 in the
+blueprint's original numbering.) The two non-negotiables:
 
-- **Step 6 = Draft, never Send** — a human reviews the manager-facing DWR before it leaves.
+- **The manager email step (Step 7) = Draft, never Send** — a human reviews the manager-facing DWR
+  before it leaves.
 - **The Gem's system instructions include the `# UNTRUSTED CONTENT` guard** (see the canonical
   copy below).
 
