@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "//": "Type-aware linting needs EVERY lintable .ts file to belong to a TS project. The package tsconfigs deliberately exclude tests, and this layout ships no root tsconfig.json — so this file exists solely to give ESLint a project that covers them. It emits nothing and is not part of the build. Removed by the generator for stacks that drop tsconfig.base.json (python, docs, vite-flat); vite-flat repoints .eslintrc.cjs at its own root tsconfig.json instead.",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "packages/**/*.ts", "packages/**/*.tsx"],
+  "exclude": [
+    "node_modules",
+    "**/node_modules",
+    "dist",
+    "**/dist",
+    "build",
+    "coverage",
+    ".turbo",
+    "_stack-overlays",
+    "05_archive",
+    "03_history",
+    "apps",
+    "tests"
+  ]
+}

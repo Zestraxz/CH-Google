@@ -1,0 +1,66 @@
+# =============================================================================
+# Pre-commit gate — runs before every commit.
+# Bypass (NOT RECOMMENDED): git commit --no-verify
+# =============================================================================
+#
+# Tool resolution note: this hook runs in git's own shell, which does NOT inherit
+# an interactive shell's PATH. Neither `pnpm` (package.json pins `packageManager`,
+# so corepack is a first-class way to provide it — and on some machines the only
+# one) nor `ruff` (a Python module) is guaranteed to exist as a bare command.
+# Resolve both, and fail loudly if neither form is available rather than silently
+# skipping a gate.
+#
+# The husky v9 preamble (shebang + sourcing _/husky.sh) is deliberately absent:
+# husky 9.1 warns it is deprecated and it hard-fails in v10.
+
+set -e
+
+# ---- Resolve pnpm -----------------------------------------------------------
+if command -v pnpm >/dev/null 2>&1; then
+    PNPM="pnpm"
+elif command -v corepack >/dev/null 2>&1; then
+    PNPM="corepack pnpm"
+else
+    echo "FAIL: neither 'pnpm' nor 'corepack' is on PATH — cannot run the Node gate."
+    echo "      Install pnpm, or enable corepack (ships with Node 16.9+)."
+    exit 1
+fi
+
+# ---- Resolve ruff -----------------------------------------------------------
+if command -v ruff >/dev/null 2>&1; then
+    RUFF="ruff"
+elif command -v python >/dev/null 2>&1 && python -m ruff --version >/dev/null 2>&1; then
+    RUFF="python -m ruff"
+elif command -v python3 >/dev/null 2>&1 && python3 -m ruff --version >/dev/null 2>&1; then
+    RUFF="python3 -m ruff"
+else
+    RUFF=""
+fi
+
+echo "==> Pre-commit: format check + lint + typecheck"
+
+# ---- Node -------------------------------------------------------------------
+if [ -f package.json ]; then
+    $PNPM format:check || {
+        echo "FAIL: prettier check failed. Run '$PNPM format' to fix."
+        exit 1
+    }
+    $PNPM lint || exit 1
+    $PNPM -r typecheck || exit 1
+fi
+
+# ---- Python -----------------------------------------------------------------
+if [ -f pyproject.toml ]; then
+    if [ -z "$RUFF" ]; then
+        echo "FAIL: pyproject.toml exists but ruff is not available (tried 'ruff',"
+        echo "      'python -m ruff', 'python3 -m ruff'). Install it: pip install ruff"
+        exit 1
+    fi
+    $RUFF format --check . || {
+        echo "FAIL: ruff format check failed. Run '$RUFF format .' to fix."
+        exit 1
+    }
+    $RUFF check . || exit 1
+fi
+
+echo "OK: pre-commit gate passed"

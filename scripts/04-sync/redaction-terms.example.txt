@@ -1,0 +1,20 @@
+# EXAMPLE identity mask terms for backup-session.ps1 - copy to redaction-terms.txt and edit.
+#
+# This example ships in the template so a scaffolded repo knows the mechanism exists WITHOUT
+# carrying anyone's real terms. The live list belongs in the private Brain
+# (scripts/04-sync/redaction-terms.txt); backup-session.ps1 finds it there automatically.
+#
+# FORMAT   one rule per line:   <regex>            -> masked as [EMPLOYER-REDACTED]
+#                               <regex> => <LABEL> -> masked as <LABEL>
+#          '#' starts a comment. .NET regex syntax; use inline (?i) for case-insensitive.
+#
+# The script already masks these SHAPES with no list at all:
+#   *@*.onmicrosoft.com          -> [TENANT-ACCOUNT-REDACTED]
+#   https://*.sharepoint.com/*   -> [SHAREPOINT-URL-REDACTED]
+#   WABI-*                       -> [TENANT-CLUSTER-REDACTED]
+# List a term here only when no shape catches it - a client or employer name, an internal
+# dataset or report name, an internal hostname or resource-naming prefix.
+
+# (?i)acme\s?corp => [EMPLOYER-REDACTED]
+# (?i)\bProjectFalcon\b => [PROJECT-CODENAME-REDACTED]
+# InternalReport_[A-Za-z0-9_]+ => [INTERNAL-DATASET-REDACTED]

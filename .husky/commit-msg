@@ -1,0 +1,7 @@
+# =============================================================================
+# Commit message gate — enforces Conventional Commits via commitlint.
+# =============================================================================
+# The husky v9 preamble (shebang + sourcing _/husky.sh) is deliberately absent:
+# husky 9.1 warns it is deprecated and it hard-fails in v10.
+
+npx --no-install commitlint --edit "$1"
