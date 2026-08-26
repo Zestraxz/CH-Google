@@ -10,9 +10,10 @@
 
 ## 1. Deploy (Research Engine)
 
-1. **Drive setup** (per blueprint, unchanged): a dedicated folder (e.g. `AI Research Lab`); inside
-   it — Tracker (Google Sheet; columns B=Topic, E=Last Run, F=Next Run, G=Priority Score,
-   H=Execution Notes), Master Log (Google Doc `S&OP Deep Research Master Log`), Slides template
+1. **Drive setup** (per blueprint, plus one column): a dedicated folder (e.g. `AI Research Lab`);
+   inside it — Tracker (Google Sheet; columns B=Topic, E=Last Run, F=Next Run, G=Priority Score,
+   H=Execution Notes, **I=Fail Count** — v3.1 addition, leave blank; the script manages it and a
+   human clears it to un-park a topic), Master Log (Google Doc `S&OP Deep Research Master Log`), Slides template
    (`Template_Deck`: slide 1 = `Title Placeholder`/`Subtitle Placeholder` boxes; slide 2 = header
    `Slide Title Placeholder` + a bulleted box with exactly the three lines `Bullet point 1/2/3`;
    delete all other slides).
@@ -42,18 +43,18 @@
 | # | Defect in v3.0 (PDF 4 page) | Fix in `Code.gs` | Critic finding |
 |---|---|---|---|
 | 1 | Prompts say "Scan the web" / "Deep Research sweep" but payload has **no grounding tool** (pp. 3, 6, 9–10) — output was model priors sold as live intelligence | `tools: [{ google_search: {} }]` on Scout/Research calls (`USE_WEB_GROUNDING`) | V2 (CRITICAL) |
-| 2 | Every layer's catch = `Logger.log` only — silent failure, and catching everything also suppressed Apps Script's built-in trigger-failure emails (pp. 9, 10, 15) | `notifyFailure_()` emails on every layer failure + writes tracker Execution Notes; layer-level errors rethrown | V3 (MAJOR) |
+| 2 | Every layer's catch = `Logger.log` only — silent failure, and catching everything also suppressed Apps Script's built-in trigger-failure emails (pp. 9, 11, 15) | `notifyFailure_()` emails on every layer failure + writes tracker Execution Notes; layer-level errors rethrown | V3 (MAJOR) |
 | 3 | Client-error fail-fast `throw` swallowed by its own `catch`; 400 in the retryable set (pp. 7–8) — a bad key burned the full cascade | Response-code classification: 429/5xx/404 cascade; 400/401/403-family throws immediately with the real message | V4 (MAJOR) |
 | 4 | First-run failure path: `new Date`/`formatDate` on the Next-Run cell ran **before** the emptiness guard, outside any try (p. 9). Whether `formatDate` throws on an Invalid Date (crash) or returns garbage (guard still worked by luck) is unverified — the parse-before-guard structure is defective either way | Emptiness + `isNaN` checked before any date math; per-row try/catch — correct under both resolutions | V5 (MAJOR) |
 | 5 | Deck order reversed: `duplicate()` inserts right after the master, so forward iteration stacked slides backwards (p. 14) | Input duplicated in **reverse** → in-order deck | V6 (MAJOR) |
 | 6 | Multi-line `replaceAllText("Bullet point 1\n2\n3")` reliability unproven; fallback left "Bullet point 2/3" residue on every slide (pp. 5, 14 vs p. 16's "injects content reliably") | Bullets replaced individually; extras fold into line 3; empties cleared | V6 (MAJOR) |
 | 7 | Empty `data.slides` still deleted the master slide and emailed a title-only deck under a success log (p. 14) | Guard **before** the template is copied; hard error | V6 (MAJOR) |
-| 8 | PPTX export response never checked — an error page became a broken `.pptx` attachment (p. 14) | Response code checked; non-200 raises | V6 (MAJOR) |
+| 8 | PPTX export response never checked (p. 14): a 200-status error page (auth/redirect) would attach as a broken `.pptx`; a non-200 threw into the silent catch of delta #2 | Response code checked with `muteHttpExceptions`; non-200 raises loudly | V6 (MAJOR) |
 | 9 | Synthesis stuffed the **entire** ever-growing Master Log into the prompt weekly (pp. 11–12) | Newest `SYNTHESIS_MAX_CHARS` slice only (log is newest-first) | V10 (MODERATE) |
 | 10 | Cascade tail `gemini-1.5-flash` is retired — a permanent-404 tier (p. 6); model names hard-coded forever | Tier removed; cascade `3.7 → 3.6 → 3.5-flash` (verified current 2026-08-27); rot warning in comments | V11 (MODERATE) |
-| 11 | API key as URL query param `?key=` (p. 6) — leaks into logs | `x-goog-api-key` header | V14 (MODERATE) |
+| 11 | API key as URL query param `?key=` (p. 7) — leaks into logs | `x-goog-api-key` header | V14 (MODERATE) |
 | 12 | No execution-time or concurrency protection: cascade sleeps × N topics vs the 6-minute cap; 6–7 and 7–8 AM windows can interleave | `EXECUTION_BUDGET_MS` clean stop + deferral note; `LockService` around Scout/Researcher | V15 (MINOR) |
-| 13 | Failed research retried daily forever (score stayed ≥ 7) with no cap | Kept the good part (auto-retry) + `RESEARCH_FAIL_LIMIT`: topic parked + alert after 3 consecutive failures | V15 (MINOR) |
+| 13 | Failed research retried daily forever (score stayed ≥ 7) with no cap | Kept the good part (auto-retry) + `RESEARCH_FAIL_LIMIT`: topic parked + alert after 3 consecutive failures. Counter lives in its own **Fail Count column (I)** so Scout's weekly notes overwrite cannot un-park it; a human clears col I to retry | V15 (MINOR) |
 
 Unchanged good ideas from v3.0, kept deliberately: cascade + jittered exponential backoff,
 `muteHttpExceptions`, JSON fence-stripping/sanitizing with bounded retries, exact-string
@@ -291,3 +292,9 @@ Report to convert:
   manager) and is model-generated from web content — treat web-sourced claims as data, spot-check
   before forwarding anything from it, and never widen the recipient list without adding
   sanitization.
+- **Alert volume:** each failing Researcher topic alerts per attempt until parked at
+  `RESEARCH_FAIL_LIMIT` (3), so worst case is ~N alerts/day for N simultaneously failing topics —
+  bounded, but budget for it against MailApp's daily send quota if the tracker grows large.
+- **Renumber hygiene:** any rename/renumber fix (e.g. D-corrections, step numbers) closes only
+  after a repo-wide `grep` for the old token — a fix applied only where a reviewer pointed is how
+  the D1–D7 drift survived a "fixed" commit once already.

@@ -55,7 +55,7 @@ auto-generated DWR is acceptable to the manager as a reporting medium once human
 
 ## 5. Architecture / solution design
 
-See [02_active/ARCHITECTURE.md](02_active/ARCHITECTURE.md) (diagrams + the D1–D7 flow corrections
+See [02_active/ARCHITECTURE.md](02_active/ARCHITECTURE.md) (diagrams + the D1–D8 flow corrections
 and the v3.1 delta table pointer). Code: [src/apps-script/Code.gs](src/apps-script/Code.gs).
 Runbook: [src/apps-script/README.md](src/apps-script/README.md).
 
@@ -107,8 +107,9 @@ synthesis become review-only tasks once both systems run with evidence.
   git remote (L-008); Studio Flow step semantics (source access, failure behavior) unverified;
   DWR_Master schema decision (D4) open.
 - **Next 3 actions:** (1) owner: paste v3.1 into the live Apps Script project and run the §3
-  validation protocol, capturing evidence into `docs/`; (2) owner: apply D1–D7 in the Studio UI
-  (Draft-only Step 6 first); (3) configure git remote per D-016, then push.
+  validation protocol, capturing evidence into `docs/`; (2) owner: apply D1–D8 in the Studio UI
+  (Draft-only on the manager-email step first — blueprint Step 6 / corrected-table Step 7);
+  (3) configure git remote per D-016, then push.
 - **Future opportunities:** merge with CH-Research's radar layer (overlapping scout→score→research
   ladder — one engine, two frontends); extract the Gem prompt as a portfolio asset.
 

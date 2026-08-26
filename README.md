@@ -56,7 +56,7 @@ There is nothing to run locally — both systems deploy into Google surfaces:
 - **Research Engine:** follow [src/apps-script/README.md](src/apps-script/README.md) §1
   (Drive setup → paste `Code.gs` → Script Properties key → triggers) and **run the §3 validation
   protocol before trusting any output**.
-- **DWR Agent:** built in the Workspace Studio UI per the blueprint **with corrections D1–D7**
+- **DWR Agent:** built in the Workspace Studio UI per the blueprint **with corrections D1–D8**
   ([ARCHITECTURE.md §2](02_active/ARCHITECTURE.md)) — Draft-only manager email and the injection
   guard are non-negotiable.
 

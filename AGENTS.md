@@ -32,7 +32,7 @@ so never hard-code one.
 does it by hand):
 
 1. Read the Brain's `MEMORY/CURRENT_PRIORITIES.md` and `MEMORY/PROJECT_INDEX.md`.
-2. Read this project's knowledge pack `PROJECTS/Google/PROJECT.md`. Missing? Create it from
+2. Read this project's knowledge pack `PROJECTS/CH-Google/PROJECT.md` (created 2026-08-27). Missing? Create it from
    `PROJECTS/_TEMPLATE/PROJECT.md` and add the index row before doing anything else.
 3. **Prior-art check before building anything:** search the Brain's `MEMORY/` and `PROJECTS/` for
    similar work, past failures and reusable assets. Never solve a problem the portfolio already solved.

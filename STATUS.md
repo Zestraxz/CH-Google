@@ -17,7 +17,7 @@
 
 | Track | Design | Code/Config | Deployed | Evidence captured |
 | --- | --- | --- | --- | --- |
-| DWR Agent (Gem + Studio Flow) | ✅ blueprint + corrections D1–D7 | n/a (built in Studio UI) | 🟡 owner-claimed "[have Done]" — **unevidenced** | ⬜ |
+| DWR Agent (Gem + Studio Flow) | ✅ blueprint + corrections D1–D8 | n/a (built in Studio UI) | 🟡 owner-claimed "[have Done]" — **unevidenced** | ⬜ |
 | Research Engine (Apps Script) | ✅ blueprint + v3.1 delta table | ✅ corrected `src/apps-script/Code.gs` (parse-checked) | ⬜ v3.1 not yet deployed (owner tag "[Doing]" refers to v3.0) | ⬜ |
 | Repo establishment (docs) | ✅ | ✅ ARCHITECTURE / ARTIFACT / ROADMAP / README rewritten 2026-08-27 | — | ✅ this repo |
 | Scaffold (template baseline) | — | ✅ folders, compose files, CI workflow file, launchers exist | ⬜ CI never run (no remote) | — |

@@ -40,8 +40,14 @@ const CONFIG = {
 };
 
 // Tracker sheet columns (1-based): B=Topic, E=Last Run, F=Next Run,
-// G=Priority Score, H=Execution Notes.
-const COL = { TOPIC: 2, LAST_RUN: 5, NEXT_RUN: 6, SCORE: 7, NOTES: 8 };
+// G=Priority Score, H=Execution Notes, I=Fail Count (research failures —
+// dedicated column so Scout's weekly notes overwrite cannot un-park a
+// persistently failing topic; a human clears I to retry a parked topic).
+const COL = { TOPIC: 2, LAST_RUN: 5, NEXT_RUN: 6, SCORE: 7, NOTES: 8, FAIL: 9 };
+
+// Grounded calls whose responses carried no groundingMetadata this run —
+// escalated to one digest alert per layer run, not just a Logger line.
+let groundingMisses_ = 0;
 
 // Deterministic tracker-sheet resolution (never getActiveSheet in triggers).
 function getTrackerSheet_() {
@@ -126,8 +132,10 @@ function callGeminiWithFallback(prompt, useGrounding) {
               result.candidates[0].content && result.candidates[0].content.parts) {
             if (grounding && !result.candidates[0].groundingMetadata) {
               // Grounding was requested but the response carries no grounding
-              // metadata — the model answered from priors. Warn loudly; the
-              // runbook's validation §3.2 spot-checks this end-to-end.
+              // metadata — the model answered from priors. Count it for the
+              // layer's digest alert (a Logger line alone is the invisible
+              // channel this codebase forbids); §3.2 spot-checks end-to-end.
+              groundingMisses_++;
               Logger.log("WARNING [" + currentModel + "]: no groundingMetadata in response — treat output as UNGROUNDED.");
             }
             const text = result.candidates[0].content.parts.map(function (p) {
@@ -183,6 +191,7 @@ function runScoutLayer() {
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(30000)) { notifyFailure_("Scout", "could not acquire lock"); return; }
   const started = Date.now();
+  groundingMisses_ = 0;
   try {
     const sheet = getTrackerSheet_();
     const data = sheet.getDataRange().getValues();
@@ -233,6 +242,7 @@ function runScoutLayer() {
       }
     }
     if (failures > 0) notifyFailure_("Scout", failures + " topic(s) failed — see tracker Execution Notes");
+    if (groundingMisses_ > 0) notifyFailure_("Scout grounding WARNING", groundingMisses_ + " grounded call(s) returned no groundingMetadata — treat those scores as UNGROUNDED (runbook §3.2)");
   } catch (err) {
     notifyFailure_("Scout (layer-level)", err);
     throw err; // rethrow so Apps Script's own failure accounting also sees it
@@ -251,6 +261,7 @@ function runDeepResearchLayer() {
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(30000)) { notifyFailure_("Researcher", "could not acquire lock"); return; }
   const started = Date.now();
+  groundingMisses_ = 0;
   try {
     const sheet = getTrackerSheet_();
     const data = sheet.getDataRange().getValues();
@@ -266,13 +277,16 @@ function runDeepResearchLayer() {
       const score = data[i][COL.SCORE - 1];
       if (!topic || !(score >= 7)) continue;
 
-      const notes = String(data[i][COL.NOTES - 1] || "");
-      const failCount = (notes.match(/RESEARCH_FAIL/g) || []).length;
+      // Fail counter lives in its own column (I): Scout's weekly notes
+      // overwrite cannot reset it, so parking is durable until a human
+      // clears the cell to retry.
+      const failCount = Number(data[i][COL.FAIL - 1]) || 0;
       if (failCount >= CONFIG.RESEARCH_FAIL_LIMIT) {
         sheet.getRange(i + 1, COL.SCORE).setValue(0);
-        notifyFailure_("Researcher", 'Topic "' + topic + '" parked after ' + failCount + " consecutive failures");
+        notifyFailure_("Researcher", 'Topic "' + topic + '" parked after ' + failCount + " consecutive failures — clear its Fail Count cell (col I) to retry");
         continue;
       }
+      const notes = String(data[i][COL.NOTES - 1] || "");
 
       const prompt = "Act as an expert Manufacturing & Supply Chain AI Research Analyst. " +
         "Conduct a comprehensive Deep Research sweep on '" + topic + "'. " +
@@ -289,11 +303,14 @@ function runDeepResearchLayer() {
         doc.saveAndClose();
         Logger.log("Successfully added report for: " + topic);
         sheet.getRange(i + 1, COL.SCORE).setValue(0); // reset only on success
+        sheet.getRange(i + 1, COL.FAIL).setValue(0);  // success clears the counter
       } catch (error) {
+        sheet.getRange(i + 1, COL.FAIL).setValue(failCount + 1);
         sheet.getRange(i + 1, COL.NOTES).setValue(notes + " | RESEARCH_FAIL " + todayStr + ": " + error.message);
         notifyFailure_('Researcher topic "' + topic + '"', error);
       }
     }
+    if (groundingMisses_ > 0) notifyFailure_("Researcher grounding WARNING", groundingMisses_ + " grounded call(s) returned no groundingMetadata — treat those reports as UNGROUNDED (runbook §3.2)");
   } catch (err) {
     notifyFailure_("Researcher (layer-level)", err);
     throw err;
@@ -361,13 +378,17 @@ function runSynthesisLayer() {
     slides[0].replaceAllText("Subtitle Placeholder", "Generated: " + todayStr);
 
     const masterContentSlide = slides.length > 1 ? slides[1] : null;
+    if (!masterContentSlide) {
+      // The template contract (runbook §1.1) requires slide 2. A BLANK-layout
+      // fallback would carry no placeholder text, every replaceAllText would
+      // no-op, and an all-empty deck would ship under a success log — the
+      // exact silent-failure class this codebase forbids. Hard error instead.
+      throw new Error("Template has no content master (slide 2) — deck not generated. Fix Template_Deck per runbook §1.");
+    }
     // duplicate() inserts immediately after the master, so the last duplicate
-    // ends up first — reverse input yields an in-order deck. appendSlide()
-    // appends at the end, so the fallback path iterates FORWARD instead.
-    const orderedInput = masterContentSlide ? data.slides.slice().reverse() : data.slides;
-    orderedInput.forEach(function (slideData) {
-      const newSlide = masterContentSlide ? masterContentSlide.duplicate()
-        : deck.appendSlide(SlidesApp.PredefinedLayout.BLANK);
+    // ends up first — reverse input yields an in-order deck.
+    data.slides.slice().reverse().forEach(function (slideData) {
+      const newSlide = masterContentSlide.duplicate();
       newSlide.replaceAllText("Slide Title Placeholder", slideData.title || "");
       const bullets = Array.isArray(slideData.bullets) ? slideData.bullets : [];
       // Individually: template has exactly 3 bullet lines; extras fold into #3.

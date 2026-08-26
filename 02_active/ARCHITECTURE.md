@@ -148,6 +148,8 @@ flowchart TB
 - Does a Studio Flow "Ask a Gem" step have identical Workspace-source access to the interactive
   Gem sidebar? (The blueprint's validation tests the sidebar path only — verify at deployment.)
 - Does Studio offer a Sheets **read** step mappable into a Gem prompt? (D3 presumes it.)
+- Does Studio offer a plain-model "Ask a Gem" step without a Gem (D6 presumes it), and does its
+  Gmail action support a **Draft-only** mode (D2 depends on it)?
 - Does Workspace Studio notify on failed runs? (Determines whether D7's heartbeat stays.)
 - DWR_Master schema decision (D4): trim vs structured emission.
 - Grounding tool schema for `generateContent` + Gemini 3.x: UNVERIFIED as of 2026-08-27 (three
