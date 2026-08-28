@@ -14,10 +14,10 @@
     "placeholder": 77
   },
   "sessions": 1,
-  "commits": 7,
+  "commits": 8,
   "first": "2026-08-27",
-  "last": "2026-08-27",
-  "days_since": 1,
+  "last": "2026-08-28",
+  "days_since": 0,
   "weeks": [
     0,
     0,
@@ -30,40 +30,40 @@
     0,
     0,
     0,
-    7
+    8
   ],
   "remote": "none",
   "branch": "main",
-  "tracked_files": 265,
+  "tracked_files": 269,
   "languages": [
     {
       "name": "PowerShell",
-      "pct": 65.7
-    },
-    {
-      "name": "Shell",
-      "pct": 12.3
-    },
-    {
-      "name": "TypeScript",
-      "pct": 8.5
+      "pct": 58.9
     },
     {
       "name": "Python",
-      "pct": 5.4
+      "pct": 15.2
+    },
+    {
+      "name": "Shell",
+      "pct": 11.0
+    },
+    {
+      "name": "TypeScript",
+      "pct": 7.6
     },
     {
       "name": "JavaScript",
-      "pct": 3.4
+      "pct": 3.1
     },
     {
       "name": "Dockerfile",
-      "pct": 2.3
+      "pct": 2.1
     },
     {
       "name": "Other",
-      "pct": 2.4
+      "pct": 2.1
     }
   ],
-  "source_bytes": 184049
+  "source_bytes": 205422
 }
