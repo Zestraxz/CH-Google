@@ -62,11 +62,11 @@ Both systems live entirely inside Google Workspace — no servers, no hosting, n
 ```mermaid
 flowchart TB
     Trigger([Studio Flow starter<br/>daily 5:00 PM])
-    ReadBack[Sheets: read recent rows<br/>DWR_Master → yesterday context]
+    ReadBack[Sheets: read recent rows<br/>DWR_Master → yesterday<br/>context]
     Gem1[Ask a Gem: DWR Commander<br/>sources: Workspace + Web]
     Sheet[(Google Sheet<br/>DWR_Master)]
     Mail1[Gmail: full analytical DWR<br/>to self]
-    Gem2[Ask a Gem: compact converter<br/>input: full DWR]
+    Gem2[Ask a Gem: compact<br/>converter<br/>input: full DWR]
     Mail2[Gmail: DRAFT compact DWR<br/>for manager — human sends]
 
     Trigger --> ReadBack --> Gem1
@@ -82,10 +82,10 @@ flowchart TB
     T1([Trigger: daily 6–7 AM])
     T2([Trigger: daily 7–8 AM])
     T3([Trigger: weekly Mon 8–9 AM])
-    Scout[runScoutLayer<br/>score topics 0–10, web-grounded]
+    Scout[runScoutLayer<br/>score topics 0–10,<br/>web-grounded]
     Research[runDeepResearchLayer<br/>score ≥ 7 → deep report]
-    Synth[runSynthesisLayer<br/>bounded log → HTML + JSON deck spec]
-    Tracker[(Tracker Sheet<br/>topics, scores, run dates, notes)]
+    Synth[runSynthesisLayer<br/>bounded log → HTML + JSON<br/>deck spec]
+    Tracker[(Tracker Sheet<br/>topics, scores, run dates,<br/>notes)]
     Log[(Master Log Doc<br/>newest-first reports)]
     Slides[Slides template copy<br/>→ PPTX export]
     Mail[Email: HTML report + PPTX<br/>+ failure alerts to self]
