@@ -66,7 +66,7 @@ jobs:
     if: hashFiles('docker-compose.yml') != ''
     steps:
       - uses: actions/checkout@v4
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
       - name: Validate compose files
         run: |
           docker compose config -q
