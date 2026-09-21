@@ -46,7 +46,7 @@ jobs:
 
       - name: Comment on PR
         if: github.event_name == 'pull_request' && steps.spend.outputs.spend != '0'
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: ai-cost
           message: |
