@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GWS + AI Pages</title>
+  <style>
+    :root { --bg: #ffffff; --fg: #1a1a1a; --muted: #555; --card: #f4f6f8; --accent: #1a73e8; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #121212; --fg: #eaeaea; --muted: #9a9a9a; --card: #1f2429; --accent: #8ab4f8; }
+    }
+    body { margin: 0; padding: 48px 16px; background: var(--bg); color: var(--fg);
+           font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+    main { max-width: 640px; margin: 0 auto; }
+    h1 { font-size: 1.6rem; margin: 0 0 4px; }
+    p.sub { color: var(--muted); margin: 0 0 28px; }
+    a.card { display: block; background: var(--card); border-radius: 10px; padding: 18px 20px;
+             margin-bottom: 14px; text-decoration: none; color: var(--fg); }
+    a.card:hover { outline: 2px solid var(--accent); }
+    a.card strong { color: var(--accent); }
+    a.card span { display: block; color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+    footer { color: var(--muted); font-size: 0.85rem; margin-top: 32px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Google Workspace + AI</h1>
+    <p class="sub">Standardization &amp; AI-readiness pages</p>
+
+    <a class="card" href="artifacts/gws-ai-pages/gws-collaboration.html">
+      <strong>Top-Down Management Agreement</strong>
+      <span>Google Workspace as the corporate work-collaboration environment</span>
+    </a>
+    <a class="card" href="artifacts/gws-ai-pages/gws-standardization-infographic.html">
+      <strong>Standardization &amp; AI Readiness — Infographic</strong>
+      <span>Why one platform, one standard (dark infographic)</span>
+    </a>
+    <a class="card" href="artifacts/gws-ai-pages/gws-ai-ecosystem.html">
+      <strong>GWS + AI Ecosystem</strong>
+      <span>How the Workspace + Gemini pieces fit together</span>
+    </a>
+
+    <footer>Part of the CH-Google project — see the repository README for the project record.</footer>
+  </main>
+</body>
+</html>

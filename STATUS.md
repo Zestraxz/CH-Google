@@ -34,8 +34,10 @@ Legend: ✅ done · 🟡 in progress/partial · 🔴 blocked · ⬜ not started 
   *uncorrected* DWR flow (auto-send to manager, no injection guard) runs daily at 5 PM — assume
   live until the owner verifies off or applies D2 + the guard (ROADMAP → Now, top item). Record
   the verified state here when done: _state: `not verified`_.
-- **No git remote** (L-008/D-016): repo is local-only; configure origin (owner decision on
-  name/visibility) before any push. The README's OpenSSF badge repo identity is unconfirmed.
+- ~~No git remote~~ **Resolved 2026-09-21:** origin = `github.com/Zestraxz/CH-Google` (owner-created,
+  **PUBLIC**), first push same day after the L-011 sweep (corporate hostnames scrubbed from
+  `scripts/04-sync/backup-session.ps1`; transcripts gitignored per D-010 — never into public repos).
+  GitHub Pages serves the repo root: `https://zestraxz.github.io/CH-Google/`.
 - **No deployment evidence**: neither system has a captured test run (screenshots/log exports);
   until then, "[have Done]" stays an owner claim, not a result.
 

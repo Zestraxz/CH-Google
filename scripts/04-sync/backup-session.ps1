@@ -200,8 +200,15 @@ foreach ($f in $files) {
 # --- Signature refresh (trademark usage panel, self-measured from these same transcripts) ---
 $sig = Join-Path $repoPath "scripts\04-sync\build-signature.py"
 if (Test-Path $sig) {
-  $machine = $env:COMPUTERNAME
-  $id = if ($machine -eq "MYLLPE005417") { "PC1" } elseif ($machine -eq "MYLPE003488") { "PC2" } else { $machine }
+  # Machine ID from env override or ~/.claude/machine-id; falls back to the
+  # hostname. Hostnames are employer asset identifiers - never hard-code them
+  # in a push-safe file (L-011).
+  $id = $env:CH_MACHINE_ID
+  if (-not $id) {
+    $idFile = Join-Path $HOME ".claude\machine-id"
+    if (Test-Path $idFile) { $id = (Get-Content $idFile -TotalCount 1).Trim() }
+  }
+  if (-not $id) { $id = $env:COMPUTERNAME }
   $other = Get-ChildItem (Join-Path $repoPath "OUTPUTS\signature") -Filter "shard-*.json" -ErrorAction SilentlyContinue |
            Where-Object { $_.Name -ne "shard-$id.json" } | ForEach-Object { $_.FullName }
   $mergeArgs = @(); if ($other) { $mergeArgs = @("--merge") + $other }

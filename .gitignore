@@ -115,3 +115,6 @@ volumes/
 
 # ---- Critic per-pass scratch logs -------------------------------------------
 _runs/
+
+# Public repo: redacted session transcripts stay local (D-010: never into public repos)
+docs/01-session/transcripts/*.jsonl
