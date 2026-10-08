@@ -8,6 +8,7 @@ publicly via GitHub Pages.
 | `gws-collaboration.html` | `.resource/GWS+AI/GWS official work collaboration.html` | Top-Down Management Agreement — Google Workspace as Corporate Environment |
 | `gws-standardization-infographic.html` | `.resource/GWS+AI/gws_standardization_infographic_dark.html` | Google Workspace Standardization & AI Readiness Infographic |
 | `gws-ai-ecosystem.html` | `.resource/GWS+AI/GWS+AI ecosystem.html` | Google Workspace Standardization & AI Readiness Infographic (ecosystem view) |
+| `future-ai-google-ecosystem.html` | authored in-repo 2026-10-08 (no `.resource/` source) | Future AI-Google Ecosystem — It Starts in Google Chat (one-page slide; qualitative by design — no figures, BR-06) |
 
 - **Published URL:** `https://zestraxz.github.io/CH-Google/` (landing page = repo-root `index.html`;
   each page under `artifacts/gws-ai-pages/<name>.html`). Pages serves branch `main`, folder `/ (root)`.

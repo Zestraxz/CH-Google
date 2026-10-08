@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future AI-Google Ecosystem — It Starts in Google Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 12px 24px -8px rgba(59, 130, 246, 0.25);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #a855f7 50%, #f43f5e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-text-green {
+            background: linear-gradient(135deg, #34d399 0%, #22d3ee 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .chat-glow {
+            box-shadow: 0 0 60px -10px rgba(52, 211, 153, 0.35), 0 0 120px -20px rgba(59, 130, 246, 0.25);
+            border: 1px solid rgba(52, 211, 153, 0.5);
+        }
+        .spoke {
+            background: linear-gradient(180deg, rgba(59,130,246,0.6), rgba(59,130,246,0.05));
+            width: 2px;
+        }
+        .horizon-dot { box-shadow: 0 0 0 4px rgba(59,130,246,0.15); }
+    </style>
+</head>
+<body class="antialiased selection:bg-emerald-500 selection:text-slate-900">
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <!-- Slide header -->
+        <div class="flex items-center justify-between mb-10">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-blue-600 flex items-center justify-center shadow-md shadow-emerald-500/20">
+                    <i class="fa-solid fa-comments text-white text-lg"></i>
+                </div>
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-emerald-400">Enterprise AI Strategy · Future Vision</span>
+                    <h1 class="text-lg font-extrabold leading-tight">AI-Google Ecosystem</h1>
+                </div>
+            </div>
+            <a href="../../index.html" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg glass-card text-xs font-semibold uppercase tracking-wider text-slate-300 hover:text-white">
+                <i class="fa-solid fa-grip"></i> All pages
+            </a>
+        </div>
+
+        <!-- Hero -->
+        <section class="relative overflow-hidden rounded-3xl glass-card p-8 sm:p-12 mb-10">
+            <div class="absolute -right-24 -top-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-24 -bottom-24 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 max-w-3xl">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-5">
+                    <i class="fa-solid fa-rocket"></i> One-Page Slide · The Road Ahead
+                </div>
+                <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight mb-5">
+                    The Future AI-Google Ecosystem <span class="gradient-text-green">starts in Google Chat</span>
+                </h2>
+                <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
+                    The conversation becomes the enterprise command line. People, Gemini, and autonomous
+                    agents share the same threads: work is requested, executed, approved, and audited
+                    <em>where it is discussed</em> — and every other Workspace surface becomes something
+                    Chat can reach.
+                </p>
+            </div>
+        </section>
+
+        <!-- Hub: Chat at the center -->
+        <section class="mb-10">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+                <!-- Left spokes -->
+                <div class="space-y-5 order-2 lg:order-1">
+                    <div class="glass-card rounded-2xl p-5">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-brain text-purple-400 text-xl w-7 text-center"></i>
+                            <h3 class="font-bold">Gemini</h3>
+                        </div>
+                        <p class="text-sm text-slate-400">The reasoning layer behind every surface — summarize the space, catch me up, draft the reply, explain the sheet.</p>
+                    </div>
+                    <div class="glass-card rounded-2xl p-5">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-gem text-blue-400 text-xl w-7 text-center"></i>
+                            <h3 class="font-bold">Gems</h3>
+                        </div>
+                        <p class="text-sm text-slate-400">Role-tuned agents (e.g. a DWR Commander) with standing instructions — invoked from Chat like teammates.</p>
+                    </div>
+                    <div class="glass-card rounded-2xl p-5">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-diagram-project text-sky-400 text-xl w-7 text-center"></i>
+                            <h3 class="font-bold">Workspace Studio Flows</h3>
+                        </div>
+                        <p class="text-sm text-slate-400">No-code orchestration: scheduled and event triggers chain Gems, Sheets, Gmail — posting results back into the thread.</p>
+                    </div>
+                </div>
+
+                <!-- Center: Google Chat -->
+                <div class="order-1 lg:order-2">
+                    <div class="rounded-3xl p-8 h-full bg-slate-800/80 chat-glow flex flex-col justify-center text-center">
+                        <div class="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-blue-600 flex items-center justify-center mb-5 shadow-lg shadow-emerald-500/30">
+                            <i class="fa-solid fa-comments text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-extrabold mb-1">Google Chat</h3>
+                        <div class="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-5">The Front Door</div>
+                        <ul class="text-sm text-slate-300 space-y-3 text-left max-w-xs mx-auto">
+                            <li class="flex gap-2.5"><i class="fa-solid fa-users-rectangle text-emerald-400 mt-0.5 w-5 text-center"></i><span><strong>Spaces as operating rooms</strong> — each project's humans + agents in one governed thread</span></li>
+                            <li class="flex gap-2.5"><i class="fa-solid fa-at text-emerald-400 mt-0.5 w-5 text-center"></i><span><strong>Agents as teammates</strong> — @-mention an agent the way you mention a colleague</span></li>
+                            <li class="flex gap-2.5"><i class="fa-solid fa-wand-magic-sparkles text-emerald-400 mt-0.5 w-5 text-center"></i><span><strong>Gemini in-thread</strong> — catch-up, summaries, drafting without leaving the conversation</span></li>
+                            <li class="flex gap-2.5"><i class="fa-solid fa-user-check text-emerald-400 mt-0.5 w-5 text-center"></i><span><strong>Approval &amp; audit surface</strong> — agent output lands as a reviewable message, never a silent action</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Right spokes -->
+                <div class="space-y-5 order-3">
+                    <div class="glass-card rounded-2xl p-5">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-code text-amber-400 text-xl w-7 text-center"></i>
+                            <h3 class="font-bold">Apps Script + Gemini API</h3>
+                        </div>
+                        <p class="text-sm text-slate-400">Custom engines where no-code ends — scheduled research, scoring, deck generation — reporting into Chat.</p>
+                    </div>
+                    <div class="glass-card rounded-2xl p-5">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-folder-tree text-rose-400 text-xl w-7 text-center"></i>
+                            <h3 class="font-bold">Content Fabric</h3>
+                        </div>
+                        <p class="text-sm text-slate-400">Drive · Docs · Sheets · Slides · Meet · Vids — the governed estate agents read from and write to. One standard, one source of truth.</p>
+                    </div>
+                    <div class="glass-card rounded-2xl p-5">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-book-open text-cyan-400 text-xl w-7 text-center"></i>
+                            <h3 class="font-bold">NotebookLM</h3>
+                        </div>
+                        <p class="text-sm text-slate-400">Grounded synthesis over the corpus you point it at — briefings and overviews that cite their sources.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connective tissue -->
+            <div class="glass-card rounded-2xl p-5 mt-5 flex flex-col sm:flex-row items-center gap-4 justify-center text-center sm:text-left">
+                <i class="fa-solid fa-network-wired text-blue-400 text-2xl"></i>
+                <p class="text-sm text-slate-300 max-w-3xl">
+                    <strong class="text-white">Open protocols are the nervous system:</strong>
+                    <span class="text-blue-300 font-semibold">MCP</span> connects agents to tools and data;
+                    <span class="text-blue-300 font-semibold">A2A</span> lets agents delegate to other agents —
+                    inside Google's stack and beyond it. Chat is where their work surfaces for humans.
+                </p>
+            </div>
+        </section>
+
+        <!-- Horizon -->
+        <section class="mb-10">
+            <h3 class="text-xl font-extrabold mb-5"><span class="gradient-text">Three horizons</span>, one direction</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="horizon-dot w-3 h-3 rounded-full bg-emerald-400 inline-block"></span>
+                        <span class="text-xs font-bold uppercase tracking-widest text-emerald-400">Now · Assist</span>
+                    </div>
+                    <ul class="text-sm text-slate-400 space-y-2 list-disc list-inside">
+                        <li>Gemini answers, summarizes, drafts in every app</li>
+                        <li>Chat spaces centralize project conversation</li>
+                        <li>Gems capture role expertise as reusable prompts</li>
+                    </ul>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="horizon-dot w-3 h-3 rounded-full bg-blue-400 inline-block"></span>
+                        <span class="text-xs font-bold uppercase tracking-widest text-blue-400">Next · Orchestrate</span>
+                    </div>
+                    <ul class="text-sm text-slate-400 space-y-2 list-disc list-inside">
+                        <li>Studio Flows + Apps Script run scheduled pipelines (daily reports, research engines)</li>
+                        <li>Agent output posts into Chat for human review</li>
+                        <li>Approvals move in-thread: draft, never auto-send</li>
+                    </ul>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="horizon-dot w-3 h-3 rounded-full bg-purple-400 inline-block"></span>
+                        <span class="text-xs font-bold uppercase tracking-widest text-purple-400">Future · Autonomous, supervised</span>
+                    </div>
+                    <ul class="text-sm text-slate-400 space-y-2 list-disc list-inside">
+                        <li>Multi-agent missions dispatched from a Chat thread via A2A/MCP</li>
+                        <li>The thread is the audit trail; humans hold the approval gate</li>
+                        <li>One governed data estate is what makes autonomy safe</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 border-t border-slate-800 pt-6">
+            <span>Future vision — qualitative by design; capability names current as of Oct 2026.</span>
+            <nav class="flex gap-4">
+                <a href="gws-collaboration.html" class="hover:text-slate-300 transition">Management Agreement</a>
+                <a href="gws-standardization-infographic.html" class="hover:text-slate-300 transition">Standardization</a>
+                <a href="gws-ai-ecosystem.html" class="hover:text-slate-300 transition">Ecosystem Today</a>
+            </nav>
+        </footer>
+    </main>
+</body>
+</html>
