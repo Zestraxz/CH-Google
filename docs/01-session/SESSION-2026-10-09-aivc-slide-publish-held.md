@@ -28,6 +28,15 @@ figures limited to the basis-checked set. Verification: grep for the sensitive-t
 hits; live render checked. The canonical slide and its full figure basis remain in the home
 project's private records, which also note this derivative and the update path.
 
+## Final state (owner correction, same day)
+
+The owner then corrected course: *"i want my origin layout and data content — please do not
+modify without my permission."* The sanitized derivative was **removed** and the owner's original
+file published **verbatim** (byte-identical, checksum-verified against his master copy in its home
+project). Standing rule recorded (AGENTS.md §14 + assistant memory): his authored artifacts ship
+byte-identical; any alteration needs explicit per-item consent to the exact edits beforehand.
+The on-record risk acknowledgments live in the home project's private records, not here.
+
 ## Reasoning Trail
 
 - **Request:** publish the copied slide like the GWS pages.

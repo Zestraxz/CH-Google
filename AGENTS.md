@@ -241,3 +241,7 @@ why -> pivots) in the session notes.
 > Append-only. Newest at the bottom.
 
 - _(none yet - append as the project evolves)_
+- 2026-10-09 — The owner's authored artifacts publish **byte-identical** (verify by checksum). Any
+  alteration — including "sanitizing" — needs his explicit per-item consent to the exact edits
+  first; a general instruction is consent to remove named hazards, never to redesign layout or
+  change data.
