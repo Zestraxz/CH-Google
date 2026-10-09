@@ -9,6 +9,7 @@ publicly via GitHub Pages.
 | `gws-standardization-infographic.html` | `.resource/GWS+AI/gws_standardization_infographic_dark.html` | Google Workspace Standardization & AI Readiness Infographic |
 | `gws-ai-ecosystem.html` | `.resource/GWS+AI/GWS+AI ecosystem.html` | Google Workspace Standardization & AI Readiness Infographic (ecosystem view) |
 | `future-ai-google-ecosystem.html` | authored in-repo 2026-10-08 (no `.resource/` source) | Future AI-Google Ecosystem — It Starts in Google Chat (one-page slide; qualitative by design — no figures, BR-06) |
+| `aivc-milestones-roadmap.html` | **sanitized public derivative** of the AIVC milestones slide (canonical v4 + full figure basis live in `.CH-AIVC\artifacts\aivc-milestones-roadmap\`, private) | AIVC Capability Evolution — From Glove Defect to Chain Defect. Owner-authorized public summary 2026-10-09: speaker notes, internal source/tool names, and machine identifiers removed; figures kept are the basis-checked v4 set. Update only from the `.CH-AIVC` canonical, re-sanitizing |
 
 - **Published URL:** `https://zestraxz.github.io/CH-Google/` (landing page = repo-root `index.html`;
   each page under `artifacts/gws-ai-pages/<name>.html`). Pages serves branch `main`, folder `/ (root)`.
