@@ -18,6 +18,16 @@
   found in that folder are likely to contain names/production data and stay local until each is
   reviewed for publication.
 
+## Update (same day): owner override — sanitized public summary shipped
+
+The owner then explicitly requested a GitHub-hosted link ("ok sanitize it and publish to github").
+Shipped `artifacts/gws-ai-pages/aivc-milestones-roadmap.html`: a **sanitized public derivative**
+built from the corrected canonical version in its home project (not the stale copy) — speaker
+notes, internal source/tool names and machine identifiers removed, no confidentiality marker,
+figures limited to the basis-checked set. Verification: grep for the sensitive-token list = 0
+hits; live render checked. The canonical slide and its full figure basis remain in the home
+project's private records, which also note this derivative and the update path.
+
 ## Reasoning Trail
 
 - **Request:** publish the copied slide like the GWS pages.
