@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Glove — Availability RC & CAPA Downtime Declaration Executive Summary</title>
+  <style>
+    :root {
+      --primary: #0f2b5c;
+      --primary-light: #1a4480;
+      --accent: #1a73e8;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --planned: #0284c7;
+      --planned-bg: #e0f2fe;
+      --breakdown: #dc2626;
+      --breakdown-bg: #fee2e2;
+      --process: #d97706;
+      --process-bg: #fef3c7;
+      --other: #64748b;
+      --other-bg: #f1f5f9;
+      --radius: 10px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 24px;
+    }
+    .container { max-width: 1400px; margin: 0 auto; }
+    
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, #1e3a8a 100%);
+      color: #ffffff;
+      padding: 32px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::after {
+      content: "";
+      position: absolute;
+      top: -50px; right: -50px;
+      width: 220px; height: 220px;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      color: #93c5fd;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .header p { font-size: 15px; color: #cbd5e1; max-width: 900px; }
+    .header-meta {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      font-size: 13px;
+      color: #94a3b8;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      padding-top: 16px;
+    }
+    .header-meta span strong { color: #ffffff; }
+
+    /* KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      border-top: 4px solid var(--primary);
+    }
+    .kpi-card.planned { border-top-color: var(--planned); }
+    .kpi-card.breakdown { border-top-color: var(--breakdown); }
+    .kpi-card.warning { border-top-color: var(--process); }
+    .kpi-label { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+    .kpi-value { font-size: 32px; font-weight: 700; color: var(--text); margin: 8px 0; }
+    .kpi-subtext { font-size: 12px; color: var(--text-muted); }
+
+    /* Grid Sections */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 1024px) {
+      .content-grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 24px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+    .card-title .badge {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      background: #eff6ff;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    /* Bars */
+    .bar-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+    .bar-label { width: 60px; font-weight: 600; color: var(--text); }
+    .bar-track { flex: 1; height: 20px; background: #f1f5f9; border-radius: 4px; overflow: hidden; margin: 0 12px; display: flex; }
+    .bar-fill { height: 100%; display: flex; align-items: center; padding-left: 8px; color: #ffffff; font-size: 11px; font-weight: 700; transition: width 0.3s; }
+    .bar-fill.pm { background: var(--planned); }
+    .bar-fill.eb { background: var(--breakdown); }
+    .bar-fill.other { background: var(--other); }
+    .bar-count { width: 70px; text-align: right; font-weight: 600; color: var(--text-muted); }
+
+    /* Category Badges */
+    .pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+    .pill-pm { background: var(--planned-bg); color: var(--planned); border: 1px solid #bae6fd; }
+    .pill-eb { background: var(--breakdown-bg); color: var(--breakdown); border: 1px solid #fecaca; }
+    .pill-proc { background: var(--process-bg); color: var(--process); border: 1px solid #fde68a; }
+    .pill-other { background: var(--other-bg); color: var(--other); border: 1px solid #cbd5e1; }
+
+    /* Insights Box */
+    .insight-item {
+      background: #f8fafc;
+      border-left: 4px solid var(--accent);
+      padding: 14px 16px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 14px;
+      font-size: 13px;
+    }
+    .insight-item.critical { border-left-color: var(--breakdown); background: #fff5f5; }
+    .insight-item.warning { border-left-color: var(--process); background: #fffbeb; }
+    .insight-title { font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .insight-desc { color: var(--text-muted); line-height: 1.45; }
+
+    /* Filter Bar */
+    .table-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .search-input {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      width: 280px;
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .filter-select {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      background: #fff;
+      outline: none;
+    }
+
+    /* Table */
+    .table-wrapper {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: #ffffff;
+      text-align: left;
+    }
+    th {
+      background: #f1f5f9;
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+    }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: var(--text);
+    }
+    tr:hover td { background: #f8fafc; }
+    .col-id { width: 45px; color: var(--text-muted); font-weight: 600; }
+    .col-date { width: 100px; font-weight: 600; }
+    .col-fact { width: 70px; font-weight: 700; color: var(--primary); }
+    .col-line { width: 85px; font-weight: 600; }
+    .col-cat { width: 150px; }
+    .col-text { min-width: 260px; line-height: 1.4; }
+    .subtext { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <span class="header-badge">Top Glove Manufacturing Analytics</span>
+      <h1>Availability RC & CAPA Downtime Declaration Summary</h1>
+      <p>Comprehensive operational breakdown of 59 root cause declarations and corrective/preventive action plans submitted via the official Availability Bot portal following daily bottom-3 availability rankings.</p>
+      <div class="header-meta">
+        <span><strong>Dataset Source:</strong> Form Responses (Sheet ID: <code>1OhvrmCtdjo6Blj9h9JdwjYdlwCp9-8oGreo1p45mRD8</code>)</span>
+        <span><strong>Reporting Window:</strong> 07/09/2026 – 01/11/2026 (56 Days)</span>
+        <span><strong>Coverage:</strong> 15 Manufacturing Plants</span>
+        <span><strong>Target SLA:</strong> 24h CAPA Declaration Compliance</span>
+      </div>
+    </div>
+
+    <!-- KPI Grid -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">Total Declarations</span>
+        <span class="kpi-value">59</span>
+        <span class="kpi-subtext">Across 56 days of tracking</span>
+      </div>
+      <div class="kpi-card planned">
+        <span class="kpi-label">Planned Maintenance</span>
+        <span class="kpi-value">40 <span style="font-size:16px;font-weight:500;color:var(--text-muted);">(67.8%)</span></span>
+        <span class="kpi-subtext">Product changes, former ratio & tank washing</span>
+      </div>
+      <div class="kpi-card breakdown">
+        <span class="kpi-label">Equipment Breakdowns</span>
+        <span class="kpi-value">15 <span style="font-size:16px;font-weight:500;color:var(--text-muted);">(25.4%)</span></span>
+        <span class="kpi-subtext">Boilers, conveyor jams, oven bearings, motors</span>
+      </div>
+      <div class="kpi-card warning">
+        <span class="kpi-label">Process / External / IT</span>
+        <span class="kpi-value">4 <span style="font-size:16px;font-weight:500;color:var(--text-muted);">(6.8%)</span></span>
+        <span class="kpi-subtext">TNB Olak Lempit trip, SAP delays, IT fiber</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Top Repeat Offender</span>
+        <span class="kpi-value" style="color:var(--primary);">F33 <span style="font-size:16px;font-weight:500;color:var(--text-muted);">(12 cases)</span></span>
+        <span class="kpi-subtext">20.3% of all declared downtime incidents</span>
+      </div>
+    </div>
+
+    <!-- Main Analytics Grid -->
+    <div class="content-grid">
+      <!-- Left Column: Factory & Category Distributions -->
+      <div>
+        <div class="card">
+          <div class="card-title">
+            <span>Factory Pareto Analysis (Total Declarations by Plant)</span>
+            <span class="badge">Top 4 = 62.7% of incidents</span>
+          </div>
+          <div style="margin-bottom: 20px;">
+
+            <div class="bar-row">
+              <span class="bar-label">F33</span>
+              <div class="bar-track" style="width:100%;">
+                <div class="bar-fill pm" style="width:58.333333333333336%;" title="Planned Maintenance: 7">7 PM</div>
+                <div class="bar-fill eb" style="width:41.66666666666667%;" title="Equipment Breakdown: 5">5 EB</div>
+                <div class="bar-fill other" style="width:0.0%;" title="Other: 0"></div>
+              </div>
+              <span class="bar-count">12 (20.3%)</span>
+            </div>
+    
+            <div class="bar-row">
+              <span class="bar-label">F4</span>
+              <div class="bar-track" style="width:100%;">
+                <div class="bar-fill pm" style="width:90.0%;" title="Planned Maintenance: 9">9 PM</div>
+                <div class="bar-fill eb" style="width:10.0%;" title="Equipment Breakdown: 1">1 EB</div>
+                <div class="bar-fill other" style="width:0.0%;" title="Other: 0"></div>
+              </div>
+              <span class="bar-count">10 (16.9%)</span>
+            </div>
+    
+            <div class="bar-row">
+              <span class="bar-label">F36</span>
+              <div class="bar-track" style="width:100%;">
+                <div class="bar-fill pm" style="width:75.0%;" title="Planned Maintenance: 6">6 PM</div>
+                <div class="bar-fill eb" style="width:25.0%;" title="Equipment Breakdown: 2">2 EB</div>
+                <div class="bar-fill other" style="width:0.0%;" title="Other: 0"></div>
+              </div>
+              <span class="bar-count">8 (13.6%)</span>
+            </div>
+    
+            <div class="bar-row">
+              <span class="bar-label">F18B</span>
+              <div class="bar-track" style="width:100%;">
+                <div class="bar-fill pm" style="width:85.71428571428571%;" title="Planned Maintenance: 6">6 PM</div>
+                <div class="bar-fill eb" style="width:0.0%;" title="Equipment Breakdown: 0"></div>
+                <div class="bar-fill other" style="width:14.285714285714285%;" title="Other: 1">1</div>
+              </div>
+              <span class="bar-count">7 (11.9%)</span>
+            </div>
+    
+            <div class="bar-row">
+              <span class="bar-label">F7</span>
+              <div class="bar-track" style="width:100%;">
+                <div class="bar-fill pm" style="width:75.0%;" title="Planned Maintenance: 3">3 PM</div>
+                <div class="bar-fill eb" style="width:25.0%;" title="Equipment Breakdown: 1">1 EB</div>
+                <div class="bar-fill other" style="width:0.0%;" title="Other: 0"></div>
+              </div>
+              <span class="bar-count">4 (6.8%)</span>
+            </div>
+    
+            <div class="bar-row">
+              <span class="bar-label">F2</span>
+              <div class="bar-track" style="width:100%;">
+                <div class="bar-fill pm" style="width:50.0%;" title="Planned Maintenance: 2">2 PM</div>
+                <div class="bar-fill eb" style="width:25.0%;" title="Equipment Breakdown: 1">1 EB</div>
+                <div class="bar-fill other" style="width:25.0%;" title="Other: 1">1</div>
+              </div>
+              <span class="bar-count">4 (6.8%)</span>
+            </div>
+    
+            <div class="bar-row">
+              <span class="bar-label">F38</span>
+              <div class="bar-track" style="width:100%;">
+                <div class="bar-fill pm" style="width:66.66666666666666%;" title="Planned Maintenance: 2">2 PM</div>
+                <div class="bar-fill eb" style="width:0.0%;" title="Equipment Breakdown: 0"></div>
+                <div class="bar-fill other" style="width:33.33333333333333%;" title="Other: 1">1</div>
+              </div>
+              <span class="bar-count">3 (5.1%)</span>
+            </div>
+    
+            <div class="bar-row">
+              <span class="bar-label">F27</span>
+              <div class="bar-track" style="width:100%;">
+                <div class="bar-fill pm" style="width:100.0%;" title="Planned Maintenance: 2">2 PM</div>
+                <div class="bar-fill eb" style="width:0.0%;" title="Equipment Breakdown: 0"></div>
+                <div class="bar-fill other" style="width:0.0%;" title="Other: 0"></div>
+              </div>
+              <span class="bar-count">2 (3.4%)</span>
+            </div>
+    
+            <div class="bar-row">
+              <span class="bar-label">F41</span>
+              <div class="bar-track" style="width:100%;">
+                <div class="bar-fill pm" style="width:0.0%;" title="Planned Maintenance: 0"></div>
+                <div class="bar-fill eb" style="width:100.0%;" title="Equipment Breakdown: 2">2 EB</div>
+                <div class="bar-fill other" style="width:0.0%;" title="Other: 0"></div>
+              </div>
+              <span class="bar-count">2 (3.4%)</span>
+            </div>
+    
+            <div class="bar-row">
+              <span class="bar-label">F13</span>
+              <div class="bar-track" style="width:100%;">
+                <div class="bar-fill pm" style="width:0.0%;" title="Planned Maintenance: 0"></div>
+                <div class="bar-fill eb" style="width:100.0%;" title="Equipment Breakdown: 2">2 EB</div>
+                <div class="bar-fill other" style="width:0.0%;" title="Other: 0"></div>
+              </div>
+              <span class="bar-count">2 (3.4%)</span>
+            </div>
+    
+            <div class="bar-row">
+              <span class="bar-label">F32</span>
+              <div class="bar-track" style="width:100%;">
+                <div class="bar-fill pm" style="width:0.0%;" title="Planned Maintenance: 0"></div>
+                <div class="bar-fill eb" style="width:100.0%;" title="Equipment Breakdown: 1">1 EB</div>
+                <div class="bar-fill other" style="width:0.0%;" title="Other: 0"></div>
+              </div>
+              <span class="bar-count">1 (1.7%)</span>
+            </div>
+    
+            <div class="bar-row">
+              <span class="bar-label">F19</span>
+              <div class="bar-track" style="width:100%;">
+                <div class="bar-fill pm" style="width:100.0%;" title="Planned Maintenance: 1">1 PM</div>
+                <div class="bar-fill eb" style="width:0.0%;" title="Equipment Breakdown: 0"></div>
+                <div class="bar-fill other" style="width:0.0%;" title="Other: 0"></div>
+              </div>
+              <span class="bar-count">1 (1.7%)</span>
+            </div>
+    
+            <div class="bar-row">
+              <span class="bar-label">F9</span>
+              <div class="bar-track" style="width:100%;">
+                <div class="bar-fill pm" style="width:100.0%;" title="Planned Maintenance: 1">1 PM</div>
+                <div class="bar-fill eb" style="width:0.0%;" title="Equipment Breakdown: 0"></div>
+                <div class="bar-fill other" style="width:0.0%;" title="Other: 0"></div>
+              </div>
+              <span class="bar-count">1 (1.7%)</span>
+            </div>
+    
+            <div class="bar-row">
+              <span class="bar-label">F31</span>
+              <div class="bar-track" style="width:100%;">
+                <div class="bar-fill pm" style="width:0.0%;" title="Planned Maintenance: 0"></div>
+                <div class="bar-fill eb" style="width:0.0%;" title="Equipment Breakdown: 0"></div>
+                <div class="bar-fill other" style="width:100.0%;" title="Other: 1">1</div>
+              </div>
+              <span class="bar-count">1 (1.7%)</span>
+            </div>
+    
+            <div class="bar-row">
+              <span class="bar-label">F10</span>
+              <div class="bar-track" style="width:100%;">
+                <div class="bar-fill pm" style="width:100.0%;" title="Planned Maintenance: 1">1 PM</div>
+                <div class="bar-fill eb" style="width:0.0%;" title="Equipment Breakdown: 0"></div>
+                <div class="bar-fill other" style="width:0.0%;" title="Other: 0"></div>
+              </div>
+              <span class="bar-count">1 (1.7%)</span>
+            </div>
+    
+          </div>
+          <div style="display:flex;gap:16px;font-size:12px;color:var(--text-muted);justify-content:center;border-top:1px solid var(--border);padding-top:12px;">
+            <span><span style="display:inline-block;width:10px;height:10px;background:var(--planned);border-radius:2px;margin-right:4px;"></span> Planned Maintenance</span>
+            <span><span style="display:inline-block;width:10px;height:10px;background:var(--breakdown);border-radius:2px;margin-right:4px;"></span> Equipment Breakdown</span>
+            <span><span style="display:inline-block;width:10px;height:10px;background:var(--other);border-radius:2px;margin-right:4px;"></span> Process / Other / IT</span>
+          </div>
+        </div>
+
+        <!-- Systemic Themes & Technical Patterns -->
+        <div class="card">
+          <div class="card-title">
+            <span>Root Cause Taxonomy & Engineering Failure Modes</span>
+            <span class="badge">Categorical Breakdown</span>
+          </div>
+          
+          <div class="insight-item">
+            <div class="insight-title">1. Former Ratio & Product Changeover Overhaul (67.8% of Declarations)</div>
+            <div class="insight-desc">
+              <strong>Dominant Cause:</strong> Lines F4, F33, F36, F18B, and F27 regularly spend 8 to 24 hours down to switch weights, colors (e.g. CW55 Natural &rarr; CW58 Black, ENW 50 &rarr; ENW 70), and adjust former size ratios. <br>
+              <strong>Common Operations:</strong> Simultaneous tank washing (chlorine, coagulant, latex), acid dipping, and oven cleaning. <br>
+              <strong>Pattern Observed:</strong> Upline preparation frequently suffers delays from slow former alignment and cleaning bottlenecks.
+            </div>
+          </div>
+
+          <div class="insight-item critical">
+            <div class="insight-title">2. Thermal Energy & Boiler Systems Catastrophic Risk (5 Breakdowns)</div>
+            <div class="insight-desc">
+              <strong>Critical Incidents:</strong><br>
+              &bull; <strong>F36 (L10S, 25/09):</strong> Total factory stop! Conveyor 3 liner worn & torn &rarr; chain jammed &rarr; scrapper plate broke &rarr; boiler forced stop.<br>
+              &bull; <strong>F41 (L1D, 01/10):</strong> Boiler 1 failed to reach thermal oil setpoint; forced line stop before switching to standby boiler 2.<br>
+              &bull; <strong>F7 (L3D, 14/10):</strong> PEA grid trip combined with boiler switching failure due to refractory partition leaking.
+            </div>
+          </div>
+
+          <div class="insight-item critical">
+            <div class="insight-title">3. Conveyor Line, Oven Bearing & Drive Mechanics (6 Breakdowns)</div>
+            <div class="insight-desc">
+              <strong>Mechanical Failures:</strong><br>
+              &bull; <strong>F33 (L15D & L13D & L14D):</strong> Multiple chain-outs at latex oven due to stuck holders, latex oven bearing damage, and main drive motor failure.<br>
+              &bull; <strong>F4 (L12S, 18/10):</strong> Chain-out caused by excessive chain slackness and tensioning box defect.<br>
+              &bull; <strong>F36 (L10S, 20/09):</strong> Jammed gearbox and jammed chain conveyor causing delayed upline.<br>
+              &bull; <strong>F32 (L4D, 19/09):</strong> Sprocket misalignment at latex oven and broken formers.
+            </div>
+          </div>
+
+          <div class="insight-item warning">
+            <div class="insight-title">4. Automation, Utilities & External Disruptions (4 Incidents)</div>
+            <div class="insight-desc">
+              &bull; <strong>F13 (L12D, 12-13/09):</strong> Chiller motor failure causing 18 hours of downtime for compounding/latex cooling.<br>
+              &bull; <strong>F33 (L7D, 12/09):</strong> RASM (Robotic Automatic Stripping Machine) controller bearing failure.<br>
+              &bull; <strong>F18B (L4D, 30/09):</strong> TNB grid blackout at Olak Lempit (10 AM &ndash; 3 PM) stopping all production lines.<br>
+              &bull; <strong>F2 (L10D, 07-08/10):</strong> Plant IT fiber-optic disconnection causing low reporting availability.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: CAPA Audit & Recommendations -->
+      <div>
+        <div class="card">
+          <div class="card-title">
+            <span>CAPA Quality Audit</span>
+            <span class="badge">SOP Governance</span>
+          </div>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
+            Evaluation of corrective and preventive actions declared by factory managers and engineers.
+          </p>
+
+          <div style="margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:700;color:#16a34a;text-transform:uppercase;margin-bottom:6px;">&check; Effective & Systemic CAPAs</div>
+            <ul style="font-size:12px;color:var(--text);padding-left:18px;line-height:1.6;">
+              <li><strong>TPM Consolidation:</strong> 28 of 40 planned declarations successfully bundled tank cleaning, conveyor track nylon replacement, and sprocket turning into single stops.</li>
+              <li><strong>Chemical Optimization:</strong> F33 studied alternative cleaning chemicals to cut off-dip former cleaning duration.</li>
+              <li><strong>Chemistry Tuning:</strong> F38 tuned PF coagulant & powder concentration to prevent former fouling.</li>
+            </ul>
+          </div>
+
+          <div style="margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:700;color:#dc2626;text-transform:uppercase;margin-bottom:6px;">&times; Generic / Weak CAPAs to Eliminate</div>
+            <ul style="font-size:12px;color:var(--text);padding-left:18px;line-height:1.6;">
+              <li><em>"Production, planner and maintenance team to plan and coordinate well"</em> (Repeated verbatim in 8 F4 submissions without technical countermeasure).</li>
+              <li><em>"Train contract workers to work well in planned downtime"</em> (Shifts root cause to labor rather than process design).</li>
+              <li><em>"Check carefully the actual root cause"</em> (Deferred investigation; not an action plan).</li>
+            </ul>
+          </div>
+
+          <div style="border-top:1px solid var(--border);padding-top:16px;">
+            <div class="card-title" style="margin-bottom:12px;font-size:15px;border-bottom:none;padding-bottom:0;">
+              <span>Recommended Engineering Actions</span>
+            </div>
+            <div style="font-size:12px;color:var(--text);line-height:1.5;">
+              <p style="margin-bottom:8px;"><strong>1. SMED Changeover Standard:</strong> Implement Single-Minute Exchange of Die (SMED) across F33, F4, F36. Pre-stage formers, pre-mix chemicals, and standardize upline sequence to target &le;6h for full product conversions.</p>
+              <p style="margin-bottom:8px;"><strong>2. Predictive Boiler & Thermal Audits:</strong> Institute weekly refractory inspections and conveyor liner thickness checks at F36, F41, and F7 to eliminate multi-line thermal shutoffs.</p>
+              <p style="margin-bottom:8px;"><strong>3. Oven Chain & Bearing Pre-Emption:</strong> Standardize high-temperature bearing replacements and ultrasonic vibration testing on F33 latex oven tracks.</p>
+              <p><strong>4. Strict CAPA Rejection Policy:</strong> Central engineering team should reject submissions with generic "plan and coordinate well" text, requiring specific technical mitigations.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span>Declarations by Month</span>
+          </div>
+          <div style="font-size:13px;">
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;">
+              <span>September 2026</span>
+              <strong>38 incidents (64.4%)</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;">
+              <span>October 2026</span>
+              <strong>20 incidents (33.9%)</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;">
+              <span>November 2026 (M-T-D)</span>
+              <strong>1 incident (1.7%)</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filterable Data Table -->
+    <div class="card">
+      <div class="card-title">
+        <span>Complete Downtime Declarations Log (59 Records)</span>
+        <span id="recordCountBadge" class="badge">Showing 59 of 59</span>
+      </div>
+
+      <div class="table-controls">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+          <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search Root Cause, Line, CAPA...">
+          <select id="factoryFilter" class="filter-select">
+            <option value="">All Factories (15)</option>
+<option value="F33">F33 (12)</option>
+<option value="F4">F4 (10)</option>
+<option value="F36">F36 (8)</option>
+<option value="F18B">F18B (7)</option>
+<option value="F7">F7 (4)</option>
+<option value="F2">F2 (4)</option>
+<option value="F38">F38 (3)</option>
+<option value="F27">F27 (2)</option>
+<option value="F41">F41 (2)</option>
+<option value="F13">F13 (2)</option>
+<option value="F32">F32 (1)</option>
+<option value="F19">F19 (1)</option>
+<option value="F9">F9 (1)</option>
+<option value="F31">F31 (1)</option>
+<option value="F10">F10 (1)</option>
+
+          </select>
+          <select id="categoryFilter" class="filter-select">
+            <option value="">All Categories (4)</option>
+            <option value="Planned Maintenance">Planned Maintenance (40)</option>
+            <option value="Equipment Breakdown">Equipment Breakdown (15)</option>
+            <option value="Process/Material Issue">Process/Material Issue (2)</option>
+            <option value="Other">Other / Utility / IT (2)</option>
+          </select>
+        </div>
+        <button id="resetBtn" style="padding:8px 14px;border:1px solid var(--border);background:#f1f5f9;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">Reset Filters</button>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th class="col-id">#</th>
+              <th class="col-date">Incident</th>
+              <th class="col-fact">Factory</th>
+              <th class="col-line">Line</th>
+              <th class="col-cat">Category</th>
+              <th class="col-text">Root Cause Declaration</th>
+              <th class="col-text">Corrective & Preventive Action (CAPA)</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- Populated via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const records = [{"timestamp": "2026-10-07 13:32:00", "incident_date": "2026-10-06", "factory": "F33", "line": "L10D", "root_cause": "Downtime for off dip cleaning of formers.", "capa": "To study alternative chemical for off dip cleaning. In order to reduce the time required.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-10-06 14:14:48", "incident_date": "2026-10-05", "factory": "F4", "line": "L10S", "root_cause": "Planned downtime for former ratio, change product and maintenance job for rectify hard landings.", "capa": "Production, planner and maintenance team to plan and coordinate well with optimize manpower allocation to ensure completion within time frame and minimize downtime.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-10-05 11:44:04", "incident_date": "2026-10-04", "factory": "F27", "line": "L8D", "root_cause": "L8D planned downtime to change former and product from ENW 50 Black to ENW 70 Black 240mm.", "capa": "Action:\n1. Bypassed the line for 1 hour, start to former change and product change. \n2. Conducted former change for 7 hours and product change for 12 hours. \n3. Warm up and dip line for 1 hour after completed the former changing and tank washing jobs. \n\nPA: \n1. Monitor job for every department to ensure job completed on time.\n2. Combine all necessary job together to further reduce downtime hours.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-10-05 11:35:46", "incident_date": "2026-10-04", "factory": "F27", "line": "L8D", "root_cause": "Planned downtime on L8 for the Chlorine Dipping Tank 2 replacement project.", "capa": "Planned Downtime Activities Included:\nDismantle the old Chlorine Dipping Tank 2 and replace it with a new tank.\nClean the ovens and wash the pre-leaching and cooling tanks to maintain cleanliness.\nExecute M&E TPM jobs: Modify the beading station landing track, replace the worn-out nylon track, and change the worn out turning sprocket and shaft.\n\nAction Plan:\nMonitor tasks across all departments to ensure on-time completion.\nConsolidate all necessary maintenance jobs to further reduce downtime hours.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-10-01 20:01:40", "incident_date": "2026-09-30", "factory": "F18B", "line": "L4D", "root_cause": "Root cause:\nTNB shutdown at olak lempit causing no electricity from 10 am to 3 pm.\n\nAll lines resume dipping at 6 pm\n\nDuring this time, L4 arrange for:\n1. pump latex and clean latex in dipping tank\n2. modify oveflow gutter at plt leaching tank \n3. repair jumping and potential touching area", "capa": "Action Plan:\n1. Monitor job for every department, make sure job completed on time\n2. Continue to plan on TPM and speed up all jobs during downline", "ai_category": "Other"}, {"timestamp": "2026-10-01 17:55:34", "incident_date": "2026-10-01", "factory": "F41", "line": "L1D", "root_cause": "Boiler 1 is having issue to achieve desired thermal oil temperature, so downline before switching to boiler 2", "capa": "After boiler 1 down, to check carefully the actual root cause on the part that cause this thermal oil temperature inconsistency issue.", "ai_category": "Equipment Breakdown"}, {"timestamp": "2026-09-30 15:34:23", "incident_date": "2026-09-29", "factory": "F36", "line": "L11D", "root_cause": "L11S down for monthly downline planning, change product, former ratio and planned maintenance jobs.", "capa": "1. Continue to monitor the actual job duration against the target time during monthly downline planning.\n2. Consolidate multiple planned maintenance jobs to minimize the overall planned downtime.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-28 22:56:52", "incident_date": "2026-09-27", "factory": "F4", "line": "L8D", "root_cause": "Planned downtime for change product from CW55 Natural to CW58 Black, former ratio and maintenance job for rectify hard landings.", "capa": "Production, planner and maintenance team to plan and coordinate well with optimize manpower allocation to ensure completion within time frame and minimize downtime.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-28 16:07:00", "incident_date": "2026-09-26", "factory": "F4", "line": "L8D", "root_cause": "Planned downtime for change product from CW55 Natural to CW58 Black, former ratio and maintenance job for rectify hard landings.", "capa": "Production, planner and maintenance team to plan and coordinate well with optimize manpower allocation to ensure completion within time frame and minimize downtime.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-27 20:19:37", "incident_date": "2026-09-26", "factory": "F18B", "line": "L9D", "root_cause": "L9 planned downtime to change product from 240 mm NBR Blue 4.4g to 300 mm NBR White 6.2g", "capa": "1. Monitor job for every department, make sure job completed on time\n2. Combine all necessary job together to further reduce downtime hours", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-26 16:38:51", "incident_date": "2026-09-25", "factory": "F36", "line": "L10S", "root_cause": "All lines stopped due to boiler breakdown caused by the Conveyor 3 liner worn out and torn, resulting in the chain jamming and the scrapper plate breaking.", "capa": "1.     Repair and replace the damaged Conveyor 3 liner, rectify the chain alignment, and replace the broken scrapper plate.\n2. Inspect and monitor the conveyor system to ensure smooth operation and prevent recurrence.", "ai_category": "Equipment Breakdown"}, {"timestamp": "2026-09-26 14:42:40", "incident_date": "2026-09-25", "factory": "F18B", "line": "L3S", "root_cause": "Downtime due to former ratio at line.\n\nDuring former ratio planning,  \n1. Pump out & change to new coagulant. To refresh coagulant at dipping tank\n2. Change former ratio according to size ratio\n3. Clean & wash pre leaching tank and cooling tank. To maintain tank cleanliness.\n3. Service overflow pipe gutter for wet tanks to prevent blockage & ensure smooth eater flow\n4. Clean open channel especially at stripping area, coagulant & latex tank area", "capa": "1. Combine all the necessary jobs together to reduce downtime frequency\n2. Continue to study to improve work efficiency to reduce downtime hours", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-25 19:40:44", "incident_date": "2026-09-24", "factory": "F33", "line": "L16D", "root_cause": "Former changing and prepare to upline.", "capa": "Speed up upline preparation to avoid long downtime by train the contract worker to work well in planned downtime", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-25 18:02:05", "incident_date": "2026-09-24", "factory": "F36", "line": "L10S", "root_cause": "L9S down for monthly downline planning and change product from ENW97 SLP to ENW111 SKF, former ratio and planned maintenance jobs.", "capa": "1. Continue to monitor the actual job duration against the target time during monthly downline planning.\n2. Consolidate multiple planned maintenance jobs to minimize the overall planned downtime.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-24 23:15:41", "incident_date": "2026-09-23", "factory": "F7", "line": "L10D", "root_cause": "Change former holder. Planned downtime.", "capa": "Change to improve holder healthiness.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-24 23:14:31", "incident_date": "2026-09-23", "factory": "F33", "line": "L13D", "root_cause": "Former changing and unplanned beading brush shaft motor problem.", "capa": "Check back all line beading shaft motor to avoid unplanned downtime.", "ai_category": "Equipment Breakdown"}, {"timestamp": "2026-09-24 17:56:52", "incident_date": "2026-09-23", "factory": "F7", "line": "L10D", "root_cause": "3:00 AM to 8:00 AM, stop the line due to a boiler supply temperature drop.                                 8:00 AM to 11:00 PM, stop the line to change the holder former.", "capa": "Boiler team switch boiler and rectify.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-23 17:22:39", "incident_date": "2026-09-22", "factory": "F4", "line": "L5S", "root_cause": "Planned downtime for change product from CW58 Black to ENW50 Natural and maintenance job.", "capa": "Production and maintenance team to plan and coordinate well with optimize manpower allocation to ensure completion within time frame and minimize downtime.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-22 12:37:54", "incident_date": "2026-09-21", "factory": "F4", "line": "L3S", "root_cause": "Planned downtime for change product from CW55 Natural to CW75 Blue NBR trial run and maintenance job for control 300mm glove length.", "capa": "Production and maintenance team to plan and coordinate well with optimize manpower allocation to ensure completion within time frame and minimize downtime.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-21 14:39:55", "incident_date": "2026-09-20", "factory": "F36", "line": "L10S", "root_cause": "L10S delayed upline to due jammed gearbox and jammed chain conveyor.", "capa": "1. Replaced the gearbox with standby unit and manually pull the conveyor chain using the chain block until the chain running smoothly. \n2. Lubricate the conveyor chain continuously and topup the grease at the shaft sprocket. Ensure standby unit of gearbox and motor for production lines are always available for replacement.", "ai_category": "Equipment Breakdown"}, {"timestamp": "2026-09-20 16:54:22", "incident_date": "2026-09-19", "factory": "F32", "line": "L4D", "root_cause": "Plan downline to rectify sprocket misalignment at latex oven and replenish empty link former", "capa": "Part of periodic TPM job to prevent breakdown", "ai_category": "Equipment Breakdown"}, {"timestamp": "2026-09-20 14:44:25", "incident_date": "2026-09-18", "factory": "F41", "line": "DF1", "root_cause": "S plate before entering to oven open welded causing some holder stucked and need emergency line bypass for rectification.", "capa": "Welded back the S plate and to get maintenance and production team to check daily the S plate area as this area is of high risk of open welding.", "ai_category": "Equipment Breakdown"}, {"timestamp": "2026-09-20 13:53:35", "incident_date": "2026-09-19", "factory": "F18B", "line": "L1S", "root_cause": "Change product", "capa": "F18B with availability 78.9% on 19/9/2026\n\nHighest L1, 22 hours downtime with availability 8.3%\n\nRoot cause: \nDowntime due to change product from NBR ODC Blue textured to NBR White Cleanroom\n\nDuring change over product,  \n1. Pump latex & do thorough cleaning at latex dipping tank and hose since change from Blue to White product\n2. Change former ratio according to order\n3. Service overflow pipe gutter for wet tanks\n4. Plug in magnetic disc to trap dirt from track during change former\n5. Clean open channel especially at packing, coagulant & latex tank area\n\nAction Plan:\n1. Continue to improve work efficiency to shorten downtime period\n2. Plan & combine necessary jobs together to reduce downtime frequency", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-19 15:10:03", "incident_date": "2026-09-07", "factory": "F38", "line": "L12D", "root_cause": "Plan downtime to sort out problematic and dirty formers, former holders after 21 days dipping.", "capa": "1. Optimize PF coagulant and Powder CC% to overcome former yellowish and former dirty. \n2. \u2060Reduce chlorine tank ppm and temperature in order to avoid former holders jammed issue. Chlorine tank temperature maintain at 38 to 43C. \n3. \u2060To prolong former dipping days by switching MGFT formers by end Sept 2026.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-19 15:09:29", "incident_date": "2026-09-07", "factory": "F38", "line": "L8D", "root_cause": "1. Pending SAP catch up for USAW35 output during changing product. \n2. Actual manual output calculated is 527 ctn / 780 ctn x 100% = 67%", "capa": "1. To plan ahead on SAP material code 1 day before dipping USAW35. \n2. \u2060Train night shift prod leader to catch up prod output before 8am.", "ai_category": "Process/Material Issue"}, {"timestamp": "2026-09-19 15:08:19", "incident_date": "2026-09-07", "factory": "F4", "line": "L11S", "root_cause": "L11 down for monthly downline planning and change product from Natural colour to Black colour exam product + planned maintenance jobs.", "capa": "1. Continue to monitor target time for each jobs during monthly downline planning. \n2. Also to combine multiple planned jobs to reduce the overall planned downtime.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-19 15:07:41", "incident_date": "2026-09-07", "factory": "F19", "line": "L3D", "root_cause": "Schedule planned downline for pump latex and clean tanks.", "capa": "1. To plan with minimize planned downline avoid output loss.\n2. Reduce the downtime with improve efficiency of former wash.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-19 15:06:32", "incident_date": "2026-09-08", "factory": "F33", "line": "L8D", "root_cause": "1) Latex tank cleaning after 1.5 months continuously dipping", "capa": "1) To plan with minimize downline to avoid output loss", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-19 15:05:04", "incident_date": "2026-09-09", "factory": "F33", "line": "L10D & L15D", "root_cause": "1) L10D former cleaning and repair rasm machine.\n2) L15D former changing and scheduled wet tanks cleaning.", "capa": "1) Improve preventive maintenance of RASM, make sure related parts available to meet the planned maintenance date before due.\n2) Improve production planning and former changing efficiency to reduce downtime", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-19 15:04:13", "incident_date": "2026-09-09", "factory": "F36", "line": "L7S", "root_cause": "L7S down for monthly downline planning, change product from ENW103 SSKTF to ENW96 SGKF and planned maintenance jobs.", "capa": "1. Continue to monitor the actual job duration against the target time during monthly downline planning.\n2. Consolidate multiple planned maintenance jobs to minimize the overall planned downtime", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-19 15:02:50", "incident_date": "2026-09-09", "factory": "F9", "line": "L5D", "root_cause": "Line 5 schedule planned downline for former ratio and TPM job for holder track and bearing repairing", "capa": "1. Staff continue monitor the downline planning time and ensure complete the job within target period \n2. \u2060Combine the planned job and minimize the downtime", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-18 14:19:00", "incident_date": "2026-09-12", "factory": "F33", "line": "L7D", "root_cause": "1) L7D RASM breakdown caused by controller bearing damaged.\n2) L7D latex level low caused by faulty solenoid valve.", "capa": "1) Improve preventive maintenance of RASM, make sure related parts available to meet the planned maintenance date before due.\n2) Already in the planning to change RASM machine by this month due to unstable and low number of armsets to cater increment of line speed.\n3) Inspect and check level control solenoid valves and tubing, make sure all in good condition.", "ai_category": "Equipment Breakdown"}, {"timestamp": "2026-09-18 14:18:27", "incident_date": "2026-09-12", "factory": "F13", "line": "L12D", "root_cause": "unplanned downtime for BB due to chiller issue.", "capa": "1) Directly troubleshoot unit WCC and find the root cause\n2) Found that overload mulfuction and direct repai", "ai_category": "Equipment Breakdown"}, {"timestamp": "2026-09-18 14:17:31", "incident_date": "2026-09-13", "factory": "F13", "line": "L12D", "root_cause": "Action Plan: Highest 18hours unplanned downtime for BB due to normal downline and latex chiller motor issue", "capa": "1) Troubleshoot latex chiller motor unit and immediate upline.", "ai_category": "Equipment Breakdown"}, {"timestamp": "2026-09-18 14:16:11", "incident_date": "2026-09-13", "factory": "F33", "line": "L13D", "root_cause": "Former changing to change size ratio and coagulant tank cleaning to improve coagulant circulation.", "capa": "To improve overall worker efficiency by close monitoring to reduce downtime.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-18 14:15:09", "incident_date": "2026-09-14", "factory": "F36", "line": "L7S", "root_cause": "L7S down for monthly downline planning and change product from ENW96 SGKF to ENW119 SBGKF, former ratio and planned maintenance jobs", "capa": "1. Continue to monitor the actual job duration against the target time during monthly downline planning.\n2. Consolidate multiple planned maintenance jobs to minimize the overall planned downtime.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-18 14:13:51", "incident_date": "2026-09-14", "factory": "F18B", "line": "L7D", "root_cause": "Highest downtime due to line downline for change product.\nJob allocated for this production line involve\n1. Pump latex & clean latex dipping tank\n2. Service RASM \n3. Repair worn out track", "capa": "1. Departments to monitor the downline planning arrangement & ensure job completed on time  \n2. \u2060Staff from prod, maintenance & RASM to study how to speed up each job to improve downtime hours", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-18 14:12:50", "incident_date": "2026-09-15", "factory": "F31", "line": "L12D", "root_cause": "Former ratio and pump latex activity to change weight", "capa": "To improve overall worker efficiency by close monitoring to reduce downtime.", "ai_category": "Process/Material Issue"}, {"timestamp": "2026-09-18 14:12:26", "incident_date": "2026-09-15", "factory": "F18B", "line": "L9D", "root_cause": "Highest downtime due to line downline for change product\n\nDuring change over product,  \n1. Pump latex & clean latex dipping tank\n2. Change former according to order ratio\n3. Service overflow pipe gutter for all wet tanks", "capa": "1. Departments to monitor job progress according to allocated time\n2. Continue to study & improve downtime by improving job efficiency", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-18 14:10:39", "incident_date": "2026-09-15", "factory": "F36", "line": "L9S", "root_cause": "L9S down for latex tank cleaning and refresh latex after 25 days continuous dipping [started dip 19/8].", "capa": "1. Refresh latex and changed filtration at latex drain side. \n2. Consolidate multiple other planned maintenance jobs to minimize the overall planned downtime.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-18 14:09:50", "incident_date": "2026-09-16", "factory": "F36", "line": "L11S", "root_cause": "Production line planned stoppage during public holiday for periodic boiler servicing and clearing accumulated boiler ash inside boiler.", "capa": "1. Continue to monitor the actual job duration against the target time during monthly downline planning.\n2. Consolidate multiple planned maintenance jobs and servicing to minimize the overall planned downtime.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-18 14:09:20", "incident_date": "2026-09-16", "factory": "F4", "line": "L04S", "root_cause": "Planned downtime for former ratio from MGPT S to MGFT L + planned monthly maintenance job", "capa": "Production and former team to plan and coordinate well to ensure completion within time frame and minimize downtime.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-09-18 14:08:39", "incident_date": "2026-09-16", "factory": "F38", "line": "L09D", "root_cause": "Planned downtime due former ratio and preparation for run halogen free product .", "capa": "1. Departments to monitor job progress according to allocated time\n2. Continue to study & improve downtime by improving job efficiency", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-10-08 14:11:06", "incident_date": "2026-10-07", "factory": "F2", "line": "L7D", "root_cause": "Downline to service air receiver tank for CF cert renewal", "capa": "To improve planning by combining the downline together with TNB shutdown", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-10-08 17:26:34", "incident_date": "2026-10-07", "factory": "F2", "line": "L10D", "root_cause": "Low availability due to internet connection lost.", "capa": "Inform IT Department to check and troubleshoot the internet connection. Monitor the connection stability to prevent recurrence.", "ai_category": "Other"}, {"timestamp": "2026-10-08 20:04:01", "incident_date": "2026-10-07", "factory": "F33", "line": "L15D", "root_cause": "Former changing and line automatic stop due to main drive motor problem.", "capa": "Check and inspect the main drive motor. Perform functional test to vertify proper operation.", "ai_category": "Equipment Breakdown"}, {"timestamp": "2026-10-09 20:17:18", "incident_date": "2026-10-08", "factory": "F2", "line": "L10D", "root_cause": "Network issue suspect from fibre cable (according to IT)", "capa": "1. IT team to take fast action whenever received MRF on network issue from user\n2. Suggest to exclude data for M2 for 8/10/26 & 9/10/26 as these 2 days affected with network issue", "ai_category": "Equipment Breakdown"}, {"timestamp": "2026-10-10 15:30:06", "incident_date": "2026-10-08", "factory": "F4", "line": "L10S", "root_cause": "Planned downtime for former ratio from USAW55 XL Natural to USAW55 NT L and maintenance job", "capa": "Production, planner and maintenance team to plan and coordinate well with optimize manpower allocation to ensure completion within time frame and minimize downtime.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-10-11 17:58:41", "incident_date": "2026-10-10", "factory": "F18B", "line": "L8D", "root_cause": "Change product & former ratio at L8\n\nDuring downline, L8  arrange:\n1. Former ratio \n2. Pump and filter coagulant\n3. Clean pre leaching & cooling tank\n4. repair worn out track inside main oven", "capa": "1. Continue to consolidate necessary jobs during downline\n2. Department to continue study & improve work efficiency to reduce downtime hours", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-10-14 15:38:18", "incident_date": "2026-10-13", "factory": "F33", "line": "L13D", "root_cause": "Chain out at latex oven due to holder stuck", "capa": "Former team to check and replace jammed holder. Maintenance to align back the chain and cut chain, avoid chain elongated lead to chain out.", "ai_category": "Equipment Breakdown"}, {"timestamp": "2026-10-15 17:30:44", "incident_date": "2026-10-14", "factory": "F7", "line": "L3D", "root_cause": "PEA trip and boiler switching failure due to refractory partition found leaking during boiler switching.", "capa": "Rectify boiler that having issue and always ready standby boiler to speed up switching process.", "ai_category": "Equipment Breakdown"}, {"timestamp": "2026-10-15 17:32:16", "incident_date": "2026-10-14", "factory": "F33", "line": "L17D", "root_cause": "Former changing whole line.", "capa": "To arrange more manpower for former changing and reduce former changing downtime", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-10-19 18:46:18", "incident_date": "2026-10-18", "factory": "F4", "line": "L12S", "root_cause": "L12 downline caused by line breakdown due to chain out resulting from chain loose", "capa": "Former and maintenance team monitor tensional box condition daily for all lines to prevent chain loose.", "ai_category": "Equipment Breakdown"}, {"timestamp": "2026-10-20 14:05:05", "incident_date": "2026-10-19", "factory": "F2", "line": "L8D", "root_cause": "Plan downtime to change product 100% former ratio.", "capa": "Collaborate with marketer to ensure planning smoothly.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-10-21 17:26:26", "incident_date": "2026-10-20", "factory": "F33", "line": "L14D", "root_cause": "Latex oven bearing damage and required to replace.", "capa": "Maintenance to check other lines condition, prepare to slot in during planned downtime to avoid unplanned downtime", "ai_category": "Equipment Breakdown"}, {"timestamp": "2026-10-25 19:31:18", "incident_date": "2026-10-24", "factory": "F33", "line": "L13D", "root_cause": "Off dip cleaning of former according to planned downtime.", "capa": "To speed up planned downtime of former cleaning, ensure no idling time is wasted.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-10-28 15:20:52", "incident_date": "2026-10-27", "factory": "F4", "line": "L6S", "root_cause": "Planned downtime for maintenance job for platform at polymer tank.", "capa": "Production, planner and maintenance team to plan and coordinate well with optimize manpower allocation to ensure completion within time frame and minimize downtime.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-10-28 19:32:31", "incident_date": "2026-10-27", "factory": "F7", "line": "L7D", "root_cause": "Former changing according planning", "capa": "To minimize former changing by slot in orders and plan better.", "ai_category": "Planned Maintenance"}, {"timestamp": "2026-11-02 16:43:30", "incident_date": "2026-11-01", "factory": "F10", "line": "L10S", "root_cause": "Availability was temporarily reduced due to L10 product changeover from NR to NBR Powdered Gloves effective 1/11/2026.", "capa": "CA: Completed product changeover and necessary line preparation to resume NBR Powdered Gloves production.                                                                     PA: Closely monitored post changeover line performance, minimized start up downtime and optimized production scheduling to recover factory availability.", "ai_category": "Planned Maintenance"}];
+
+    const tbody = document.getElementById("tableBody");
+    const searchInput = document.getElementById("searchInput");
+    const factoryFilter = document.getElementById("factoryFilter");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const resetBtn = document.getElementById("resetBtn");
+    const badge = document.getElementById("recordCountBadge");
+
+    function getPillClass(cat) {
+      if (cat === "Planned Maintenance") return "pill-pm";
+      if (cat === "Equipment Breakdown") return "pill-eb";
+      if (cat === "Process/Material Issue") return "pill-proc";
+      return "pill-other";
+    }
+
+    function renderTable() {
+      const q = searchInput.value.toLowerCase().trim();
+      const selFact = factoryFilter.value;
+      const selCat = categoryFilter.value;
+
+      let filtered = records.filter(r => {
+        if (selFact && r.factory !== selFact) return false;
+        if (selCat && r.ai_category !== selCat) return false;
+        if (q) {
+          const haystack = (r.factory + " " + r.line + " " + r.root_cause + " " + r.capa + " " + r.ai_category).toLowerCase();
+          if (!haystack.includes(q)) return false;
+        }
+        return true;
+      });
+
+      badge.textContent = `Showing ${filtered.length} of ${records.length}`;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted);">No downtime declarations match the current filters.</td></tr>`;
+        return;
+      }
+
+      let html = "";
+      filtered.forEach((r, idx) => {
+        const rcClean = (r.root_cause || "").replace(/\n/g, "<br>");
+        const capaClean = (r.capa || "").replace(/\n/g, "<br>");
+        html += `
+          <tr>
+            <td class="col-id">${idx + 1}</td>
+            <td class="col-date">${r.incident_date}<div class="subtext">${(r.timestamp || "").split(" ")[0]}</div></td>
+            <td class="col-fact">${r.factory}</td>
+            <td class="col-line">${r.line}</td>
+            <td class="col-cat"><span class="pill ${getPillClass(r.ai_category)}">${r.ai_category}</span></td>
+            <td class="col-text">${rcClean}</td>
+            <td class="col-text">${capaClean}</td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+
+    searchInput.addEventListener("input", renderTable);
+    factoryFilter.addEventListener("change", renderTable);
+    categoryFilter.addEventListener("change", renderTable);
+    resetBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      factoryFilter.value = "";
+      categoryFilter.value = "";
+      renderTable();
+    });
+
+    renderTable();
+  </script>
+</body>
+</html>
