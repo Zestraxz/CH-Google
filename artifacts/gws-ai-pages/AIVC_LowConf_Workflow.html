@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AIVC Low-Confidence Workflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: one schematic (factory PC zone -> Google zone), then the three routines (night run, 8 am check,
+   new version), what happens on failure, and where every file lives. */
+:root {
+  --bg: #f4f6f8;
+  --panel: #ffffff;
+  --ink: #17212b;
+  --muted: #56636f;
+  --line: #c7d0d8;
+  --zone-pc: #e8eef3;
+  --zone-g: #e9f2ee;
+  --accent: #1f6fb2;        /* PC -> Google traffic */
+  --accent-soft: #d6e6f4;
+  --green: #2f7d5b;         /* inside Google */
+  --amber: #a5651a;         /* timed: Task Scheduler, 8 am check */
+  --warn: #b33a3a;          /* failure path */
+  --warn-soft: #f6e1df;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11171d; --panel: #18212a; --ink: #e3e9ee; --muted: #9aa8b4; --line: #34424f;
+    --zone-pc: #17222c; --zone-g: #152520; --accent: #6aa9e0; --accent-soft: #1d3346;
+    --green: #6cc19b; --amber: #e0a35a; --warn: #ef8a80; --warn-soft: #3a2224; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11171d; --panel: #18212a; --ink: #e3e9ee; --muted: #9aa8b4; --line: #34424f;
+  --zone-pc: #17222c; --zone-g: #152520; --accent: #6aa9e0; --accent-soft: #1d3346;
+  --green: #6cc19b; --amber: #e0a35a; --warn: #ef8a80; --warn-soft: #3a2224; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 48px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+header { display: grid; gap: 6px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { margin: 0; font-size: clamp(24px, 3.4vw, 34px); line-height: 1.15; font-weight: 700; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 72ch; }
+h2 { margin: 0 0 4px; font-size: 18px; font-weight: 600; text-wrap: balance; }
+.when { margin: 0 0 12px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--amber); }
+
+.diagram { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 960px; height: auto; }
+
+/* SVG styling from tokens */
+.z-pc { fill: var(--zone-pc); stroke: var(--line); }
+.z-g  { fill: var(--zone-g); stroke: var(--line); }
+.zl   { fill: var(--muted); font: 600 12px var(--font-mono); letter-spacing: .06em; }
+.box  { fill: var(--panel); stroke: var(--line); stroke-width: 1.2; }
+.box-key { fill: var(--panel); stroke: var(--accent); stroke-width: 2; }
+.box-time { fill: var(--panel); stroke: var(--amber); stroke-width: 1.6; }
+.box-g { fill: var(--panel); stroke: var(--green); stroke-width: 1.6; }
+.box-warn { fill: var(--warn-soft); stroke: var(--warn); stroke-width: 1.4; }
+.box-opt { fill: var(--panel); stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 5 4; }
+.t-h { fill: var(--ink); font: 600 14px var(--font-body); }
+.t-b { fill: var(--muted); font: 400 12.5px var(--font-body); }
+.t-m { fill: var(--ink); font: 400 11.5px var(--font-mono); }
+.t-step { fill: var(--accent); font: 600 12px var(--font-mono); }
+.t-time { fill: var(--amber); font: 600 12px var(--font-mono); }
+.t-warn { fill: var(--warn); font: 600 12px var(--font-mono); }
+.t-arrow { fill: var(--muted); font: 500 11.5px var(--font-body); }
+.t-up { fill: var(--accent); font: 600 12px var(--font-body); }
+.t-g { fill: var(--green); font: 600 11.5px var(--font-body); }
+.a   { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+.a-up { fill: none; stroke: var(--accent); stroke-width: 3; }
+.a-st { fill: none; stroke: var(--accent); stroke-width: 1.6; }
+.a-upd { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 6 4; }
+.a-g { fill: none; stroke: var(--green); stroke-width: 1.8; }
+.a-time { fill: none; stroke: var(--amber); stroke-width: 1.8; }
+.a-warn { fill: none; stroke: var(--warn); stroke-width: 1.5; }
+.a-opt { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; }
+.pill { fill: var(--accent-soft); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 12px 22px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.sw { width: 26px; height: 0; border-top: 3px solid var(--accent); display: inline-block; }
+.sw.s { border-top: 2px solid var(--accent); }
+.sw.u { border-top: 2px dashed var(--accent); }
+.sw.g { border-top: 2px solid var(--green); }
+.sw.t { border-top: 2px solid var(--amber); }
+.sw.w { border-top: 2px solid var(--warn); }
+.sw.m { border-top: 2px solid var(--muted); }
+
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; align-items: start; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; min-width: 0; }
+ol.steps { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+ol.steps li { padding-left: 2px; }
+ol.steps li::marker { font-family: var(--font-mono); color: var(--accent); font-weight: 600; }
+ul.notes { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+code { font-family: var(--font-mono); font-size: 13px; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+.tablewrap { overflow-x: auto; }
+table.grid { width: 100%; border-collapse: collapse; font-size: 14px; }
+.grid th, .grid td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.grid th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
+.grid td:first-child { font-weight: 600; min-width: 150px; }
+.grid td code { font-size: 12.5px; }
+.flag { display: inline-block; font-family: var(--font-mono); font-size: 11.5px; font-weight: 600; padding: 1px 7px; border-radius: 999px; background: var(--warn-soft); color: var(--warn); white-space: nowrap; }
+.flag.ok { background: var(--accent-soft); color: var(--accent); }
+footer { color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">AIVC · daily low-confidence result · .bat 2026.11.11.5</div>
+    <h1>How each line's daily result reaches Google Drive, Data Studio and Google Chat</h1>
+    <p class="lede">Every night at 12:15&nbsp;am each AIVC PC counts yesterday's low-confidence images, saves the result on its D drive and uploads it to one shared Google Drive folder and one Google Sheet. Every morning at 8&nbsp;am a check posts to Google Chat whether all lines arrived. A new <code>.bat</code> is released once in Drive and every PC updates itself.</p>
+  </header>
+
+  <section class="diagram" aria-label="Workflow diagram">
+    <svg viewBox="0 0 1160 760" role="img" aria-labelledby="dtitle">
+      <title id="dtitle">On each AIVC PC, Task Scheduler runs the .bat at 12:15 am. It finds the AIVC folder in use, counts yesterday's images, saves CSVs on D and uploads them to the Google Apps Script receiver, which saves them in Google Drive and the Google Sheet, keeps a Status tab and hands out new .bat versions. Data Studio reads the Sheet; a check at 8 am posts to Google Chat.</title>
+      <defs>
+        <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker>
+        <marker id="mu" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker>
+        <marker id="ms" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker>
+        <marker id="mg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--green)"/></marker>
+        <marker id="mt" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--amber)"/></marker>
+        <marker id="mw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--warn)"/></marker>
+      </defs>
+
+      <!-- zones -->
+      <rect class="z-pc" x="20" y="20" width="600" height="720" rx="12"/>
+      <text class="zl" x="40" y="46">FACTORY AIVC PC · ONE PER LINE (e.g. F40 L8)</text>
+      <rect class="z-g" x="660" y="20" width="480" height="720" rx="12"/>
+      <text class="zl" x="680" y="46">GOOGLE · DRIVE FOLDER “AIVC LOW CONFIDENCE”</text>
+
+      <!-- PC: left column -->
+      <rect class="box" x="44" y="70" width="250" height="84" rx="8"/>
+      <text class="t-h" x="60" y="95">AIVC software</text>
+      <text class="t-b" x="60" y="116">saves every low-confidence image</text>
+      <text class="t-b" x="60" y="135">and its .txt label, all day long</text>
+
+      <rect class="box" x="44" y="200" width="250" height="96" rx="8"/>
+      <text class="t-h" x="60" y="224">Image folders</text>
+      <text class="t-m" x="60" y="246">D:\AIVCdata\</text>
+      <text class="t-m" x="60" y="264">tag_low_conf_&lt;date&gt;-0000</text>
+      <text class="t-m" x="60" y="282">tag_low_conf_&lt;date&gt;-0000_FKTH</text>
+
+      <rect class="box" x="44" y="344" width="250" height="176" rx="8"/>
+      <text class="t-h" x="60" y="368">AIVC folder in use (on C:)</text>
+      <text class="t-m" x="60" y="391">config.json → factory, line</text>
+      <text class="t-m" x="60" y="409">classes.names → class names</text>
+      <text class="t-m" x="60" y="427">gdrive_token.txt → token</text>
+      <text class="t-b" x="60" y="453">chosen: the copy AIVC runs from,</text>
+      <text class="t-b" x="60" y="471">else the one with the newest logs;</text>
+      <text class="t-b" x="60" y="489">folders named “old” are skipped</text>
+      <text class="t-b" x="60" y="507">(any name, anywhere on C:)</text>
+
+      <rect class="box-opt" x="44" y="640" width="250" height="78" rx="8"/>
+      <text class="t-h" x="60" y="664">The other lines’ PCs</text>
+      <text class="t-b" x="60" y="684">same .bat, task and token,</text>
+      <text class="t-b" x="60" y="702">same receiver</text>
+
+      <!-- PC: right column -->
+      <rect class="box-time" x="344" y="70" width="252" height="84" rx="8"/>
+      <text class="t-time" x="360" y="94">EVERY DAY 12:15 AM</text>
+      <text class="t-h" x="360" y="115">Task Scheduler</text>
+      <text class="t-b" x="360" y="136">AIVCDeleteBot · highest privileges</text>
+
+      <rect class="box-key" x="344" y="200" width="252" height="176" rx="8"/>
+      <text class="t-h" x="360" y="224">daily_low_conf_result.bat</text>
+      <text class="t-step" x="360" y="248">1</text><text class="t-b" x="378" y="248">find the AIVC folder in use</text>
+      <text class="t-step" x="360" y="270">2</text><text class="t-b" x="378" y="270">read factory, line, classes, token</text>
+      <text class="t-step" x="360" y="292">3</text><text class="t-b" x="378" y="292">count yesterday (+ missed days)</text>
+      <text class="t-step" x="360" y="314">4</text><text class="t-b" x="378" y="314">save the CSV files on D:</text>
+      <text class="t-step" x="360" y="336">5</text><text class="t-b" x="378" y="336">upload (0–3 min wait, 5 tries)</text>
+      <text class="t-step" x="360" y="358">6</text><text class="t-b" x="378" y="358">report status, take updates</text>
+
+      <rect class="box" x="344" y="420" width="252" height="120" rx="8"/>
+      <text class="t-h" x="360" y="444">Result files (kept on the PC)</text>
+      <text class="t-m" x="360" y="465">D:\AIVCdata\</text>
+      <text class="t-m" x="360" y="482">ResultDailyLowConfidence\</text>
+      <text class="t-m" x="372" y="499">…_RASM_&lt;date&gt;.csv</text>
+      <text class="t-m" x="372" y="516">…_FKTH_&lt;date&gt;.csv</text>
+      <text class="t-m" x="372" y="533">sent_to_gdrive.txt</text>
+
+      <rect class="box-warn" x="344" y="584" width="252" height="134" rx="8"/>
+      <text class="t-warn" x="360" y="608">IF A RUN FAILS</text>
+      <text class="t-b" x="360" y="630">Task Scheduler shows 0x1</text>
+      <text class="t-b" x="360" y="650">message box on the PC’s screen</text>
+      <text class="t-b" x="360" y="670">error file with every step:</text>
+      <text class="t-m" x="372" y="690">…_&lt;date&gt;_ERROR.txt</text>
+      <text class="t-m" x="372" y="707">…_LAST_ERROR.txt</text>
+
+      <!-- PC arrows -->
+      <path class="a" d="M169,154 V196" marker-end="url(#m)"/>
+      <text class="t-arrow" x="177" y="180">writes</text>
+      <path class="a-time" d="M470,154 V196" marker-end="url(#mt)"/>
+      <text class="t-arrow" x="478" y="180">starts</text>
+      <path class="a" d="M294,248 H340" marker-end="url(#m)"/>
+      <text class="t-arrow" x="301" y="240">reads</text>
+      <path class="a" d="M294,400 H318 V282 H340" marker-end="url(#m)"/>
+      <text class="t-arrow" x="300" y="392">reads</text>
+      <path class="a" d="M470,376 V416" marker-end="url(#m)"/>
+      <text class="t-arrow" x="478" y="400">saves</text>
+      <path class="a-warn" d="M470,540 V580" marker-end="url(#mw)"/>
+      <text class="t-arrow" x="478" y="564">on failure</text>
+
+      <!-- PC <-> Google -->
+      <path class="a-up" d="M596,262 H684" marker-end="url(#mu)"/>
+      <rect class="pill" x="604" y="208" width="72" height="40" rx="6"/>
+      <text class="t-up" x="612" y="224">CSV files</text>
+      <text class="t-up" x="612" y="240">+ token</text>
+      <path class="a-st" d="M596,312 H684" marker-end="url(#ms)"/>
+      <text class="t-up" x="602" y="304">status</text>
+      <path class="a-upd" d="M684,350 H600" marker-end="url(#ms)"/>
+      <text class="t-up" x="602" y="368">newer .bat</text>
+
+      <!-- Google: receiver -->
+      <rect class="box-g" x="688" y="230" width="200" height="150" rx="8"/>
+      <text class="t-h" x="704" y="254">Apps Script receiver</text>
+      <text class="t-m" x="704" y="275">web app …/exec</text>
+      <text class="t-b" x="704" y="297">checks the token</text>
+      <text class="t-b" x="704" y="316">saves files + rows</text>
+      <text class="t-b" x="704" y="335">keeps the Status tab</text>
+      <text class="t-b" x="704" y="354">hands out new .bat</text>
+      <text class="t-b" x="704" y="372">versions from _update</text>
+
+      <!-- Google: Drive -->
+      <rect class="box-g" x="912" y="70" width="210" height="124" rx="8"/>
+      <text class="t-h" x="928" y="94">Google Drive files</text>
+      <text class="t-m" x="928" y="116">AIVC Low Confidence/</text>
+      <text class="t-m" x="932" y="134">&lt;factory&gt;/&lt;line&gt;/ CSVs</text>
+      <text class="t-m" x="932" y="152">_update/</text>
+      <text class="t-m" x="938" y="170">daily_low_conf_result.bat</text>
+
+      <!-- Google: Sheet -->
+      <rect class="box-g" x="912" y="230" width="210" height="124" rx="8"/>
+      <text class="t-h" x="928" y="254">Google Sheet</text>
+      <text class="t-m" x="928" y="275">AIVC Low Confidence Data</text>
+      <text class="t-b" x="928" y="298">Data: a row per side per day</text>
+      <text class="t-b" x="928" y="317">Status: a row per PC</text>
+      <text class="t-b" x="928" y="336">(version, result, last day)</text>
+
+      <!-- Google: Data Studio -->
+      <rect class="box-g" x="912" y="398" width="210" height="72" rx="8"/>
+      <text class="t-h" x="928" y="422">Data Studio</text>
+      <text class="t-b" x="928" y="443">charts from the Data tab</text>
+
+      <!-- Google: daily check -->
+      <rect class="box-time" x="688" y="490" width="200" height="96" rx="8"/>
+      <text class="t-time" x="704" y="514">EVERY DAY 8 AM</text>
+      <text class="t-h" x="704" y="536">Daily check</text>
+      <text class="t-b" x="704" y="557">reads the Data and</text>
+      <text class="t-b" x="704" y="575">Status tabs</text>
+
+      <!-- Google: Chat -->
+      <rect class="box-g" x="912" y="508" width="210" height="96" rx="8"/>
+      <text class="t-h" x="928" y="532">Google Chat space</text>
+      <text class="t-b" x="928" y="553">“OK: all lines uploaded”</text>
+      <text class="t-b" x="928" y="572">or the lines that are missing</text>
+      <text class="t-b" x="928" y="591">and the PCs that failed</text>
+
+      <!-- Google: you -->
+      <rect class="box-opt" x="688" y="640" width="200" height="78" rx="8"/>
+      <text class="t-h" x="704" y="664">You: a new .bat version</text>
+      <text class="t-b" x="704" y="684">upload it once to</text>
+      <text class="t-m" x="704" y="702">_update/</text>
+
+      <!-- Google arrows -->
+      <path class="a-g" d="M888,256 H900 V132 H908" marker-end="url(#mg)"/>
+      <path class="a-g" d="M888,292 H908" marker-end="url(#mg)"/>
+      <path class="a-g" d="M1017,354 V394" marker-end="url(#mg)"/>
+      <text class="t-g" x="1025" y="378">reads</text>
+      <path class="a-time" d="M912,340 H900 V520 H892" marker-end="url(#mt)"/>
+      <path class="a-time" d="M888,556 H908" marker-end="url(#mt)"/>
+      <path class="a-opt" d="M888,680 H1132 V170 H1126" marker-end="url(#m)"/>
+      <text class="t-arrow" x="940" y="672">puts the file in _update</text>
+    </svg>
+  </section>
+
+  <div class="legend" aria-label="Legend">
+    <span><i class="sw"></i>result upload</span>
+    <span><i class="sw s"></i>status report</span>
+    <span><i class="sw u"></i>automatic update</span>
+    <span><i class="sw g"></i>inside Google</span>
+    <span><i class="sw t"></i>timed</span>
+    <span><i class="sw m"></i>on the AIVC PC</span>
+    <span><i class="sw w"></i>failure</span>
+  </div>
+
+  <div class="cols">
+    <section class="card">
+      <h2>Every night, on each PC</h2>
+      <p class="when">12:15 am · Task Scheduler</p>
+      <ol class="steps">
+        <li>All day, AIVC saves each low-confidence image and its <code>.txt</code> label in <code>D:\AIVCdata\tag_low_conf_…</code>.</li>
+        <li>At 12:15&nbsp;am Task Scheduler starts <code>daily_low_conf_result.bat</code> as AIVCDeleteBot. No window opens.</li>
+        <li>The .bat finds the AIVC folder in use on C:, whatever its name, and reads factory and line, the class names and the token from it.</li>
+        <li>It counts yesterday's images per station and side, and the classes from the labels. A day of the last 7 that has images but no result yet is counted too.</li>
+        <li>It saves <code>ResultDailyLowConfidence_RASM_&lt;date&gt;.csv</code> and <code>…_FKTH_&lt;date&gt;.csv</code> in <code>D:\AIVCdata\ResultDailyLowConfidence\</code>.</li>
+        <li>After a random wait of 0–3 minutes it uploads them, trying up to 5 times. The receiver saves the files in Drive and the rows in the Sheet; a day sent again replaces its old rows.</li>
+        <li>It reports its status to the Sheet's Status tab. If a newer .bat is waiting in <code>_update</code>, it downloads it and replaces itself, keeping this PC's settings.</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>Every morning, in Google</h2>
+      <p class="when">8:00 am · Apps Script</p>
+      <ol class="steps">
+        <li>The daily check reads the Data and Status tabs.</li>
+        <li>It posts one message to the Google Chat space: “OK: all lines uploaded”, or the lines that didn't upload yesterday and the PCs whose last run failed.</li>
+        <li>PCs still on an older .bat are listed under the message for information.</li>
+      </ol>
+      <h2 style="margin-top:18px">Releasing a new .bat</h2>
+      <p class="when">once · by you</p>
+      <ol class="steps">
+        <li>Check that <code>LC_VERSION</code> in the new file is higher than the one on the PCs.</li>
+        <li>Upload it to <code>AIVC Low Confidence/_update/</code> as <code>daily_low_conf_result.bat</code> (or <code>.txt</code>), replacing the old one.</li>
+        <li>Each PC takes it at its next run and keeps the old file as <code>.bak</code>.</li>
+        <li>The Status tab's “.bat version” column shows which PCs have it.</li>
+      </ol>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>When something goes wrong</h2>
+    <div class="tablewrap">
+      <table class="grid">
+        <thead><tr><th>Problem</th><th>What happens by itself</th><th>Where you see it</th></tr></thead>
+        <tbody>
+          <tr><td>Upload fails at 12:15&nbsp;am</td><td>5 tries in the same run; if all fail, the next run sends the day</td><td><span class="flag">0x1</span> Chat message, error file</td></tr>
+          <tr><td>PC off or task didn't run</td><td>The next run counts the missed day, while its images are still on the PC</td><td>Chat message “not uploaded”</td></tr>
+          <tr><td>Account can't see AIVC's folder</td><td>Uses the copies it can see and warns</td><td>Status tab, “AIVC folder”: WARNING</td></tr>
+          <tr><td>Account can't read the images</td><td>Stops; nothing saved or uploaded, the old data stays</td><td><span class="flag">0x1</span> error file</td></tr>
+          <tr><td>No token found</td><td>Saves the CSVs, doesn't upload</td><td><span class="flag">0x1</span> message box, error file</td></tr>
+          <tr><td>New class in <code>classes.names</code></td><td>New column in the CSV and the Sheet</td><td>Data Studio: Refresh fields, add it to charts</td></tr>
+          <tr><td>All fine</td><td>—</td><td><span class="flag ok">0x0</span> Chat: “OK: all lines uploaded”</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Where everything lives</h2>
+    <div class="tablewrap">
+      <table class="grid">
+        <thead><tr><th>Item</th><th>Location</th><th>Set up</th></tr></thead>
+        <tbody>
+          <tr><td>The .bat</td><td>The folder the scheduled task points to (e.g. <code>AutoDeleteOldFiles</code>), with the previous version kept as <code>.bat.bak</code></td><td>each PC once; then updates itself</td></tr>
+          <tr><td>Scheduled task</td><td>Task Scheduler, 12:15&nbsp;am daily, action = the .bat, user AIVCDeleteBot, “Run with highest privileges”</td><td>each PC</td></tr>
+          <tr><td>AIVC folder</td><td>The copy in use on C: (e.g. <code>C:\AIVCexe</code>, <code>AIVC 2</code>), with <code>config.json</code>, <code>classes.names</code>, <code>gdrive_token.txt</code></td><td>AIVC's own; token added once</td></tr>
+          <tr><td>Images (input)</td><td><code>D:\AIVCdata\tag_low_conf_&lt;date&gt;…</code></td><td>made by AIVC</td></tr>
+          <tr><td>Result CSVs</td><td><code>D:\AIVCdata\ResultDailyLowConfidence\</code> (plus <code>sent_to_gdrive.txt</code>)</td><td>made by the .bat</td></tr>
+          <tr><td>Receiver</td><td>Google Apps Script web app ending in <code>/exec</code>; token, Sheet and Chat link in its Script properties</td><td>once</td></tr>
+          <tr><td>Drive folder</td><td>Folder “AIVC Low Confidence” on the shared drive: a subfolder per factory and line (files named <code>…_&lt;factory&gt;_&lt;line&gt;_RASM_&lt;date&gt;.csv</code>), and <code>_update</code></td><td>once</td></tr>
+          <tr><td>Google Sheet</td><td>“AIVC Low Confidence Data”, tabs Data and Status</td><td>once</td></tr>
+          <tr><td>Daily check</td><td>Apps Script trigger, 8:00&nbsp;am, posts to the Chat space in <code>CHAT_WEBHOOK</code></td><td>once (<code>setupDailyCheck</code>)</td></tr>
+          <tr><td>Report</td><td>Data Studio, reading the Data tab</td><td>once</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>Classes counted (from each PC's <code>classes.names</code>): Good Glove, Tearing, Single Arm, Double Dip, Unstripped, No Glove, Stained, Lump, Glitch, Other, FKTH, Glove Stuck, Empty Link.</footer>
+</div>
+</body>
+</html>
