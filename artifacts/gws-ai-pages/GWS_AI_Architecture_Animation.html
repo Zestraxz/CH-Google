@@ -1,0 +1,1391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>GWS + AI · Enterprise Architecture &amp; Workflow Integration Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap">
+<style>
+/* =====================================================================
+   GWS + AI ENTERPRISE ARCHITECTURE TERMINAL
+   Integrated Workflow Replay & Interactive System Topology
+   Design Basis: CH TV White Terminal & Google Workspace AI Ecosystem
+   ===================================================================== */
+:root {
+  --bg: #f4f6f9;
+  --bg-pattern: #e8ecf2;
+  --panel: #ffffff;
+  --panel-alt: #f8fafc;
+  --ink: #111827;
+  --ink-secondary: #374151;
+  --muted: #64748b;
+  --faint: #94a3b8;
+  --line: #cbd5e1;
+  --line-light: #e2e8f0;
+  
+  /* Brand & Status Accents */
+  --blue: #1a73e8;
+  --blue-soft: #e8f0fe;
+  --blue-glow: rgba(26, 115, 232, 0.25);
+  --green: #1e8e3e;
+  --green-soft: #e6f4ea;
+  --green-glow: rgba(30, 142, 62, 0.25);
+  --amber: #f9ab00;
+  --amber-dark: #b06000;
+  --amber-soft: #fef7e0;
+  --amber-glow: rgba(249, 171, 0, 0.25);
+  --red: #d93025;
+  --red-soft: #fce8e6;
+  --red-glow: rgba(217, 48, 37, 0.25);
+  --purple: #9334e8;
+  --purple-soft: #f3e8fd;
+  --purple-glow: rgba(147, 52, 232, 0.25);
+  --teal: #12b5cb;
+  --teal-soft: #e4f7fb;
+
+  /* Architectural Zones */
+  --zone-edge: #f1f5f9;
+  --zone-bridge: #eff6ff;
+  --zone-cloud: #f0fdf4;
+  --zone-ai: #faf5ff;
+  --zone-delivery: #fffbeb;
+
+  --font-body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+}
+
+[data-theme="dark"] {
+  --bg: #0b0f17;
+  --bg-pattern: #131b26;
+  --panel: #111827;
+  --panel-alt: #162032;
+  --ink: #f9fafb;
+  --ink-secondary: #e5e7eb;
+  --muted: #94a3b8;
+  --faint: #64748b;
+  --line: #1f293d;
+  --line-light: #2d3748;
+  
+  --blue: #4285f4;
+  --blue-soft: #1e293b;
+  --green: #34a853;
+  --green-soft: #064e3b;
+  --amber: #fbbc04;
+  --amber-dark: #fcd34d;
+  --amber-soft: #451a03;
+  --red: #ea4335;
+  --red-soft: #450a0a;
+  --purple: #a855f7;
+  --purple-soft: #3b0764;
+  --teal: #22d3ee;
+  --teal-soft: #083344;
+
+  --zone-edge: #131d2e;
+  --zone-bridge: #0f233f;
+  --zone-cloud: #0d281e;
+  --zone-ai: #24143a;
+  --zone-delivery: #2e2009;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 16px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.terminal-container {
+  width: 100%;
+  max-width: 1440px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header & Mission Bar */
+.t-header {
+  background: var(--panel-alt);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.t-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.window-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+.dot-red { background: #ff5f56; border: 1px solid #e0443e; }
+.dot-yellow { background: #ffbd2e; border: 1px solid #dea123; }
+.dot-green { background: #27c93f; border: 1px solid #1aab29; }
+
+.t-title-group {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.t-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.t-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  border: 1px solid var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.t-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Mode Switcher Tabs */
+.mode-tabs {
+  display: flex;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.mode-tab {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mode-tab:hover {
+  color: var(--ink);
+  background: var(--panel-alt);
+}
+
+.mode-tab.active {
+  background: var(--blue);
+  color: #ffffff;
+}
+
+.tool-btn {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.tool-btn:hover {
+  border-color: var(--muted);
+  color: var(--ink);
+}
+
+/* Master Grid Layout */
+.t-body {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  min-height: 820px;
+}
+
+@media (max-width: 1080px) {
+  .t-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Left Role & Agent Rail */
+.t-rail {
+  background: var(--panel-alt);
+  border-right: 1px solid var(--line);
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rail-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+
+.rail-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.rail-counter {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.agent-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.agent-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 12px 14px;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.agent-card:hover {
+  border-color: var(--blue);
+  transform: translateY(-1px);
+}
+
+.agent-card.active {
+  border-color: var(--card-color, var(--blue));
+  border-width: 2px;
+  padding: 11px 13px;
+  box-shadow: 0 0 0 3px var(--card-glow, var(--blue-glow));
+}
+
+.agent-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.agent-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--card-color, var(--ink));
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.agent-status-pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--panel-alt);
+  color: var(--muted);
+  border: 1px solid var(--line);
+  letter-spacing: 0.05em;
+}
+
+.agent-card.active .agent-status-pill {
+  background: var(--card-soft, var(--blue-soft));
+  color: var(--card-color, var(--blue));
+  border-color: var(--card-color, var(--blue));
+}
+
+.agent-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+.agent-metric {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--panel-alt);
+  padding: 4px 8px;
+  border-radius: 5px;
+  border: 1px solid var(--line-light);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Center Stage & Visualizer */
+.t-stage {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+}
+
+.stage-canvas-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--panel);
+}
+
+#workflowSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+}
+
+/* Bottom Inspection & Terminal Deck */
+.t-deck {
+  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--panel-alt);
+}
+
+@media (max-width: 900px) {
+  .t-deck {
+    grid-template-columns: 1fr;
+  }
+}
+
+.deck-pane {
+  padding: 14px 18px;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.deck-pane:last-child {
+  border-right: none;
+}
+
+.pane-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pane-title {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.terminal-view {
+  background: #0d1117;
+  color: #c9d1d9;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  height: 136px;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border: 1px solid #30363d;
+}
+
+.term-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.term-time { color: #8b949e; }
+.term-tag-blue { color: #58a6ff; font-weight: 600; }
+.term-tag-green { color: #3fb950; font-weight: 600; }
+.term-tag-amber { color: #d29922; font-weight: 600; }
+.term-tag-purple { color: #bc8cff; font-weight: 600; }
+.term-tag-red { color: #ff7b72; font-weight: 600; }
+
+.term-cursor {
+  display: inline-block;
+  width: 7px;
+  height: 13px;
+  background: #58a6ff;
+  vertical-align: middle;
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Live Data Record Inspector */
+.record-inspector {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  height: 136px;
+}
+
+.ri-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.ri-label {
+  font-size: 10.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-family: var(--font-mono);
+}
+
+.ri-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ri-value.highlight { color: var(--blue); }
+.ri-value.warn { color: var(--amber-dark); }
+.ri-value.crit { color: var(--red); }
+.ri-value.ok { color: var(--green); }
+
+/* VCR Playback Controller Bar */
+.t-vcr {
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+  padding: 10px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.vcr-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vcr-btn {
+  background: var(--panel-alt);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.vcr-btn:hover {
+  background: var(--blue);
+  color: #ffffff;
+  border-color: var(--blue);
+}
+
+.vcr-btn-primary {
+  background: var(--blue);
+  color: #ffffff;
+  border-color: var(--blue);
+}
+
+.vcr-btn-primary:hover {
+  background: #1557b0;
+}
+
+.vcr-timeline {
+  flex: 1;
+  min-width: 240px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.scrub-slider {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--line);
+  outline: none;
+  cursor: pointer;
+  accent-color: var(--blue);
+}
+
+.time-readout {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  min-width: 95px;
+  text-align: right;
+}
+
+.vcr-metrics {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.vcr-metric-pill {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vcr-metric-pill strong {
+  color: var(--ink);
+}
+
+/* Fullscreen Fit Screen Mode */
+.terminal-container.fit-screen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  border-radius: 0;
+  border: none;
+  z-index: 9999;
+}
+
+/* SVG Typography & Effects */
+.svg-label { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
+.svg-title { font-family: var(--font-body); font-size: 14px; font-weight: 700; }
+.svg-sub { font-family: var(--font-body); font-size: 11.5px; }
+.svg-mono { font-family: var(--font-mono); font-size: 11px; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="terminal-container" id="terminalRoot">
+
+  <!-- Header Bar -->
+  <header class="t-header">
+    <div class="t-header-left">
+      <div class="window-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <div class="t-title-group">
+        <span class="t-title">GWS + AI · Enterprise Architecture Station</span>
+        <span class="t-badge" id="workflowBadge">AIVC Low-Conf Pipeline</span>
+      </div>
+    </div>
+
+    <!-- Mode Switcher Tabs -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-mode="aivc" id="tabAivc">
+        <span>⚡ AIVC 12:15 AM Pipeline</span>
+      </button>
+      <button class="mode-tab" data-mode="capa" id="tabCapa">
+        <span>🛡️ Availability &amp; CAPA</span>
+      </button>
+      <button class="mode-tab" data-mode="task" id="tabTask">
+        <span>🤖 Task Tracker Agent</span>
+      </button>
+      <button class="mode-tab" data-mode="topology" id="tabTopology">
+        <span>🌐 Full Ecosystem Matrix</span>
+      </button>
+    </div>
+
+    <!-- Quick Utilities -->
+    <div class="t-header-right">
+      <button class="tool-btn" id="themeToggle" title="Toggle Light/Dark Theme">
+        <span id="themeIcon">🌓</span> Theme
+      </button>
+      <button class="tool-btn" id="soundToggle" title="Toggle Synthesized Audio Feedback">
+        <span id="soundIcon">🔊</span> Sound
+      </button>
+      <button class="tool-btn" id="fullToggle" title="Toggle Fullscreen">
+        <span>⛶</span> Expand
+      </button>
+    </div>
+  </header>
+
+  <!-- Body Grid -->
+  <div class="t-body">
+
+    <!-- Left Rail: Roles & Active Agents -->
+    <aside class="t-rail">
+      <div class="rail-heading">
+        <span class="rail-title" id="railTitle">AUTONOMOUS ROLES</span>
+        <span class="rail-counter" id="railCounter">6 active</span>
+      </div>
+      <div class="agent-card-list" id="agentCardList">
+        <!-- Rendered dynamically by current mode & timeline state -->
+      </div>
+    </aside>
+
+    <!-- Center Stage: SVG Architecture Diagram & Flow Engine -->
+    <main class="t-stage">
+      <div class="stage-canvas-wrap" id="stageCanvasWrap">
+        <svg id="workflowSvg" viewBox="0 0 1120 540" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <!-- Rendered dynamically in 60fps / requestAnimationFrame loop -->
+        </svg>
+      </div>
+
+      <!-- Bottom Deck: Real Record Inspector & Monospace Terminal -->
+      <div class="t-deck">
+        <!-- Left: Current Telemetry / Payload Record -->
+        <div class="deck-pane">
+          <div class="pane-title-row">
+            <span class="pane-title" id="recordPaneTitle">PAYLOAD RECORD · INSPECTION</span>
+            <span class="t-badge" style="font-size:10px;" id="recordStatusBadge">TRANSMITTING</span>
+          </div>
+          <div class="record-inspector" id="recordInspector">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Right: Live Monospace Terminal Log -->
+        <div class="deck-pane">
+          <div class="pane-title-row">
+            <span class="pane-title">$ tail -f gws-enterprise-agent.log</span>
+            <span style="font-family:var(--font-mono); font-size:11px; color:var(--muted);" id="logRate">30 msg/sec</span>
+          </div>
+          <div class="terminal-view" id="terminalLog">
+            <!-- Streamed log lines -->
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- VCR Playback Controller Bar -->
+  <footer class="t-vcr">
+    <div class="vcr-controls">
+      <button class="vcr-btn vcr-btn-primary" id="playBtn">⏸ Pause</button>
+      <button class="vcr-btn" id="stepBtn" title="Step Next Event (Right Arrow)">⏭ Step</button>
+      <button class="vcr-btn" id="resetBtn" title="Reset Timeline (R)">↺ Reset</button>
+      <select class="vcr-btn" id="speedSelect" style="cursor:pointer;" title="Playback Speed">
+        <option value="0.5">0.5x Speed</option>
+        <option value="1" selected>1.0x Normal</option>
+        <option value="2">2.0x Fast</option>
+        <option value="4">4.0x Turbo</option>
+      </select>
+    </div>
+
+    <div class="vcr-timeline">
+      <input type="range" class="scrub-slider" id="timelineScrubber" min="0" max="24" step="0.05" value="0">
+      <span class="time-readout" id="timeReadout">0.0s / 24.0s</span>
+    </div>
+
+    <div class="vcr-metrics">
+      <div class="vcr-metric-pill">
+        <span>RECORDS:</span>
+        <strong id="metricRecords">18 / 18</strong>
+      </div>
+      <div class="vcr-metric-pill">
+        <span>HEALTH:</span>
+        <strong style="color:var(--green);" id="metricHealth">100% OK</strong>
+      </div>
+      <div class="vcr-metric-pill">
+        <span>HOT-RELOAD:</span>
+        <strong id="metricVersion">v2026.11.11.5</strong>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+/* =====================================================================
+   GWS + AI ARCHITECTURE ANIMATION CORE ENGINE
+   Deterministic time loop, multi-workflow topology, and audio synthesis
+   ===================================================================== */
+
+const DURATION = 24.0; // 24 seconds per complete operational cycle
+let currentMode = 'aivc'; // 'aivc' | 'capa' | 'task' | 'topology'
+let t = 0;
+let isPlaying = true;
+let speed = 1.0;
+let lastFrameTime = performance.now();
+let soundEnabled = true;
+
+// Web Audio API context for subtle mechanical/cyber clicks & hums
+let audioCtx = null;
+function initAudio() {
+  if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+}
+
+function playBeep(freq = 600, duration = 0.04, type = 'sine') {
+  if (!soundEnabled || !audioCtx) return;
+  try {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  } catch(e) {}
+}
+
+/* =====================================================================
+   EVIDENCE & DATASETS FROM WORKFLOW PAGES
+   ===================================================================== */
+
+// 1. AIVC Low-Confidence Dataset (18 Lines)
+const aivcLines = [
+  { factory: "F40", line: "L8",  lowConf: 142, status: "FLAG_HIGH", time: "00:15:02", file: "F40_L8_20261112.csv", bytes: "42.8 KB" },
+  { factory: "F40", line: "L12", lowConf: 98,  status: "FLAG_WARN", time: "00:15:04", file: "F40_L12_20261112.csv", bytes: "31.2 KB" },
+  { factory: "F4",  line: "L10S",lowConf: 12,  status: "NORMAL",    time: "00:15:07", file: "F4_L10S_20261112.csv", bytes: "14.1 KB" },
+  { factory: "F27", line: "L8D", lowConf: 18,  status: "NORMAL",    time: "00:15:10", file: "F27_L8D_20261112.csv", bytes: "16.4 KB" },
+  { factory: "F33", line: "L10D",lowConf: 34,  status: "NORMAL",    time: "00:15:12", file: "F33_L10D_20261112.csv", bytes: "22.5 KB" },
+  { factory: "F36", line: "L10S",lowConf: 26,  status: "NORMAL",    time: "00:15:15", file: "F36_L10S_20261112.csv", bytes: "19.8 KB" }
+];
+
+// 2. Availability & CAPA Downtime Dataset (from Availability_RC_CAPA_Summary.html)
+const capaIncidents = [
+  { factory: "F33", line: "L10D", date: "2026-10-06", rootCause: "Off dip cleaning of formers", capa: "Study alternative chemical for off dip cleaning to reduce duration", cat: "Planned Maintenance", hours: 6.5 },
+  { factory: "F36", line: "L10S", date: "2026-09-25", rootCause: "Boiler breakdown: Conveyor 3 liner worn out, chain jammed", capa: "Replace Conveyor 3 liner, align chain, replace scrapper plate", cat: "Equipment Breakdown", hours: 14.2 },
+  { factory: "F18B",line: "L4D",  date: "2026-09-30", rootCause: "TNB shutdown Olak Lempit: No electricity from 10am to 3pm", capa: "Pumping latex, cleaning tanks, consolidate TPM during power outage", cat: "Other", hours: 5.0 },
+  { factory: "F41", line: "DF1",  date: "2026-09-18", rootCause: "S plate before oven open welded causing holder stuck", capa: "Re-weld S plate; daily maintenance inspection on open welding risk", cat: "Equipment Breakdown", hours: 8.5 },
+  { factory: "F38", line: "L8D",  date: "2026-09-07", rootCause: "SAP catch up for USAW35 output during product changeover", capa: "Plan SAP material code 1 day ahead; train shift leader", cat: "Process/Material Issue", hours: 3.2 }
+];
+
+// 3. Task Tracker Dataset (from Task-tracker-workflow.html)
+const trackerTasks = [
+  { id: "TSK-104", title: "F33 L10D Chlorine Tank Replacement", owner: "Maintenance Team", date: "2026-11-13 09:00", status: "SCHEDULED", channel: "Meet & Calendar", sync: "Sheet + Gmail" },
+  { id: "TSK-105", title: "AIVC Hot-Reload .bat Version 2026.11.11.5", owner: "Automation Lead", date: "2026-11-13 11:30", status: "VERIFIED", channel: "Google Drive Sync", sync: "All 18 PCs" },
+  { id: "TSK-106", title: "Q4 Top Glove Availability Review Dossier", owner: "Production GM", date: "2026-11-13 14:00", status: "AI DRAFTED", channel: "Google Docs + Gem", sync: "Executive Space" }
+];
+
+/* =====================================================================
+   ROLES & AGENT RAIL DEFINITIONS
+   ===================================================================== */
+
+const workflowRoles = {
+  aivc: [
+    { id: 'sched', name: 'TASK SCHEDULER', color: 'var(--amber)', soft: 'var(--amber-soft)', glow: 'var(--amber-glow)', desc: '12:15 AM Windows Scheduler triggers daily automated batch cycle', rule: 'Executes D:\\AIVC\\daily_run.bat', badge: 'SCHEDULE' },
+    { id: 'scan',  name: 'EDGE SCANNER',    color: 'var(--blue)',  soft: 'var(--blue-soft)',  glow: 'var(--blue-glow)',  desc: 'Counts yesterday’s low-confidence inference images on local D drive', rule: 'Scans & formats daily CSV', badge: 'INSPECT' },
+    { id: 'post',  name: 'APPS SCRIPT POST',color: 'var(--purple)',soft: 'var(--purple-soft)',glow: 'var(--purple-glow)',desc: 'Secure curl HTTPS payload with SHA-256 header authentication', rule: 'doPost() Endpoint receiver', badge: 'SECURE_TX' },
+    { id: 'drive', name: 'DRIVE & SHEETS', color: 'var(--green)', soft: 'var(--green-soft)', glow: 'var(--green-glow)', desc: 'Stores raw CSV in Google Drive folder and appends row to Master Sheet', rule: 'Atomic row append + backup', badge: 'VAULT' },
+    { id: 'bi',    name: 'LOOKER STUDIO',  color: 'var(--teal)',  soft: 'var(--teal-soft)',  glow: 'var(--teal-glow)',  desc: 'Refreshes live ranking charts and plant performance heatmaps', rule: 'Dynamic DirectQuery cache', badge: 'METRICS' },
+    { id: 'chat',  name: 'CHAT DISPATCHER',color: 'var(--red)',   soft: 'var(--red-soft)',   glow: 'var(--red-glow)',   desc: '8:00 AM Cron check compiles executive summary & posts Card to Space', rule: 'Alerts high-defect lines', badge: 'BROADCAST' }
+  ],
+  capa: [
+    { id: 'decl',  name: 'INCIDENT SENSOR',color: 'var(--red)',   soft: 'var(--red-soft)',   glow: 'var(--red-glow)',   desc: 'Plant floor submits downtime declaration via Google Form / Webhook', rule: 'Line stoppage time registered', badge: 'INCIDENT' },
+    { id: 'gemini',name: 'GEMINI PRO NLP', color: 'var(--purple)',soft: 'var(--purple-soft)',glow: 'var(--purple-glow)',desc: 'Semantic classification of Root Cause text into standard taxonomy', rule: 'Zero-shot categorization', badge: 'AI_INFER' },
+    { id: 'capa_ai',name:'CAPA SYNTHESIZER',color:'var(--blue)',  soft: 'var(--blue-soft)',  glow: 'var(--blue-glow)',  desc: 'Cross-checks historical solutions to recommend standard CAPA action', rule: 'Vector retrieval on past fixes', badge: 'RECOMMEND' },
+    { id: 'ledger',name: 'AVAILABILITY KPI',color:'var(--green)', soft: 'var(--green-soft)', glow: 'var(--green-glow)', desc: 'Calculates Availability %, MTTR, and Factory ranking scores', rule: 'Automated math in GSheets', badge: 'SCORE' },
+    { id: 'review',name: 'ENGINEER PORTAL',color: 'var(--amber)', soft: 'var(--amber-soft)', glow: 'var(--amber-glow)', desc: 'Engineers review, verify, and stamp corrective action in GSheet', rule: 'Role-based edit permissions', badge: 'VERIFY' },
+    { id: 'mgmt',  name: 'MGMT BROADCAST', color: 'var(--teal)',  soft: 'var(--teal-soft)',  glow: 'var(--teal-glow)',  desc: 'Pushes daily Availability Pareto Card to Management Chat Room', rule: 'Executive decision dispatch', badge: 'ALERT' }
+  ],
+  task: [
+    { id: 'prompt',name: 'CHAT COMMAND BOT',color:'var(--blue)',  soft: 'var(--blue-soft)',  glow: 'var(--blue-glow)',  desc: 'User interacts with Gemini Gem inside Google Chat directly', rule: 'Natural Language Input', badge: 'PARSER' },
+    { id: 'agent', name: 'GWS AGENT CORE',  color:'var(--purple)',soft: 'var(--purple-soft)',glow: 'var(--purple-glow)',desc: 'Gemini reasoning agent maps intents to Google Workspace APIs', rule: 'Tool calling & orchestration', badge: 'PLANNER' },
+    { id: 'sheet', name: 'TASK TRACKER DB', color:'var(--green)', soft: 'var(--green-soft)', glow: 'var(--green-glow)', desc: 'Central tracking Sheet maintains real-time milestone state', rule: 'Relational Google Sheet', badge: 'DATABASE' },
+    { id: 'cal',   name: 'CALENDAR & MEET', color:'var(--amber)', soft: 'var(--amber-soft)', glow: 'var(--amber-glow)', desc: 'Auto-schedules required briefing sessions with Meet video room', rule: 'Google Calendar API V3', badge: 'MEET_SYNC' },
+    { id: 'mail',  name: 'GMAIL DISPATCH',  color:'var(--teal)',  soft: 'var(--teal-soft)',  glow: 'var(--teal-glow)',  desc: 'Distributes formal task assignments and RSVP invitations', rule: 'Gmail API rich HTML card', badge: 'NOTIFY' },
+    { id: 'audit', name: 'COMPLETION GATE', color:'var(--red)',   soft: 'var(--red-soft)',   glow: 'var(--red-glow)',   desc: 'Tracks due dates and escalates uncompleted action items', rule: 'Automated follow-up loop', badge: 'MONITOR' }
+  ],
+  topology: [
+    { id: 'edge',  name: 'FACTORY EDGE',    color:'var(--amber)', soft: 'var(--amber-soft)', glow: 'var(--amber-glow)', desc: '18 Plant PCs, Vision Cameras, Local Hard Drives & Task Scheduler', rule: 'Distributed Edge Layer', badge: 'EDGE_PC' },
+    { id: 'gw',    name: 'APPS SCRIPT V8', color:'var(--blue)',  soft: 'var(--blue-soft)',  glow: 'var(--blue-glow)',  desc: 'Zero-cost serverless micro-services connecting Edge to Google Cloud', rule: 'Workspace Webhook Gateway', badge: 'API_GW' },
+    { id: 'core',  name: 'GWS DATA REPO',  color:'var(--green)', soft: 'var(--green-soft)', glow: 'var(--green-glow)', desc: 'Shared Google Drive folders and relational Google Sheet databases', rule: 'Corporate Single Source', badge: 'STORAGE' },
+    { id: 'gemini',name: 'GEMINI 3.8 & GEMS',color:'var(--purple)',soft:'var(--purple-soft)',glow: 'var(--purple-glow)',desc: 'Multimodal analysis, RAG over Workspace Drive, Agentic Flow logic', rule: 'AI Intelligence Core', badge: 'GEMINI' },
+    { id: 'bi',    name: 'LOOKER DASHBOARD',color:'var(--teal)',  soft: 'var(--teal-soft)',  glow: 'var(--teal-glow)',  desc: 'Interactive plant availability, quality Pareto, and trend analysis', rule: 'Executive Visualizations', badge: 'BI_LAYER' },
+    { id: 'collab',name: 'GOOGLE CHAT ROOMS',color:'var(--red)',  soft: 'var(--red-soft)',   glow: 'var(--red-glow)',   desc: 'Operations & Engineering teams collaborate in structured Spaces', rule: 'Human-in-the-Loop Hub', badge: 'COMM_HUB' }
+  ]
+};
+
+/* =====================================================================
+   INTERPOLATION & TIMELINE STATE EVALUATION
+   ===================================================================== */
+
+function ease(p) {
+  return p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
+}
+
+function getWorkflowState(time, mode) {
+  const normTime = time % DURATION;
+  const cycleFraction = normTime / DURATION;
+  
+  // 6 discrete stages in every 24s cycle (4.0s per stage)
+  const stageDuration = DURATION / 6;
+  const stageIndex = Math.min(5, Math.floor(normTime / stageDuration));
+  const stageProgress = (normTime % stageDuration) / stageDuration;
+
+  let activeData = null;
+  if (mode === 'aivc') {
+    const itemIdx = Math.floor(normTime / (DURATION / aivcLines.length)) % aivcLines.length;
+    activeData = aivcLines[itemIdx];
+  } else if (mode === 'capa') {
+    const itemIdx = Math.floor(normTime / (DURATION / capaIncidents.length)) % capaIncidents.length;
+    activeData = capaIncidents[itemIdx];
+  } else if (mode === 'task') {
+    const itemIdx = Math.floor(normTime / (DURATION / trackerTasks.length)) % trackerTasks.length;
+    activeData = trackerTasks[itemIdx];
+  } else {
+    activeData = aivcLines[stageIndex % aivcLines.length];
+  }
+
+  return {
+    time: normTime,
+    stageIndex,
+    stageProgress,
+    activeData,
+    cycleFraction
+  };
+}
+
+/* =====================================================================
+   SVG TOPOLOGICAL ARCHITECTURE RENDERER
+   ===================================================================== */
+
+function renderTopologySvg(state, mode) {
+  const s = state;
+  const p = s.stageProgress;
+  const idx = s.stageIndex;
+  
+  // Coordinates of the 6 Topological Stations (Left to Right / Flow Route)
+  const nodes = [
+    { id: 0, x: 90,  y: 260, label: "FACTORY EDGE PC", sub: "Task Scheduler 12:15 AM", zone: "var(--zone-edge)", color: "var(--amber)", icon: "💻" },
+    { id: 1, x: 280, y: 160, label: "LOCAL DISK STORAGE", sub: "D:\\AIVC\\ Daily CSVs", zone: "var(--zone-edge)", color: "var(--blue)", icon: "💾" },
+    { id: 2, x: 480, y: 260, label: "APPS SCRIPT WEBHOOK", sub: "doPost() Auth & CORS", zone: "var(--zone-bridge)", color: "var(--purple)", icon: "⚡" },
+    { id: 3, x: 680, y: 160, label: "GOOGLE DRIVE & SHEET", sub: "Master Ledger & Backup", zone: "var(--zone-cloud)", color: "var(--green)", icon: "📂" },
+    { id: 4, x: 880, y: 260, label: "GEMINI AI & LOOKER", sub: "NLP Classification & BI", zone: "var(--zone-ai)", color: "var(--teal)", icon: "✨" },
+    { id: 5, x: 1040,y: 380, label: "GOOGLE CHAT SPACE", sub: "8:00 AM Alert Broadcast", zone: "var(--zone-delivery)", color: "var(--red)", icon: "💬" }
+  ];
+
+  if (mode === 'capa') {
+    nodes[0].label = "PLANT LINE DOWN"; nodes[0].sub = "Incident declaration";
+    nodes[1].label = "GOOGLE FORM / UI"; nodes[1].sub = "Downtime submission";
+    nodes[2].label = "APPS SCRIPT ROUTER"; nodes[2].sub = "Webhook verification";
+    nodes[3].label = "AVAILABILITY SHEET"; nodes[3].sub = "MTTR & Line Ranking";
+    nodes[4].label = "GEMINI PRO ENGINE"; nodes[4].sub = "Root Cause NLP & CAPA";
+    nodes[5].label = "OPS CHAT ALERT"; nodes[5].sub = "Management Directive";
+  } else if (mode === 'task') {
+    nodes[0].label = "USER PROMPT"; nodes[0].sub = "Gemini Gem in Chat";
+    nodes[1].label = "INTENT PARSER"; nodes[1].sub = "Tool calling extractor";
+    nodes[2].label = "GAS ORCHESTRATOR"; nodes[2].sub = "Workspace API runtime";
+    nodes[3].label = "TRACKER GSHEET"; nodes[3].sub = "Central task status";
+    nodes[4].label = "CALENDAR & MEET"; nodes[4].sub = "Video room auto-created";
+    nodes[5].label = "GMAIL & CHAT RSVP"; nodes[5].sub = "Participant assignment";
+  }
+
+  // Paths linking nodes: 0->1, 1->2, 2->3, 3->4, 4->5, plus feedback 5->0 (Hot-Reload)
+  const segments = [
+    { from: 0, to: 1, color: "var(--amber)" },
+    { from: 1, to: 2, color: "var(--blue)" },
+    { from: 2, to: 3, color: "var(--purple)" },
+    { from: 3, to: 4, color: "var(--green)" },
+    { from: 4, to: 5, color: "var(--teal)" },
+    { from: 5, to: 0, color: "var(--red)", feedback: true }
+  ];
+
+  let svg = `
+    <defs>
+      <filter id="active-glow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="6" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+      </filter>
+      <linearGradient id="busGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="var(--blue)"/>
+        <stop offset="50%" stop-color="var(--purple)"/>
+        <stop offset="100%" stop-color="var(--green)"/>
+      </linearGradient>
+      <pattern id="gridPattern" width="24" height="24" patternUnits="userSpaceOnUse">
+        <path d="M 24 0 L 0 0 0 24" fill="none" stroke="var(--line-light)" stroke-width="0.8" opacity="0.6"/>
+      </pattern>
+    </defs>
+
+    <!-- Canvas Background Grid -->
+    <rect width="1120" height="540" fill="var(--panel)"/>
+    <rect width="1120" height="540" fill="url(#gridPattern)"/>
+
+    <!-- Architectural Swimlane Zones -->
+    <rect x="20" y="20" width="370" height="490" rx="14" fill="var(--zone-edge)" stroke="var(--line)" stroke-width="1.2" opacity="0.85"/>
+    <text x="40" y="52" fill="var(--muted)" class="svg-label">ZONE 01 · FACTORY EDGE LAYER</text>
+
+    <rect x="410" y="20" width="300" height="490" rx="14" fill="var(--zone-cloud)" stroke="var(--line)" stroke-width="1.2" opacity="0.85"/>
+    <text x="430" y="52" fill="var(--muted)" class="svg-label">ZONE 02 · GOOGLE WORKSPACE BRIDGE</text>
+
+    <rect x="730" y="20" width="370" height="490" rx="14" fill="var(--zone-ai)" stroke="var(--line)" stroke-width="1.2" opacity="0.85"/>
+    <text x="750" y="52" fill="var(--muted)" class="svg-label">ZONE 03 · GEMINI AI &amp; COLLABORATION</text>
+  `;
+
+  // Draw Inter-Station Bus Connection Lines
+  segments.forEach((seg, i) => {
+    const f = nodes[seg.from];
+    const to = nodes[seg.to];
+    
+    let pathD = "";
+    if (seg.feedback) {
+      // Loop feedback line along bottom
+      pathD = `M ${f.x} ${f.y + 45} C ${f.x - 100} 510, ${to.x + 100} 510, ${to.x} ${to.y + 45}`;
+    } else {
+      const midX = (f.x + to.x) / 2;
+      pathD = `M ${f.x} ${f.y} C ${midX} ${f.y}, ${midX} ${to.y}, ${to.x} ${to.y}`;
+    }
+
+    const isCurrentActive = idx === i;
+    svg += `<path d="${pathD}" fill="none" stroke="${isCurrentActive ? seg.color : 'var(--line)'}" stroke-width="${isCurrentActive ? '2.8' : '1.5'}" stroke-dasharray="${seg.feedback ? '5 5' : 'none'}" opacity="${isCurrentActive ? '1' : '0.4'}"/>`;
+
+    // Draw traveling pulse packet along active segment
+    if (isCurrentActive) {
+      const currP = ease(p);
+      let px, py;
+      if (seg.feedback) {
+        // Approximate quadratic bezier for feedback
+        const u = 1 - currP;
+        const ctrlX = (f.x + to.x) / 2;
+        const ctrlY = 520;
+        px = u * u * f.x + 2 * u * currP * ctrlX + currP * currP * to.x;
+        py = u * u * (f.y + 45) + 2 * u * currP * ctrlY + currP * currP * (to.y + 45);
+      } else {
+        const midX = (f.x + to.x) / 2;
+        // Cubic bezier interpolation
+        const u = 1 - currP;
+        px = u*u*u*f.x + 3*u*u*currP*midX + 3*u*currP*currP*midX + currP*currP*currP*to.x;
+        py = u*u*u*f.y + 3*u*u*currP*f.y + 3*u*currP*currP*to.y + currP*currP*currP*to.y;
+      }
+
+      svg += `
+        <circle cx="${px}" cy="${py}" r="8" fill="${seg.color}" filter="url(#active-glow)" opacity="0.9"/>
+        <circle cx="${px}" cy="${py}" r="4.5" fill="#ffffff"/>
+      `;
+    }
+  });
+
+  // Render Architecture Nodes / Stations
+  nodes.forEach((n, i) => {
+    const isNodeActive = idx === i;
+    const cardW = 160;
+    const cardH = 82;
+    const rx = n.x - cardW / 2;
+    const ry = n.y - cardH / 2;
+
+    if (isNodeActive) {
+      svg += `<rect x="${rx - 4}" y="${ry - 4}" width="${cardW + 8}" height="${cardH + 8}" rx="14" fill="${n.color}" opacity="0.3" filter="url(#active-glow)"/>`;
+    }
+
+    svg += `
+      <rect x="${rx}" y="${ry}" width="${cardW}" height="${cardH}" rx="10" 
+            fill="var(--panel)" stroke="${isNodeActive ? n.color : 'var(--line)'}" 
+            stroke-width="${isNodeActive ? '2.2' : '1.2'}"/>
+      <circle cx="${rx + 24}" cy="${ry + 24}" r="15" fill="${n.zone}" stroke="${isNodeActive ? n.color : 'var(--line)'}"/>
+      <text x="${rx + 24}" y="${ry + 29}" text-anchor="middle" font-size="14">${n.icon}</text>
+      <text x="${rx + 48}" y="${ry + 22}" fill="var(--ink)" class="svg-title" font-size="12">${n.label}</text>
+      <text x="${rx + 48}" y="${ry + 37}" fill="${isNodeActive ? n.color : 'var(--muted)'}" class="svg-mono" font-size="10">${n.sub}</text>
+      <line x1="${rx + 10}" y1="${ry + 52}" x2="${rx + cardW - 10}" y2="${ry + 52}" stroke="var(--line-light)" stroke-width="1"/>
+      <text x="${rx + 14}" y="${ry + 69}" fill="var(--faint)" class="svg-mono" font-size="9.5">STAGE 0${i + 1} · ${isNodeActive ? 'PROCESSING' : 'READY'}</text>
+      <circle cx="${rx + cardW - 18}" cy="${ry + 67}" r="4" fill="${isNodeActive ? n.color : 'var(--line)'}"/>
+    `;
+  });
+
+  // Add Dynamic Pipeline Banner Inside SVG
+  svg += `
+    <g transform="translate(40, 470)">
+      <rect width="1040" height="38" rx="8" fill="var(--panel)" stroke="var(--line)" stroke-width="1"/>
+      <circle cx="20" cy="19" r="5" fill="var(--green)"/>
+      <text x="36" y="23" fill="var(--ink)" class="svg-mono" font-size="11.5">
+        AUTOMATION STATUS: <tspan fill="var(--blue)">CYCLE ${(s.time).toFixed(1)}s</tspan> · ACTIVE: <tspan fill="${nodes[idx].color}">${nodes[idx].label}</tspan> · HOT-RELOAD: <tspan fill="var(--green)">SYNCED v2026.11.11.5</tspan>
+      </text>
+    </g>
+  `;
+
+  return svg;
+}
+
+/* =====================================================================
+   AGENT RAIL & INSPECTOR DOM UPDATERS
+   ===================================================================== */
+
+function updateAgentRail(state, mode) {
+  const roles = workflowRoles[mode] || workflowRoles.aivc;
+  const listEl = document.getElementById('agentCardList');
+  const idx = state.stageIndex;
+
+  let html = '';
+  roles.forEach((r, i) => {
+    const isActive = idx === i;
+    html += `
+      <div class="agent-card ${isActive ? 'active' : ''}" 
+           style="--card-color:${r.color}; --card-soft:${r.soft}; --card-glow:${r.glow};"
+           onclick="jumpToStage(${i})">
+        <div class="agent-card-header">
+          <span class="agent-name">
+            <span style="font-size:10px;">${isActive ? '▶' : '○'}</span>
+            ${r.name}
+          </span>
+          <span class="agent-status-pill">${isActive ? r.badge : 'IDLE'}</span>
+        </div>
+        <div class="agent-desc">${r.desc}</div>
+        <div class="agent-metric">
+          <span>RULE:</span>
+          <strong>${r.rule}</strong>
+        </div>
+      </div>
+    `;
+  });
+
+  listEl.innerHTML = html;
+}
+
+function updateRecordInspector(state, mode) {
+  const d = state.activeData;
+  const el = document.getElementById('recordInspector');
+  if (!d) return;
+
+  let html = '';
+  if (mode === 'aivc') {
+    html = `
+      <div class="ri-cell">
+        <span class="ri-label">Factory &amp; Line</span>
+        <span class="ri-value highlight">${d.factory} — ${d.line}</span>
+      </div>
+      <div class="ri-cell">
+        <span class="ri-label">Low-Conf Defect Count</span>
+        <span class="ri-value ${d.lowConf > 50 ? 'crit' : 'ok'}">${d.lowConf} images / day</span>
+      </div>
+      <div class="ri-cell">
+        <span class="ri-label">Source File Payload</span>
+        <span class="ri-value">${d.file} (${d.bytes})</span>
+      </div>
+      <div class="ri-cell">
+        <span class="ri-label">Execution Time</span>
+        <span class="ri-value warn">${d.time} UTC+8</span>
+      </div>
+    `;
+  } else if (mode === 'capa') {
+    html = `
+      <div class="ri-cell">
+        <span class="ri-label">Incident Plant / Line</span>
+        <span class="ri-value highlight">${d.factory} · ${d.line} (${d.date})</span>
+      </div>
+      <div class="ri-cell">
+        <span class="ri-label">AI Category</span>
+        <span class="ri-value crit">${d.cat} (${d.hours} hrs)</span>
+      </div>
+      <div class="ri-cell" style="grid-column: span 2;">
+        <span class="ri-label">Root Cause</span>
+        <span class="ri-value" title="${d.rootCause}">${d.rootCause}</span>
+      </div>
+      <div class="ri-cell" style="grid-column: span 2;">
+        <span class="ri-label">Corrective &amp; Preventive Action (CAPA)</span>
+        <span class="ri-value ok" title="${d.capa}">${d.capa}</span>
+      </div>
+    `;
+  } else if (mode === 'task') {
+    html = `
+      <div class="ri-cell">
+        <span class="ri-label">Task Identifier</span>
+        <span class="ri-value highlight">${d.id} · ${d.status}</span>
+      </div>
+      <div class="ri-cell">
+        <span class="ri-label">Assigned Owner</span>
+        <span class="ri-value">${d.owner}</span>
+      </div>
+      <div class="ri-cell" style="grid-column: span 2;">
+        <span class="ri-label">Scheduled Directive</span>
+        <span class="ri-value ok">${d.title}</span>
+      </div>
+      <div class="ri-cell">
+        <span class="ri-label">Meeting Channel</span>
+        <span class="ri-value warn">${d.channel}</span>
+      </div>
+      <div class="ri-cell">
+        <span class="ri-label">Workspace Sync</span>
+        <span class="ri-value">${d.sync}</span>
+      </div>
+    `;
+  } else {
+    html = `
+      <div class="ri-cell">
+        <span class="ri-label">Ecosystem Target</span>
+        <span class="ri-value highlight">Enterprise Master Ledger</span>
+      </div>
+      <div class="ri-cell">
+        <span class="ri-label">Status</span>
+        <span class="ri-value ok">18 Edge PCs Connected</span>
+      </div>
+      <div class="ri-cell" style="grid-column:span 2;">
+        <span class="ri-label">Integrations</span>
+        <span class="ri-value">Google Drive + Sheets + Looker Studio + Chat Spaces</span>
+      </div>
+    `;
+  }
+
+  el.innerHTML = html;
+}
+
+// Simulated real-time log lines that cycle with timeline
+const logArchive = [
+  { time: "00:15:02", tag: "CRON", col: "term-tag-amber", msg: "Windows Task Scheduler triggered D:\\AIVC\\daily_run.bat" },
+  { time: "00:15:03", tag: "SCAN", col: "term-tag-blue",  msg: "Counting low-confidence inference images on local D drive... 142 found" },
+  { time: "00:15:04", tag: "CSV",  col: "term-tag-blue",  msg: "Exported D:\\AIVC\\Results\\F40_L8_20261112.csv (42.8 KB)" },
+  { time: "00:15:05", tag: "AUTH", col: "term-tag-purple",msg: "Signed SHA-256 HMAC header; initiating curl POST to Apps Script" },
+  { time: "00:15:06", tag: "GAS",  col: "term-tag-purple",msg: "Apps Script doPost() returned HTTP 200 OK (latency: 184ms)" },
+  { time: "00:15:07", tag: "DRIVE",col: "term-tag-green", msg: "File committed to Drive Folder: /GWS-AIVC/Daily_Reports/" },
+  { time: "00:15:08", tag: "SHEET",col: "term-tag-green", msg: "Appended Row #1442 to Daily_Summary_Master Sheet" },
+  { time: "00:15:09", tag: "CHECK",col: "term-tag-blue",  msg: "Version check: PC matches master .bat version 2026.11.11.5 (OK)" },
+  { time: "08:00:00", tag: "AUDIT",col: "term-tag-amber", msg: "Daily 8 AM verification Cron: 18 of 18 factory lines reported" },
+  { time: "08:00:01", tag: "CHAT", col: "term-tag-red",   msg: "Sent Top Glove AIVC Executive Summary Card to Google Chat Space" }
+];
+
+function updateTerminalLog(state) {
+  const logEl = document.getElementById('terminalLog');
+  const count = Math.min(logArchive.length, Math.floor((state.time / DURATION) * logArchive.length) + 1);
+  const visibleLogs = logArchive.slice(Math.max(0, count - 4), count);
+
+  let html = '';
+  visibleLogs.forEach(l => {
+    html += `
+      <div class="term-line">
+        <span class="term-time">[${l.time}]</span> 
+        <span class="${l.col}">[${l.tag}]</span> 
+        ${l.msg}
+      </div>
+    `;
+  });
+  html += '<div class="term-line"><span class="term-cursor"></span></div>';
+  logEl.innerHTML = html;
+}
+
+/* =====================================================================
+   ANIMATION LOOP & CONTROL FUNCTIONS
+   ===================================================================== */
+
+let lastStage = -1;
+
+function frame(now) {
+  const dt = Math.min((now - lastFrameTime) / 1000, 0.1);
+  lastFrameTime = now;
+
+  if (isPlaying) {
+    t = (t + dt * speed) % DURATION;
+  }
+
+  const state = getWorkflowState(t, currentMode);
+  
+  // Audio beep on stage transition
+  if (state.stageIndex !== lastStage) {
+    playBeep(520 + state.stageIndex * 70, 0.05, 'sine');
+    lastStage = state.stageIndex;
+  }
+
+  // Update SVG
+  const svgEl = document.getElementById('workflowSvg');
+  svgEl.innerHTML = renderTopologySvg(state, currentMode);
+
+  // Update DOM panels
+  updateAgentRail(state, currentMode);
+  updateRecordInspector(state, currentMode);
+  updateTerminalLog(state);
+
+  // Update Scrubber & Readout
+  const scrubEl = document.getElementById('timelineScrubber');
+  scrubEl.value = t.toFixed(2);
+  document.getElementById('timeReadout').textContent = `${t.toFixed(1)}s / ${DURATION.toFixed(1)}s`;
+
+  requestAnimationFrame(frame);
+}
+
+function setPlaying(play) {
+  initAudio();
+  isPlaying = play;
+  const btn = document.getElementById('playBtn');
+  btn.textContent = isPlaying ? '⏸ Pause' : '▶ Play';
+  playBeep(isPlaying ? 800 : 400, 0.04);
+}
+
+function resetTimeline() {
+  initAudio();
+  t = 0;
+  lastStage = -1;
+  playBeep(350, 0.06);
+}
+
+function stepNext() {
+  initAudio();
+  const stageDur = DURATION / 6;
+  const nextStage = Math.floor(t / stageDur) + 1;
+  t = (nextStage * stageDur + 0.05) % DURATION;
+  playBeep(700, 0.05);
+}
+
+function jumpToStage(idx) {
+  initAudio();
+  const stageDur = DURATION / 6;
+  t = (idx * stageDur + 0.1) % DURATION;
+  playBeep(650, 0.04);
+}
+
+function setMode(mode) {
+  initAudio();
+  currentMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.getAttribute('data-mode') === mode);
+  });
+
+  const badgeEl = document.getElementById('workflowBadge');
+  const titles = {
+    aivc: "AIVC Low-Conf Pipeline",
+    capa: "Availability & CAPA Engine",
+    task: "Task Tracker Agent",
+    topology: "Full Ecosystem Matrix"
+  };
+  badgeEl.textContent = titles[mode] || "Workspace Architecture";
+  playBeep(880, 0.06);
+}
+
+/* =====================================================================
+   EVENT LISTENERS & KEYBOARD SHORTCUTS
+   ===================================================================== */
+
+document.getElementById('playBtn').addEventListener('click', () => setPlaying(!isPlaying));
+document.getElementById('stepBtn').addEventListener('click', stepNext);
+document.getElementById('resetBtn').addEventListener('click', resetTimeline);
+
+document.getElementById('speedSelect').addEventListener('change', e => {
+  speed = parseFloat(e.target.value);
+  initAudio();
+  playBeep(500, 0.03);
+});
+
+document.getElementById('timelineScrubber').addEventListener('input', e => {
+  t = parseFloat(e.target.value);
+});
+
+// Mode switchers
+document.querySelectorAll('.mode-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    setMode(btn.getAttribute('data-mode'));
+  });
+});
+
+// Theme switcher
+document.getElementById('themeToggle').addEventListener('click', () => {
+  initAudio();
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  document.getElementById('themeIcon').textContent = newTheme === 'dark' ? '☀️' : '🌓';
+  playBeep(600, 0.04);
+});
+
+// Sound switcher
+document.getElementById('soundToggle').addEventListener('click', () => {
+  initAudio();
+  soundEnabled = !soundEnabled;
+  document.getElementById('soundIcon').textContent = soundEnabled ? '🔊' : '🔇';
+  if (soundEnabled) playBeep(800, 0.05);
+});
+
+// Fullscreen switcher
+document.getElementById('fullToggle').addEventListener('click', () => {
+  const root = document.getElementById('terminalRoot');
+  root.classList.toggle('fit-screen');
+  initAudio();
+  playBeep(750, 0.05);
+});
+
+// Keyboard hotkeys
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input, select, textarea')) return;
+  if (e.code === 'Space') {
+    e.preventDefault();
+    setPlaying(!isPlaying);
+  } else if (e.key === 'r' || e.key === 'R') {
+    e.preventDefault();
+    resetTimeline();
+  } else if (e.code === 'ArrowRight') {
+    e.preventDefault();
+    stepNext();
+  } else if (e.key === '1') {
+    setMode('aivc');
+  } else if (e.key === '2') {
+    setMode('capa');
+  } else if (e.key === '3') {
+    setMode('task');
+  } else if (e.key === '4') {
+    setMode('topology');
+  } else if (e.key === 'f' || e.key === 'F') {
+    document.getElementById('terminalRoot').classList.toggle('fit-screen');
+  }
+});
+
+// Initialize on font ready
+document.fonts.ready.then(() => {
+  requestAnimationFrame(frame);
+});
+</script>
+</body>
+</html>

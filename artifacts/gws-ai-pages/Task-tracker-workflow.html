@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Task Tracker Workflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one schematic (app -> Google Sheet -> automation -> each person's Google), then the daily sequence and where each piece lives. */
+:root {
+  --bg: #f4f6f8;
+  --panel: #ffffff;
+  --ink: #17212b;
+  --muted: #56636f;
+  --line: #c7d0d8;
+  --zone-app: #e8eef3;
+  --zone-sheet: #eef0f3;
+  --zone-auto: #f6efe6;
+  --zone-g: #e9f2ee;
+  --accent: #1f6fb2;       /* saved from the app */
+  --accent-soft: #d6e6f4;
+  --green: #2f7d5b;        /* into each person's Google */
+  --amber: #a5651a;        /* scheduled / automatic */
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme: light; /* always light, whatever the computer's theme */
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+  padding: 28px 16px 48px;
+}
+.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 28px; }
+header { display: grid; gap: 6px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { margin: 0; font-size: clamp(24px, 3.4vw, 34px); line-height: 1.15; font-weight: 700; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 72ch; }
+h2 { margin: 0 0 10px; font-size: 18px; font-weight: 600; }
+
+.diagram { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 1000px; height: auto; }
+
+/* SVG styling from tokens */
+.z-app { fill: var(--zone-app); stroke: var(--line); }
+.z-sheet { fill: var(--zone-sheet); stroke: var(--line); }
+.z-auto { fill: var(--zone-auto); stroke: var(--line); }
+.z-g { fill: var(--zone-g); stroke: var(--line); }
+.zl { fill: var(--muted); font: 600 12px var(--font-mono); letter-spacing: .06em; }
+.box { fill: var(--panel); stroke: var(--line); stroke-width: 1.2; }
+.box-key { fill: var(--panel); stroke: var(--accent); stroke-width: 2; }
+.box-time { fill: var(--panel); stroke: var(--amber); stroke-width: 1.6; }
+.box-g { fill: var(--panel); stroke: var(--green); stroke-width: 1.6; }
+.box-opt { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 5 4; }
+.t-h { fill: var(--ink); font: 600 14px var(--font-body); }
+.t-b { fill: var(--muted); font: 400 12.5px var(--font-body); }
+.t-m { fill: var(--ink); font: 400 11.5px var(--font-mono); }
+.t-time { fill: var(--amber); font: 600 12px var(--font-mono); }
+.t-arrow { fill: var(--muted); font: 500 11.5px var(--font-body); }
+.t-up { fill: var(--accent); font: 600 11.5px var(--font-body); }
+.t-g { fill: var(--green); font: 600 11.5px var(--font-body); }
+.a { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+.a-up { fill: none; stroke: var(--accent); stroke-width: 2.6; }
+.a-g { fill: none; stroke: var(--green); stroke-width: 1.8; }
+.a-opt { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 14px 22px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.sw { width: 26px; height: 0; border-top: 3px solid var(--accent); display: inline-block; }
+.sw.g { border-top: 2px solid var(--green); }
+.sw.m { border-top: 2px solid var(--muted); }
+.sw.d { border-top: 2px dashed var(--muted); }
+.sw.t { width: 14px; height: 14px; border: 1.6px solid var(--amber); border-radius: 3px; }
+
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; min-width: 0; }
+ol.steps { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+ol.steps li::marker { font-family: var(--font-mono); color: var(--accent); font-weight: 600; }
+ul.notes { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+code { font-family: var(--font-mono); font-size: 13px; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+.tablewrap { overflow-x: auto; }
+.where { width: 100%; border-collapse: collapse; font-size: 14px; }
+.where th, .where td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.where th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
+.where td:first-child { white-space: nowrap; font-weight: 600; }
+.where td code { font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">BigData AIVC Task Tracker · end-to-end workflow</div>
+    <h1>How a task moves from the app to Google Tasks and the daily report</h1>
+    <p class="lede">Everyone works in one AppSheet app. Every task and every progress update is a row in one Google Sheet. A script running as each person copies their open tasks to their Google Tasks every 5 minutes, and emails them a draft Daily Work Report (DWR) each working evening.</p>
+  </header>
+
+  <section class="diagram" aria-label="Workflow diagram">
+    <svg viewBox="0 0 1300 610" role="img" aria-labelledby="dtitle">
+      <title id="dtitle">People add tasks and updates in the AppSheet app, which saves them in the Google Sheet. An AppSheet bot emails new assignees. The Apps Script syncs each person's tasks with Google Tasks every 5 minutes and emails each person their DWR on working evenings, which they forward to the manager.</title>
+      <defs>
+        <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker>
+        <marker id="mu" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker>
+        <marker id="mg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--green)"/></marker>
+      </defs>
+
+      <!-- zones -->
+      <rect class="z-app" x="20" y="20" width="310" height="570" rx="12"/>
+      <text class="zl" x="40" y="46">THE APP · APPSHEET</text>
+      <rect class="z-sheet" x="360" y="20" width="290" height="570" rx="12"/>
+      <text class="zl" x="380" y="46">GOOGLE SHEET · SHARED DRIVE</text>
+      <rect class="z-auto" x="680" y="20" width="280" height="570" rx="12"/>
+      <text class="zl" x="700" y="46">AUTOMATION</text>
+      <rect class="z-g" x="990" y="20" width="290" height="570" rx="12"/>
+      <text class="zl" x="1010" y="46">EACH PERSON'S GOOGLE</text>
+
+      <!-- THE APP -->
+      <rect class="box" x="40" y="70" width="270" height="92" rx="8"/>
+      <text class="t-h" x="56" y="94">Add task</text>
+      <text class="t-b" x="56" y="115">name, category, project, assignee,</text>
+      <text class="t-b" x="56" y="134">Important? Urgent?, dates, tools</text>
+
+      <rect class="box-key" x="40" y="190" width="270" height="118" rx="8"/>
+      <text class="t-h" x="56" y="214">My Matrix</text>
+      <text class="t-b" x="56" y="235">quadrant = Important + Urgent</text>
+      <text class="t-b" x="56" y="253">target ≤ 2 working days → urgent</text>
+      <text class="t-m" x="56" y="275">Done · Start · Drop</text>
+      <text class="t-m" x="56" y="293">Reassign · Cancel · Reopen</text>
+
+      <rect class="box" x="40" y="336" width="270" height="100" rx="8"/>
+      <text class="t-h" x="56" y="360">Add update / Blocked</text>
+      <text class="t-b" x="56" y="381">dated note + optional new status</text>
+      <text class="t-b" x="56" y="400">status set on the task when saved</text>
+      <text class="t-b" x="56" y="419">Blocked always needs a reason</text>
+
+      <rect class="box" x="40" y="464" width="270" height="100" rx="8"/>
+      <text class="t-h" x="56" y="488">Team · Done</text>
+      <text class="t-b" x="56" y="509">Team: everyone's open tasks,</text>
+      <text class="t-b" x="56" y="528">with each one's latest update</text>
+      <text class="t-b" x="56" y="547">Done: last 30 days</text>
+
+      <!-- GOOGLE SHEET -->
+      <rect class="box-key" x="380" y="70" width="250" height="112" rx="8"/>
+      <text class="t-h" x="396" y="94">Tasks</text>
+      <text class="t-m" x="396" y="116">TaskID · AssignedTo</text>
+      <text class="t-m" x="396" y="134">Status · Blocker</text>
+      <text class="t-m" x="396" y="152">CompletedAt · CreatedFY</text>
+      <text class="t-b" x="396" y="172">one row per task, never deleted</text>
+
+      <rect class="box" x="380" y="210" width="250" height="100" rx="8"/>
+      <text class="t-h" x="396" y="234">Sync (script only)</text>
+      <text class="t-m" x="396" y="256">TaskID · Owner · GTaskId</text>
+      <text class="t-m" x="396" y="274">LastHash · LastSyncedAt</text>
+      <text class="t-b" x="396" y="294">links a task to its Google Task</text>
+
+      <rect class="box" x="380" y="336" width="250" height="100" rx="8"/>
+      <text class="t-h" x="396" y="360">Updates</text>
+      <text class="t-m" x="396" y="382">TaskID · UpdateDate · Note</text>
+      <text class="t-m" x="396" y="400">StatusAfter · WrittenBy</text>
+      <text class="t-b" x="396" y="420">one row per progress entry</text>
+
+      <rect class="box" x="380" y="464" width="250" height="100" rx="8"/>
+      <text class="t-h" x="396" y="488">Lists</text>
+      <text class="t-m" x="396" y="510">Users · Categories · Projects</text>
+      <text class="t-m" x="396" y="528">Tools · Quadrants · Holidays</text>
+      <text class="t-b" x="396" y="548">feed the app's dropdowns</text>
+
+      <!-- AUTOMATION -->
+      <rect class="box" x="700" y="70" width="240" height="100" rx="8"/>
+      <text class="t-time" x="716" y="94">WHEN A TASK IS ASSIGNED</text>
+      <text class="t-h" x="716" y="115">Tell assignee (bot)</text>
+      <text class="t-b" x="716" y="135">emails the new assignee</text>
+      <text class="t-b" x="716" y="154">(not when you assign yourself)</text>
+
+      <rect class="box-time" x="700" y="210" width="240" height="118" rx="8"/>
+      <text class="t-time" x="716" y="234">EVERY 5 MINUTES</text>
+      <text class="t-h" x="716" y="255">syncTasks</text>
+      <text class="t-b" x="716" y="275">copies my open tasks out</text>
+      <text class="t-b" x="716" y="294">ticked in Google → Done here</text>
+      <text class="t-b" x="716" y="313">cancelled → removed from list</text>
+
+      <rect class="box-time" x="700" y="356" width="240" height="118" rx="8"/>
+      <text class="t-time" x="716" y="380">WORKING DAYS 6–7 PM</text>
+      <text class="t-h" x="716" y="401">sendMyDailyReport</text>
+      <text class="t-b" x="716" y="421">today's updates + completions</text>
+      <text class="t-b" x="716" y="440">grouped by project</text>
+      <text class="t-b" x="716" y="459">skips weekends and holidays</text>
+
+      <rect class="box-opt" x="700" y="500" width="240" height="72" rx="8"/>
+      <text class="t-h" x="716" y="524">Runs as each person</text>
+      <text class="t-b" x="716" y="545">after their one-time setup()</text>
+
+      <!-- EACH PERSON'S GOOGLE -->
+      <rect class="box-g" x="1010" y="70" width="250" height="100" rx="8"/>
+      <text class="t-h" x="1026" y="94">New task email</text>
+      <text class="t-b" x="1026" y="115">“New task for you: …”</text>
+      <text class="t-b" x="1026" y="134">link opens the task in the app</text>
+
+      <rect class="box-g" x="1010" y="210" width="250" height="118" rx="8"/>
+      <text class="t-h" x="1026" y="234">Google Tasks</text>
+      <text class="t-m" x="1026" y="256">list “Eisenhower”</text>
+      <text class="t-m" x="1026" y="274">[Q1] Fix OEE dashboard</text>
+      <text class="t-b" x="1026" y="294">due date = target date</text>
+      <text class="t-b" x="1026" y="313">tick it off when finished</text>
+
+      <rect class="box-g" x="1010" y="356" width="250" height="118" rx="8"/>
+      <text class="t-h" x="1026" y="380">DWR email</text>
+      <text class="t-m" x="1026" y="402">Subject: DWR dd/mm/yy</text>
+      <text class="t-b" x="1026" y="422">sent only to you</text>
+      <text class="t-b" x="1026" y="441">add context, then forward</text>
+      <text class="t-b" x="1026" y="460">it to the manager</text>
+
+      <rect class="box-opt" x="1010" y="500" width="250" height="72" rx="8"/>
+      <text class="t-h" x="1026" y="524">Manager</text>
+      <text class="t-b" x="1026" y="545">reads the forwarded DWRs</text>
+
+      <!-- app -> sheet -->
+      <path class="a-up" d="M310,116 H374" marker-end="url(#mu)"/>
+      <text class="t-up" x="320" y="108">saves</text>
+      <path class="a-up" d="M310,232 H344 V160 H374" marker-end="url(#mu)"/>
+      <text class="t-up" x="348" y="200">status</text>
+      <path class="a-up" d="M310,386 H374" marker-end="url(#mu)"/>
+      <text class="t-up" x="322" y="378">adds</text>
+
+      <!-- sheet <-> automation -->
+      <path class="a" d="M630,110 H696" marker-end="url(#m)"/>
+      <text class="t-arrow" x="636" y="102">on assign</text>
+      <path class="a" d="M630,160 H662 V232 H696" marker-start="url(#m)" marker-end="url(#m)"/>
+      <text class="t-arrow" x="668" y="196">read · write</text>
+      <path class="a" d="M630,270 H696" marker-start="url(#m)" marker-end="url(#m)"/>
+      <text class="t-arrow" x="644" y="262">links</text>
+      <path class="a" d="M630,400 H696" marker-end="url(#m)"/>
+      <text class="t-arrow" x="640" y="392">reads</text>
+
+      <!-- automation -> each person's Google -->
+      <path class="a-g" d="M940,120 H1006" marker-end="url(#mg)"/>
+      <text class="t-g" x="952" y="112">email</text>
+      <path class="a-g" d="M940,270 H1006" marker-start="url(#mg)" marker-end="url(#mg)"/>
+      <text class="t-g" x="958" y="262">sync</text>
+      <path class="a-g" d="M940,415 H1006" marker-end="url(#mg)"/>
+      <text class="t-g" x="952" y="407">email</text>
+      <path class="a-opt" d="M1135,474 V496" marker-end="url(#m)"/>
+      <text class="t-arrow" x="1143" y="490">forward</text>
+    </svg>
+  </section>
+
+  <div class="legend" aria-label="Legend">
+    <span><i class="sw"></i>saved from the app</span>
+    <span><i class="sw m"></i>read or written by automation</span>
+    <span><i class="sw g"></i>into each person's Google account</span>
+    <span><i class="sw d"></i>done by hand</span>
+    <span><i class="sw t"></i>runs on a schedule</span>
+  </div>
+
+  <div class="cols">
+    <section class="card">
+      <h2>A task's life, end to end</h2>
+      <ol class="steps">
+        <li>Someone adds a task in the app. It is saved as a row in the <strong>Tasks</strong> tab, and the app places it in a quadrant from its Important and Urgent answers. A target date 2 working days away or less counts as urgent.</li>
+        <li>If it is assigned to someone else, the <strong>Tell assignee</strong> bot emails them a link to the task.</li>
+        <li>Within 5 minutes, <code>syncTasks</code> copies it into the assignee's Google Tasks list <strong>Eisenhower</strong>, titled like <code>[Q1] Fix OEE dashboard</code>.</li>
+        <li>Through the day, the assignee logs progress with <strong>Add update</strong>. Each update is a row in the <strong>Updates</strong> tab, and any new status (In Progress, Blocked, Done) is applied to the task as soon as the form is saved.</li>
+        <li>To finish, they tap <strong>Done</strong> in the app, or tick the task off in Google Tasks; <code>syncTasks</code> then marks it Done in the Sheet within 5 minutes.</li>
+        <li>Between <strong>6 and 7 pm</strong> on working days, <code>sendMyDailyReport</code> emails each person their DWR, built from today's updates and completed tasks. They add context and forward it to the manager.</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>If something goes wrong</h2>
+      <ul class="notes">
+        <li><strong>Ticked in Google Tasks, still open in the app:</strong> wait up to 5 minutes, then tap sync in the app.</li>
+        <li><strong>Someone's Google Tasks stopped updating:</strong> they run <code>setup()</code> again. It rebuilds both of their scheduled jobs.</li>
+        <li><strong>No DWR:</strong> it is not sent on weekends, on dates in the Holidays tab, or when nothing was logged that day. Check Spam, then <em>Executions</em> in the script editor.</li>
+        <li><strong>Task deleted in Google Tasks:</strong> it stays deleted there (Sync marks it <code>DELETED</code>) and stays open in the app. Close it in the app.</li>
+        <li><strong>Problem details:</strong> script runs are in Apps Script → <em>Executions</em>; bot runs are in AppSheet → <em>Automation → Monitor</em>.</li>
+        <li><strong>Never edit the Sheet directly</strong>, except to add people in the Users tab. The Sync tab is written only by the script.</li>
+      </ul>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>Where everything lives</h2>
+    <div class="tablewrap">
+      <table class="where">
+        <thead><tr><th>Item</th><th>Location</th><th>Set up</th></tr></thead>
+        <tbody>
+          <tr><td>App</td><td>AppSheet, “BigData AIVC Task Tracker”, owned by the developer account</td><td>once</td></tr>
+          <tr><td>Data</td><td>Google Sheet “Eisenhower Task App — Data” in the Shared Drive</td><td>once</td></tr>
+          <tr><td>Quadrant tiles</td><td>Quadrants tab, plus the Q1–Q4 images AppSheet stored when they were uploaded (don't move them)</td><td>once</td></tr>
+          <tr><td>Status from updates</td><td>App action <code>Apply to task</code>, run when the Updates form is saved</td><td>once</td></tr>
+          <tr><td>Assignment email</td><td>AppSheet bot <code>Tell assignee</code></td><td>once</td></tr>
+          <tr><td>Script</td><td>Sheet → Extensions → Apps Script, “Eisenhower Tasks Script” (<code>Code.gs</code>, time zone Asia/Kuala_Lumpur)</td><td>once</td></tr>
+          <tr><td>Scheduled jobs</td><td><code>syncTasks</code> every 5 minutes and <code>sendMyDailyReport</code> 6–7 pm, created by <code>setup()</code></td><td>each person</td></tr>
+          <tr><td>Google Tasks list</td><td>“Eisenhower”, in each person's own Google Tasks</td><td>each person (automatic)</td></tr>
+          <tr><td>People</td><td>Users tab: Email, Name, Role, Active</td><td>when someone joins</td></tr>
+          <tr><td>Public holidays</td><td>Holidays tab: HolidayDate, Name</td><td>once a year</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+</body>
+</html>
