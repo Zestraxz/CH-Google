@@ -1,0 +1,496 @@
+{
+  "schema": "ch-architecture/1",
+  "id": "ch-google",
+  "name": "Google Workspace AI pages",
+  "purpose": "Publishes static HTML one-pagers to the public through GitHub Pages, straight from the main branch of a public repo.",
+  "kind": "software",
+  "status": {
+    "state": "live",
+    "date": "2026-09-21"
+  },
+  "privacy": "public-safe",
+  "as_of": "2026-11-16",
+  "lanes": [
+    {
+      "id": "authoring",
+      "label": "Authoring"
+    },
+    {
+      "id": "gate",
+      "label": "Review gate"
+    },
+    {
+      "id": "repo",
+      "label": "Repository"
+    },
+    {
+      "id": "web",
+      "label": "Hosting and readers"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "owner",
+      "lane": "authoring",
+      "order": 1,
+      "label": "Owner",
+      "tech": "human author",
+      "icon": "role",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "artifacts/gws-ai-pages/README.md (How to update)",
+      "link": null
+    },
+    {
+      "id": "exports",
+      "lane": "authoring",
+      "order": 2,
+      "label": "Local source exports",
+      "tech": "untracked HTML exports",
+      "icon": "file",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "artifacts/gws-ai-pages/README.md (source column)",
+      "link": null
+    },
+    {
+      "id": "authored",
+      "lane": "authoring",
+      "order": 3,
+      "label": "In-repo authored pages",
+      "tech": "hand-edited HTML",
+      "icon": "doc",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "artifacts/gws-ai-pages/README.md (source column)",
+      "link": null
+    },
+    {
+      "id": "sibling",
+      "lane": "authoring",
+      "order": 4,
+      "label": "Private sibling copy",
+      "tech": "byte-identical copy of one page",
+      "icon": "external",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "artifacts/gws-ai-pages/README.md (source column)",
+      "link": null
+    },
+    {
+      "id": "sweep",
+      "lane": "gate",
+      "order": 1,
+      "label": "Pre-publish sweep",
+      "tech": "repo-wide search before push",
+      "icon": "function",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md (Verification)",
+      "link": null
+    },
+    {
+      "id": "pageset",
+      "lane": "repo",
+      "order": 1,
+      "label": "Published page set",
+      "tech": "artifacts/gws-ai-pages/*.html",
+      "icon": "file",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "artifacts/gws-ai-pages/README.md (table, How to update)",
+      "link": null
+    },
+    {
+      "id": "landing",
+      "lane": "repo",
+      "order": 2,
+      "label": "Landing page",
+      "tech": "root index.html",
+      "icon": "doc",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md (Published set)",
+      "link": null
+    },
+    {
+      "id": "repo",
+      "lane": "repo",
+      "order": 3,
+      "label": "Public git repository",
+      "tech": "main branch, world-readable",
+      "icon": "repo",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "Brain pack CH-Google (Where it lives); docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md",
+      "link": null
+    },
+    {
+      "id": "ci",
+      "lane": "repo",
+      "order": 4,
+      "label": "Template CI workflows",
+      "tech": "CI and Security on push and PR",
+      "icon": "pipeline",
+      "status": {
+        "state": "unverified",
+        "date": null
+      },
+      "confidence": "unverified",
+      "evidence": ".github/workflows/ci.yml; .github/workflows/security.yml",
+      "link": null
+    },
+    {
+      "id": "pages",
+      "lane": "web",
+      "order": 1,
+      "label": "GitHub Pages",
+      "tech": "branch main, folder root",
+      "icon": "app",
+      "status": {
+        "state": "live",
+        "date": "2026-09-21"
+      },
+      "confidence": "FACT",
+      "evidence": "docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md (What happened)",
+      "link": null
+    },
+    {
+      "id": "cdn",
+      "lane": "web",
+      "order": 2,
+      "label": "Public CDNs",
+      "tech": "CSS, charts and icon assets",
+      "icon": "external",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "artifacts/gws-ai-pages/README.md (Dependencies)",
+      "link": null
+    },
+    {
+      "id": "reader",
+      "lane": "web",
+      "order": 3,
+      "label": "Public readers",
+      "tech": "any web browser",
+      "icon": "role",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "artifacts/gws-ai-pages/README.md (Published URL)",
+      "link": null
+    }
+  ],
+  "edges": [
+    {
+      "id": "owner-authored",
+      "from": "owner",
+      "to": "authored",
+      "flows": "writes and edits page HTML",
+      "cadence": "not documented",
+      "kind": "manual",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "artifacts/gws-ai-pages/README.md (How to update)"
+    },
+    {
+      "id": "exports-pageset",
+      "from": "exports",
+      "to": "pageset",
+      "flows": "web-safe copy replaces the published file",
+      "cadence": "on new export",
+      "kind": "manual",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "artifacts/gws-ai-pages/README.md (How to update)"
+    },
+    {
+      "id": "sibling-pageset",
+      "from": "sibling",
+      "to": "pageset",
+      "flows": "byte-identical copy of one page",
+      "cadence": "not documented",
+      "kind": "manual",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "artifacts/gws-ai-pages/README.md (source column)"
+    },
+    {
+      "id": "authored-pageset",
+      "from": "authored",
+      "to": "pageset",
+      "flows": "page files saved as the published copy",
+      "cadence": "not documented",
+      "kind": "data",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "artifacts/gws-ai-pages/README.md (table)"
+    },
+    {
+      "id": "pageset-sweep",
+      "from": "pageset",
+      "to": "sweep",
+      "flows": "files searched for sensitive markers and secrets",
+      "cadence": "before each push",
+      "kind": "control",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md (Verification, standing items)"
+    },
+    {
+      "id": "sweep-repo",
+      "from": "sweep",
+      "to": "repo",
+      "flows": "clean files committed and pushed to main",
+      "cadence": "per publish",
+      "kind": "manual",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md (What happened)"
+    },
+    {
+      "id": "landing-repo",
+      "from": "landing",
+      "to": "repo",
+      "flows": "landing page committed with the pages",
+      "cadence": "per publish",
+      "kind": "data",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md (Published set)"
+    },
+    {
+      "id": "repo-pages",
+      "from": "repo",
+      "to": "pages",
+      "flows": "main branch root served as static files",
+      "cadence": "on push; about 1 min",
+      "kind": "data",
+      "status": {
+        "state": "live",
+        "date": "2026-09-21"
+      },
+      "confidence": "FACT",
+      "evidence": "artifacts/gws-ai-pages/README.md (How to update)"
+    },
+    {
+      "id": "repo-ci",
+      "from": "repo",
+      "to": "ci",
+      "flows": "push and pull request trigger the workflows",
+      "cadence": "on push and PR",
+      "kind": "control",
+      "status": {
+        "state": "unverified",
+        "date": null
+      },
+      "confidence": "unverified",
+      "evidence": ".github/workflows/ci.yml (on:)"
+    },
+    {
+      "id": "pages-reader",
+      "from": "pages",
+      "to": "reader",
+      "flows": "HTML pages over the public web",
+      "cadence": "on request",
+      "kind": "data",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "artifacts/gws-ai-pages/README.md (Published URL)"
+    },
+    {
+      "id": "cdn-reader",
+      "from": "cdn",
+      "to": "reader",
+      "flows": "styles, scripts and fonts loaded in the browser",
+      "cadence": "on page view",
+      "kind": "data",
+      "status": {
+        "state": "live",
+        "date": null
+      },
+      "confidence": "FACT",
+      "evidence": "artifacts/gws-ai-pages/README.md (Dependencies)"
+    }
+  ],
+  "steps": [
+    {
+      "caption": "The owner writes a page in the repo, or receives a local export, or takes a copy from a private sibling project.",
+      "focus": [
+        "owner",
+        "authored",
+        "exports",
+        "sibling"
+      ],
+      "flows": [
+        "owner-authored"
+      ],
+      "weight": 1
+    },
+    {
+      "caption": "Each page lands in the published page set under a web-safe filename; that file is the source of truth, with no build step.",
+      "focus": [
+        "exports",
+        "sibling",
+        "authored",
+        "pageset"
+      ],
+      "flows": [
+        "exports-pageset",
+        "sibling-pageset",
+        "authored-pageset"
+      ],
+      "weight": 2
+    },
+    {
+      "caption": "Before a push the repo is searched for sensitive markers, secrets and tracked env files; a hit is fixed at the source.",
+      "focus": [
+        "pageset",
+        "sweep",
+        "repo"
+      ],
+      "flows": [
+        "pageset-sweep",
+        "sweep-repo"
+      ],
+      "weight": 2
+    },
+    {
+      "caption": "The root landing page is committed with the pages and pushed to the main branch of the public repo.",
+      "focus": [
+        "landing",
+        "repo"
+      ],
+      "flows": [
+        "landing-repo"
+      ],
+      "weight": 1
+    },
+    {
+      "caption": "GitHub Pages serves the main branch root as static files and redeploys on each push.",
+      "focus": [
+        "repo",
+        "pages"
+      ],
+      "flows": [
+        "repo-pages"
+      ],
+      "weight": 2
+    },
+    {
+      "caption": "Readers open the pages in a browser; styles, charts and icons are fetched from public CDNs at view time.",
+      "focus": [
+        "pages",
+        "cdn",
+        "reader"
+      ],
+      "flows": [
+        "pages-reader",
+        "cdn-reader"
+      ],
+      "weight": 1
+    },
+    {
+      "caption": "Template CI and security workflow files sit in the repo; no passing run is recorded.",
+      "focus": [
+        "repo",
+        "ci"
+      ],
+      "flows": [
+        "repo-ci"
+      ],
+      "weight": 1
+    }
+  ],
+  "then_vs_now": null,
+  "risks": [
+    "The repo is public: every tracked file and the whole history are world-readable, so a sweep must precede each push.",
+    "The pre-push sweep is a documented habit; the template secret-scan workflow runs on push and PR, after content is already public, and has no verified run.",
+    "Pages load assets from public CDNs at view time; a CDN outage or change can break rendering.",
+    "No build template is kept: the published file is the source of truth, so every change is a hand edit or a re-copy of that file.",
+    "Template CI and security workflows have no verified run recorded.",
+    "Pages liveness was checked on 2026-09-21 only; later state is not measured. No traffic or uptime figures exist."
+  ],
+  "links": {
+    "hub": null,
+    "upstream": [],
+    "downstream": []
+  },
+  "evidence": {
+    "repo": "CH-Google",
+    "commit": "d32401a",
+    "sources": [
+      "artifacts/gws-ai-pages/README.md",
+      "docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md",
+      "README.md",
+      "AGENTS.md",
+      ".github/workflows/ci.yml",
+      ".github/workflows/security.yml",
+      "Brain pack PROJECTS/CH-Google/PROJECT.md (Where it lives)"
+    ],
+    "basis": "Static read of the tracked tree at commit d32401a (2026-11-13) plus the Brain pack, on 2026-11-16. Nothing was run and no web address was fetched.",
+    "limitations": [
+      "Publishing mechanics only: the subject of each page is deliberately not drawn, and the repo's design documents are out of scope.",
+      "Template scaffold folders (apps, packages, compose files) are not part of the published site and are not drawn.",
+      "Pages liveness was recorded on 2026-09-21; it was not re-checked for this spec.",
+      "Claim check 2026-11-16 was a static read of the cited files; every figure is not measured."
+    ],
+    "claim_check": {
+      "date": "2026-11-16",
+      "issues_open": 0
+    }
+  }
+}

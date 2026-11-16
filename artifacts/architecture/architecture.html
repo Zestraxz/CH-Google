@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta http-equiv="Content-Security-Policy" content="default-src &#x27;none&#x27;; style-src &#x27;sha256-EwHkm6c0Zz3oQDNufJ0iOkHdCFEJBdi04uqkQYXx2HY=&#x27;; script-src &#x27;sha256-oRVPvlNbZWVq5Rv9WBj0eVHEwT2O+QhPeTR/9CAL/qg=&#x27;; img-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;">
+<meta name="generator" content="build-architecture-page.py v1.1.0; spec sha256:3585548c">
+<title>Google Workspace AI pages - architecture</title>
+<style>:root{--ground: #F7F8FA;--panel: #FFFFFF;--ink: #12161C;--ink2: #3D4754;--ink3: #6B7789;--rule: #DCE2EA;--accent: #0E7C86;--good: #0F7B4F;--warn: #9A6B00;--gap: #C2410C;--track: #E7ECF2;--l1: #E3F2F3;--l2: #E8EEF9;--l3: #F0EBF9;--l4: #FAEFE2;--l5: #E6F4EA;--l6: #F7E8EE;--sans: ui-sans-serif,"Segoe UI",system-ui,-apple-system,sans-serif;--mono: ui-monospace,SFMono-Regular,Consolas,monospace;color-scheme: light}@media screen and (prefers-color-scheme: dark){:root:not([data-theme=light]){--ground: #0E1116;--panel: #161B22;--ink: #E8EDF4;--ink2: #AFBACA;--ink3: #7C8798;--rule: #242C36;--accent: #4DD0C7;--good: #4ADE9B;--warn: #E3B341;--gap: #E0894F;--track: #1D242D;--l1: #12282A;--l2: #152033;--l3: #1F1A31;--l4: #2A2114;--l5: #14271B;--l6: #2A1822;color-scheme: dark}}@media screen{:root[data-theme=dark]{--ground: #0E1116;--panel: #161B22;--ink: #E8EDF4;--ink2: #AFBACA;--ink3: #7C8798;--rule: #242C36;--accent: #4DD0C7;--good: #4ADE9B;--warn: #E3B341;--gap: #E0894F;--track: #1D242D;--l1: #12282A;--l2: #152033;--l3: #1F1A31;--l4: #2A2114;--l5: #14271B;--l6: #2A1822;color-scheme: dark}}*{box-sizing: border-box}html{background: var(--ground)}body{margin: 0 auto;max-width: 1180px;padding: 0 12px 32px;background: var(--ground);color: var(--ink);font: 16px/1.5 var(--sans)}a{color: var(--accent)}:focus-visible{outline: 3px solid var(--accent);outline-offset: 2px}.skip{position: absolute;left: -999px;top: 0}.skip:focus{left: 12px;top: 8px;z-index: 9;background: var(--panel);padding: 6px 10px}.sr{position: absolute;width: 1px;height: 1px;overflow: hidden;clip: rect(0 0 0 0);white-space: nowrap}.mono,code{font-family: var(--mono);font-size: 0.92em}.hdr{background: var(--ground);border-bottom: 1px solid var(--rule)}.bar{display: flex;flex-wrap: wrap;align-items: center;gap: 6px 10px;min-height: 52px;padding: 6px 0}.bar h1{font-size: 20px;line-height: 1.2;margin: 0 8px 0 0;overflow-wrap: anywhere}.chip{display: inline-block;font: 600 13px/1.4 var(--mono);padding: 2px 8px;border-radius: 999px;border: 1px solid var(--rule);background: var(--panel);color: var(--ink2);white-space: nowrap}.chip.st-live{color: var(--good);border-color: var(--good)}.chip.st-decommissioned{color: var(--ink2)}.chip.st-planned{color: var(--accent);border-color: var(--accent)}.chip.st-unverified{color: var(--warn);border-color: var(--warn)}.chip.pv-internal{color: var(--gap);border-color: var(--gap)}.theme{margin-left: auto}.intro{padding: 10px 0 4px}.intro .purpose{font-size: 18px;margin: 0 0 6px;color: var(--ink)}.intro .nav{margin: 0;color: var(--ink2);font-size: 15px}.intro .nav span + span::before{content: " \00B7 "}@media (min-width: 880px){html{scroll-padding-top: 64px}.hdr{position: sticky;top: 0;z-index: 5}.bar{flex-wrap: nowrap}.bar h1{min-width: 0;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;overflow-wrap: normal}.bar .chip,.bar .theme{flex-shrink: 0}}button,select{font: inherit;font-size: 15px;min-height: 36px;padding: 4px 12px;border-radius: 8px;cursor: pointer;border: 1px solid var(--rule);background: var(--panel);color: var(--ink)}button[aria-pressed=true]{background: var(--accent);border-color: var(--accent);color: var(--panel)}button:disabled{opacity: 0.5;cursor: default}h2{font-size: 20px;margin: 28px 0 10px}section{margin: 0}.card{background: var(--panel);border: 1px solid var(--rule);border-radius: 12px;padding: 14px 16px}.archfig{margin: 16px 0 0}.stage{border-radius: 12px;background: var(--panel);border: 1px solid var(--rule);padding: 6px}.dg{display: block;width: 100%;height: auto}.lay-wide{display: none;max-width: 1160px;margin: 0 auto}.lay-narrow,.lay-all{max-width: 560px;margin: 0 auto}@media (min-width: 880px){.lay-wide{display: block}.lay-narrow{display: none}}.defs{position: absolute;width: 0;height: 0;overflow: hidden}figcaption{margin: 10px 2px 0}.cap{font-size: 17px;margin: 0;min-height: 3em}.cap .k{font: 600 14px var(--mono);color: var(--accent);margin-right: 6px}.lane{fill: var(--l1)}.lane.l2{fill: var(--l2)}.lane.l3{fill: var(--l3)}.lane.l4{fill: var(--l4)}.lane.l5{fill: var(--l5)}.lane.l6{fill: var(--l6)}.lh{font-family: var(--mono);font-weight: 600;fill: var(--ink2);letter-spacing: 0.04em;paint-order: stroke;stroke: var(--l1);stroke-width: 5px;stroke-linejoin: round}.lh.l2{stroke: var(--l2)}.lh.l3{stroke: var(--l3)}.lh.l4{stroke: var(--l4)}.lh.l5{stroke: var(--l5)}.lh.l6{stroke: var(--l6)}.nd,.e{transition: opacity 0.35s ease}.nd .bx{fill: var(--panel);stroke: var(--ink3);stroke-width: 1.5}.nd.c-INFERENCE .bx,.nd.c-unverified .bx{stroke-dasharray: 5 3}.nd .ic{color: var(--accent)}.nd .lbl{font-family: var(--sans);font-weight: 600;fill: var(--ink)}.nd .tc{font-family: var(--mono);fill: var(--ink2)}.sg{stroke-width: 1.6}.sg.live{fill: var(--good);stroke: var(--good)}.sg.planned{fill: var(--panel);stroke: var(--accent)}.sg.decommissioned{fill: none;stroke: var(--ink2)}.sg.unverified{fill: var(--warn);stroke: var(--warn)}.q{fill: none;stroke: var(--panel);stroke-width: 1.5;stroke-linecap: round}.nd.s-decommissioned .lbl{fill: var(--ink2)}.e .ln{fill: none;stroke: var(--ink3);stroke-width: 2;stroke-linejoin: round}.e .ah{fill: var(--ink3)}.e.k-data .ln{stroke: var(--accent)}.e.k-data .ah{fill: var(--accent)}.e.k-control .ln{stroke-dasharray: 9 4}.e.k-alert .ln{stroke: var(--gap)}.e.k-alert .ah,.e .ma{fill: var(--gap)}.e.k-manual .ln{stroke: var(--ink2);stroke-dasharray: 1.5 4.5;stroke-linecap: round}.e.k-manual .ah{fill: var(--ink2)}.e.s-unverified .ln,.e.s-planned .ln{stroke-opacity: 0.6}.e.s-unverified .ah,.e.s-planned .ah{fill-opacity: 0.6}.e.s-decommissioned .ln{stroke-opacity: 0.45}.e.s-decommissioned .ah{fill-opacity: 0.45}.e .mu{fill: var(--warn)}.e .mh{fill: var(--panel)}.e .mx{fill: none;stroke: var(--ink2);stroke-width: 1.8;stroke-linecap: round}.e .mp{fill: var(--panel);stroke: var(--accent);stroke-width: 1.6}.e.hl .ln{stroke-width: 3.4}.dg.focusing .nd:not(.f){opacity: 0.25}.dg.focusing .e:not(.hl){opacity: 0.14}.dg .nd.pre{opacity: 0.06}.dg.pathing .nd,.dg.pathing .e{opacity: 0.14}.dg.pathing .nd.pa,.dg.pathing .e.pa{opacity: 1}.dg[data-tvn=now] .e.tv-then,.dg[data-tvn=then] .e.tv-now{opacity: 0.08}.dg[data-tvn] .e.hl{opacity: 1}.dot{fill: var(--accent);stroke: var(--panel);stroke-width: 2}.archfig.is-static .ov{display: none}.tb{display: flex;flex-wrap: wrap;align-items: center;gap: 8px;margin: 10px 0 0}.tb .grp{display: inline-flex;gap: 4px;align-items: center}.tb label{font-size: 15px;color: var(--ink2)}.tb input[type=range]{width: 180px;accent-color: var(--accent)}.tb .ctr{font: 600 14px var(--mono);color: var(--ink2);min-width: 7.5em}ol.steps{list-style: none;margin: 12px 0 0;padding: 0;display: grid;gap: 4px}ol.steps a{display: block;padding: 6px 10px;border-left: 3px solid transparent;border-radius: 6px;color: var(--ink);text-decoration: none}ol.steps a:hover{background: var(--track)}ol.steps a[aria-current=step]{background: var(--track);border-left-color: var(--accent)}ol.steps .n{font: 600 14px var(--mono);color: var(--accent);display: inline-block;min-width: 2em}.legend{display: flex;flex-wrap: wrap;gap: 6px 18px;margin: 12px 0 0;padding: 0;list-style: none;font-size: 14px;color: var(--ink2)}.legend li{display: inline-flex;align-items: center;gap: 6px}.legend svg{width: 34px;height: 14px}.legend .sw{display: inline-block;width: 16px;height: 12px;border-radius: 3px;border: 1px solid var(--rule);background: var(--l1)}.legend .sw.l2{background: var(--l2)}.legend .sw.l3{background: var(--l3)}.legend .sw.l4{background: var(--l4)}.legend .sw.l5{background: var(--l5)}.legend .sw.l6{background: var(--l6)}.tw{overflow-x: auto;border: 1px solid var(--rule);border-radius: 12px;background: var(--panel)}table{border-collapse: collapse;width: 100%;font-size: 14px}th,td{text-align: left;vertical-align: top;padding: 7px 10px;border-bottom: 1px solid var(--rule)}th{font-weight: 600;color: var(--ink2);background: var(--track)}tr:last-child td{border-bottom: 0}td.ev{font-family: var(--mono);font-size: 13px;overflow-wrap: anywhere;color: var(--ink2)}.cf-FACT{color: var(--good);font-weight: 600}.cf-INFERENCE{color: var(--warn);font-weight: 600}.cf-unverified{color: var(--gap);font-weight: 600}ul.plain{margin: 0;padding-left: 20px}ul.plain li{margin: 2px 0}.note{color: var(--ink2);font-size: 15px}footer{margin-top: 32px;padding-top: 12px;border-top: 1px solid var(--rule);color: var(--ink2);font-size: 14px}footer p{margin: 4px 0}.printfoot{display: none}@media print{body{max-width: none;padding: 0;background: #FFFFFF;font-size: 11pt}.hdr{position: static}.tb,.theme,.skip,.ov{display: none !important}.lay-wide{display: block !important;max-width: 100%}.lay-narrow{display: none !important}.dg .nd,.dg .e{opacity: 1 !important}.tw{overflow: visible;border: 0}table{font-size: 9pt}tr,.card,figure,li{break-inside: avoid}h2{break-after: avoid}.intro a[href]::after{content: " (" attr(href) ")";font-size: 0.85em}.printfoot{display: block;position: fixed;bottom: 0;left: 0;right: 0;font: 8pt var(--mono);color: #3D4754;text-align: right}}
+</style>
+</head>
+<body>
+<a class="skip" href="#arch-ch-google-main">Skip to the diagram</a>
+<header class="hdr"><div class="bar"><h1 title="Google Workspace AI pages">Google Workspace AI pages</h1><span class="chip st-live">live 2026-09-21</span><span class="chip pv-public-safe">public-safe</span><span class="chip">as of 2026-11-16</span><button type="button" class="theme" hidden>Theme: auto</button></div></header>
+<div class="intro"><p class="purpose">Publishes static HTML one-pagers to the public through GitHub Pages, straight from the main branch of a public repo.</p><p class="nav"><span>Kind: software</span></p></div>
+<main id="arch-ch-google-main">
+<svg class="defs" aria-hidden="true" focusable="false"><symbol id="arch-ch-google-ic-app" viewBox="0 0 16 16"><path d="M2 3h12v10H2z M2 6h12 M4 4.5h1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="arch-ch-google-ic-doc" viewBox="0 0 16 16"><path d="M4 2h8v12H4z M6 5h4 M6 8h4 M6 11h2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="arch-ch-google-ic-external" viewBox="0 0 16 16"><path d="M9 2h5v5 M14 2L7 9 M12 9v5H2V4h5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="arch-ch-google-ic-file" viewBox="0 0 16 16"><path d="M4 2h5l3 3v9H4z M9 2v3h3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="arch-ch-google-ic-function" viewBox="0 0 16 16"><path d="M11 3c-2-1-3 0-3 2v6.5c0 2-1 2.5-3 2 M5.5 7h5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="arch-ch-google-ic-pipeline" viewBox="0 0 16 16"><path d="M2 6h4v4H2z M10 6h4v4h-4z M6 8h4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="arch-ch-google-ic-repo" viewBox="0 0 16 16"><path d="M4 2h9v10H5.5a1.5 1.5 0 0 0 0 3H13 M4 2v11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="arch-ch-google-ic-role" viewBox="0 0 16 16"><path d="M8 7a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z M3 14c0-3 2.2-5 5-5s5 2 5 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol></svg><figure class="archfig" id="arch-ch-google-fig" data-prefix="arch-ch-google" aria-labelledby="arch-ch-google-figlabel">
+<h2 id="arch-ch-google-figlabel" class="sr">Architecture diagram and walkthrough</h2><div class="stage" tabindex="0" aria-label="Diagram player. Keys while focused: space or K play and pause, left and right arrows step, Home overview, End last step."><svg class="dg lay-wide" data-layout="w" viewBox="0 0 960 590" role="img" aria-labelledby="arch-ch-google-w-t arch-ch-google-w-d"><title id="arch-ch-google-w-t">Google Workspace AI pages architecture diagram (wide layout)</title><desc id="arch-ch-google-w-d">12 components in 4 lanes (Authoring, Review gate, Repository, Hosting and readers) joined by 11 flows. The diagram is a picture: the numbered step list and the tables below are its text version, with every component name, technology, status and flow written out in full.</desc><rect class="lane l1" x="16" y="8" width="199" height="574" rx="10"/><rect class="lane l2" x="259" y="8" width="199" height="574" rx="10"/><rect class="lane l3" x="502" y="8" width="199" height="574" rx="10"/><rect class="lane l4" x="745" y="8" width="199" height="574" rx="10"/><g class="edges"><g class="e k-manual s-live c-FACT" data-e="owner-authored"><title>Owner to In-repo authored pages: writes and edits page HTML (not documented)</title><path class="ln" d="M209 108.5L226.5 108.5L226.5 379.5L209 379.5"/><path class="ah" d="M209 379.5L217 375L217 384Z"/></g><g class="e k-manual s-live c-FACT" data-e="exports-pageset"><title>Local source exports to Published page set: web-safe copy replaces the published file (on new export)</title><path class="ln" d="M209 251.5L233.5 251.5L233.5 179L469.5 179L469.5 120.5L508 120.5"/><path class="ah" d="M508 120.5L500 125L500 116Z"/></g><g class="e k-manual s-live c-FACT" data-e="sibling-pageset"><title>Private sibling copy to Published page set: byte-identical copy of one page (not documented)</title><path class="ln" d="M209 513.5L247.5 513.5L247.5 186L476.5 186L476.5 126.5L508 126.5"/><path class="ah" d="M508 126.5L500 131L500 122Z"/></g><g class="e k-data s-live c-FACT" data-e="authored-pageset"><title>In-repo authored pages to Published page set: page files saved as the published copy (not documented)</title><path class="ln" d="M209 385.5L240.5 385.5L240.5 193L483.5 193L483.5 132.5L508 132.5"/><path class="ah" d="M508 132.5L500 137L500 128Z"/></g><g class="e k-control s-live c-FACT" data-e="pageset-sweep"><title>Published page set to Pre-publish sweep: files searched for sensitive markers and secrets (before each push)</title><path class="ln" d="M508 114.5L452 114.5"/><path class="ah" d="M452 114.5L460 110L460 119Z"/></g><g class="e k-manual s-live c-FACT" data-e="sweep-repo"><title>Pre-publish sweep to Public git repository: clean files committed and pushed to main (per publish)</title><path class="ln" d="M452 108.5L490.5 108.5L490.5 379.5L508 379.5"/><path class="ah" d="M508 379.5L500 384L500 375Z"/></g><g class="e k-data s-live c-FACT" data-e="landing-repo"><title>Landing page to Public git repository: landing page committed with the pages (per publish)</title><path class="ln" d="M601.5 302L601.5 332"/><path class="ah" d="M601.5 332L597 324L606 324Z"/></g><g class="e k-data s-live c-FACT" data-e="repo-pages"><title>Public git repository to GitHub Pages: main branch root served as static files (on push; about 1 min)</title><path class="ln" d="M695 379.5L723 379.5L723 108.5L751 108.5"/><path class="ah" d="M751 108.5L743 113L743 104Z"/></g><g class="e k-control s-unverified c-unverified" data-e="repo-ci"><title>Public git repository to Template CI workflows: push and pull request trigger the workflows (on push and PR)</title><path class="ln" d="M601.5 433L601.5 463"/><path class="ah" d="M601.5 463L597 455L606 455Z"/><circle class="mu" cx="601.5" cy="448" r="5.5"/><path class="q" d="M599.5 446.6a2 2 0 1 1 2.8 1.8q-.8.4-.8 1.2M601.5 450.9v.2"/></g><g class="e k-data s-live c-FACT" data-e="pages-reader"><title>GitHub Pages to Public readers: HTML pages over the public web (on request)</title><path class="ln" d="M938 108.5L949 108.5L949 379.5L938 379.5"/><path class="ah" d="M938 379.5L946 375L946 384Z"/></g><g class="e k-data s-live c-FACT" data-e="cdn-reader"><title>Public CDNs to Public readers: styles, scripts and fonts loaded in the browser (on page view)</title><path class="ln" d="M844.5 302L844.5 332"/><path class="ah" d="M844.5 332L840 324L849 324Z"/></g></g><g class="nodes" font-size="16"><g class="nd s-live c-FACT l1" data-n="owner"><title>Owner - human author (live, FACT)</title><rect class="bx" x="22" y="70" width="187" height="101" rx="8"/><use class="ic" href="#arch-ch-google-ic-role" x="31" y="80" width="16" height="16"/><text class="tc" font-size="14"><tspan x="53" y="92.5">human author</tspan></text><circle class="sg live" cx="198" cy="88" r="4.5"/><text class="lbl"><tspan x="32" y="136">Owner</tspan></text></g><g class="nd s-live c-FACT l1" data-n="exports"><title>Local source exports - untracked HTML exports (live, FACT)</title><rect class="bx" x="22" y="201" width="187" height="101" rx="8"/><use class="ic" href="#arch-ch-google-ic-file" x="31" y="211" width="16" height="16"/><text class="tc" font-size="14"><tspan x="53" y="223.5">untracked HTML</tspan><tspan x="32" y="240.5">exports</tspan></text><circle class="sg live" cx="198" cy="219" r="4.5"/><text class="lbl"><tspan x="32" y="267">Local source</tspan><tspan x="32" y="287">exports</tspan></text></g><g class="nd s-live c-FACT l1" data-n="authored"><title>In-repo authored pages - hand-edited HTML (live, FACT)</title><rect class="bx" x="22" y="332" width="187" height="101" rx="8"/><use class="ic" href="#arch-ch-google-ic-doc" x="31" y="342" width="16" height="16"/><text class="tc" font-size="14"><tspan x="53" y="354.5">hand-edited</tspan><tspan x="32" y="371.5">HTML</tspan></text><circle class="sg live" cx="198" cy="350" r="4.5"/><text class="lbl"><tspan x="32" y="398">In-repo authored</tspan><tspan x="32" y="418">pages</tspan></text></g><g class="nd s-live c-FACT l1" data-n="sibling"><title>Private sibling copy - byte-identical copy of one page (live, FACT)</title><rect class="bx" x="22" y="463" width="187" height="101" rx="8"/><use class="ic" href="#arch-ch-google-ic-external" x="31" y="473" width="16" height="16"/><text class="tc" font-size="14"><tspan x="53" y="485.5">byte-identical</tspan><tspan x="32" y="502.5">copy of one page</tspan></text><circle class="sg live" cx="198" cy="481" r="4.5"/><text class="lbl"><tspan x="32" y="529">Private sibling</tspan><tspan x="32" y="549">copy</tspan></text></g><g class="nd s-live c-FACT l2" data-n="sweep"><title>Pre-publish sweep - repo-wide search before push (live, FACT)</title><rect class="bx" x="265" y="70" width="187" height="101" rx="8"/><use class="ic" href="#arch-ch-google-ic-function" x="274" y="80" width="16" height="16"/><text class="tc" font-size="14"><tspan x="296" y="92.5">repo-wide</tspan><tspan x="275" y="109.5">search before push</tspan></text><circle class="sg live" cx="441" cy="88" r="4.5"/><text class="lbl"><tspan x="275" y="136">Pre-publish sweep</tspan></text></g><g class="nd s-live c-FACT l3" data-n="pageset"><title>Published page set - artifacts/gws-ai-pages/*.html (live, FACT)</title><rect class="bx" x="508" y="70" width="187" height="101" rx="8"/><use class="ic" href="#arch-ch-google-ic-file" x="517" y="80" width="16" height="16"/><text class="tc" font-size="14"><tspan x="539" y="92.5">artifacts/gws--</tspan><tspan x="518" y="109.5">ai-pages/*.html</tspan></text><circle class="sg live" cx="684" cy="88" r="4.5"/><text class="lbl"><tspan x="518" y="136">Published page</tspan><tspan x="518" y="156">set</tspan></text></g><g class="nd s-live c-FACT l3" data-n="landing"><title>Landing page - root index.html (live, FACT)</title><rect class="bx" x="508" y="201" width="187" height="101" rx="8"/><use class="ic" href="#arch-ch-google-ic-doc" x="517" y="211" width="16" height="16"/><text class="tc" font-size="14"><tspan x="539" y="223.5">root index.html</tspan></text><circle class="sg live" cx="684" cy="219" r="4.5"/><text class="lbl"><tspan x="518" y="267">Landing page</tspan></text></g><g class="nd s-live c-FACT l3" data-n="repo"><title>Public git repository - main branch, world-readable (live, FACT)</title><rect class="bx" x="508" y="332" width="187" height="101" rx="8"/><use class="ic" href="#arch-ch-google-ic-repo" x="517" y="342" width="16" height="16"/><text class="tc" font-size="14"><tspan x="539" y="354.5">main branch,</tspan><tspan x="518" y="371.5">world-readable</tspan></text><circle class="sg live" cx="684" cy="350" r="4.5"/><text class="lbl"><tspan x="518" y="398">Public git</tspan><tspan x="518" y="418">repository</tspan></text></g><g class="nd s-unverified c-unverified l3" data-n="ci"><title>Template CI workflows - CI and Security on push and PR (unverified, unverified)</title><rect class="bx" x="508" y="463" width="187" height="101" rx="8"/><use class="ic" href="#arch-ch-google-ic-pipeline" x="517" y="473" width="16" height="16"/><text class="tc" font-size="14"><tspan x="539" y="485.5">CI and Security</tspan><tspan x="518" y="502.5">on push and PR</tspan></text><circle class="sg unverified" cx="684" cy="481" r="6.5"/><path class="q" d="M682 479.6a2 2 0 1 1 2.8 1.8q-.8.4-.8 1.2M684 483.9v.2"/><text class="lbl"><tspan x="518" y="529">Template CI</tspan><tspan x="518" y="549">workflows</tspan></text></g><g class="nd s-live c-FACT l4" data-n="pages"><title>GitHub Pages - branch main, folder root (live 2026-09-21, FACT)</title><rect class="bx" x="751" y="70" width="187" height="101" rx="8"/><use class="ic" href="#arch-ch-google-ic-app" x="760" y="80" width="16" height="16"/><text class="tc" font-size="14"><tspan x="782" y="92.5">branch main,</tspan><tspan x="761" y="109.5">folder root</tspan></text><circle class="sg live" cx="927" cy="88" r="4.5"/><text class="lbl"><tspan x="761" y="136">GitHub Pages</tspan></text></g><g class="nd s-live c-FACT l4" data-n="cdn"><title>Public CDNs - CSS, charts and icon assets (live, FACT)</title><rect class="bx" x="751" y="201" width="187" height="101" rx="8"/><use class="ic" href="#arch-ch-google-ic-external" x="760" y="211" width="16" height="16"/><text class="tc" font-size="14"><tspan x="782" y="223.5">CSS, charts and</tspan><tspan x="761" y="240.5">icon assets</tspan></text><circle class="sg live" cx="927" cy="219" r="4.5"/><text class="lbl"><tspan x="761" y="267">Public CDNs</tspan></text></g><g class="nd s-live c-FACT l4" data-n="reader"><title>Public readers - any web browser (live, FACT)</title><rect class="bx" x="751" y="332" width="187" height="101" rx="8"/><use class="ic" href="#arch-ch-google-ic-role" x="760" y="342" width="16" height="16"/><text class="tc" font-size="14"><tspan x="782" y="354.5">any web browser</tspan></text><circle class="sg live" cx="927" cy="350" r="4.5"/><text class="lbl"><tspan x="761" y="398">Public readers</tspan></text></g></g><g class="lhs" font-size="14"><text class="lh l1" text-anchor="middle"><tspan x="115.5" y="36">AUTHORING</tspan></text><text class="lh l2" text-anchor="middle"><tspan x="358.5" y="36">REVIEW GATE</tspan></text><text class="lh l3" text-anchor="middle"><tspan x="601.5" y="36">REPOSITORY</tspan></text><text class="lh l4" text-anchor="middle"><tspan x="844.5" y="36">HOSTING AND READERS</tspan></text></g><g class="ov" aria-hidden="true"></g></svg><svg class="dg lay-narrow" data-layout="n" viewBox="0 0 360 1029" role="img" aria-labelledby="arch-ch-google-n-t arch-ch-google-n-d"><title id="arch-ch-google-n-t">Google Workspace AI pages architecture diagram (narrow layout)</title><desc id="arch-ch-google-n-d">12 components in 4 lanes (Authoring, Review gate, Repository, Hosting and readers) joined by 11 flows. The diagram is a picture: the numbered step list and the tables below are its text version, with every component name, technology, status and flow written out in full.</desc><rect class="lane l1" x="6" y="8" width="348" height="274" rx="10"/><rect class="lane l2" x="6" y="294" width="348" height="149" rx="10"/><rect class="lane l3" x="6" y="455" width="348" height="274" rx="10"/><rect class="lane l4" x="6" y="741" width="348" height="274" rx="10"/><g class="edges"><g class="e k-manual s-live c-FACT" data-e="owner-authored"><title>Owner to In-repo authored pages: writes and edits page HTML (not documented)</title><path class="ln" d="M86 147L86 165"/><path class="ah" d="M86 165L81.5 157L90.5 157Z"/></g><g class="e k-manual s-live c-FACT" data-e="exports-pageset"><title>Local source exports to Published page set: web-safe copy replaces the published file (on new export)</title><path class="ln" d="M202 93.5L166 93.5L166 534.5L158 534.5"/><path class="ah" d="M158 534.5L166 530L166 539Z"/></g><g class="e k-manual s-live c-FACT" data-e="sibling-pageset"><title>Private sibling copy to Published page set: byte-identical copy of one page (not documented)</title><path class="ln" d="M202 221.5L173 221.5L173 540.5L158 540.5"/><path class="ah" d="M158 540.5L166 536L166 545Z"/></g><g class="e k-data s-live c-FACT" data-e="authored-pageset"><title>In-repo authored pages to Published page set: page files saved as the published copy (not documented)</title><path class="ln" d="M158 215.5L180 215.5L180 546.5L158 546.5"/><path class="ah" d="M158 546.5L166 542L166 551Z"/></g><g class="e k-control s-live c-FACT" data-e="pageset-sweep"><title>Published page set to Pre-publish sweep: files searched for sensitive markers and secrets (before each push)</title><path class="ln" d="M86 487L86 433"/><path class="ah" d="M86 433L90.5 441L81.5 441Z"/></g><g class="e k-manual s-live c-FACT" data-e="sweep-repo"><title>Pre-publish sweep to Public git repository: clean files committed and pushed to main (per publish)</title><path class="ln" d="M158 379.5L187 379.5L187 659.5L158 659.5"/><path class="ah" d="M158 659.5L166 655L166 664Z"/></g><g class="e k-data s-live c-FACT" data-e="landing-repo"><title>Landing page to Public git repository: landing page committed with the pages (per publish)</title><path class="ln" d="M202 534.5L194 534.5L194 665.5L158 665.5"/><path class="ah" d="M158 665.5L166 661L166 670Z"/></g><g class="e k-data s-live c-FACT" data-e="repo-pages"><title>Public git repository to GitHub Pages: main branch root served as static files (on push; about 1 min)</title><path class="ln" d="M86 719L86 773"/><path class="ah" d="M86 773L81.5 765L90.5 765Z"/></g><g class="e k-control s-unverified c-unverified" data-e="repo-ci"><title>Public git repository to Template CI workflows: push and pull request trigger the workflows (on push and PR)</title><path class="ln" d="M158 671.5L202 671.5"/><path class="ah" d="M202 671.5L194 676L194 667Z"/><circle class="mu" cx="180" cy="671.5" r="5.5"/><path class="q" d="M178 670.1a2 2 0 1 1 2.8 1.8q-.8.4-.8 1.2M180 674.4v.2"/></g><g class="e k-data s-live c-FACT" data-e="pages-reader"><title>GitHub Pages to Public readers: HTML pages over the public web (on request)</title><path class="ln" d="M86 880L86 898"/><path class="ah" d="M86 898L81.5 890L90.5 890Z"/></g><g class="e k-data s-live c-FACT" data-e="cdn-reader"><title>Public CDNs to Public readers: styles, scripts and fonts loaded in the browser (on page view)</title><path class="ln" d="M202 826.5L166 826.5L166 951.5L158 951.5"/><path class="ah" d="M158 951.5L166 947L166 956Z"/></g></g><g class="nodes" font-size="14"><g class="nd s-live c-FACT l1" data-n="owner"><title>Owner - human author (live, FACT)</title><rect class="bx" x="14" y="40" width="144" height="107" rx="8"/><use class="ic" href="#arch-ch-google-ic-role" x="23" y="49" width="16" height="16"/><text class="tc" font-size="14"><tspan x="45" y="61.5">human</tspan><tspan x="24" y="77.5">author</tspan></text><circle class="sg live" cx="147" cy="57" r="4.5"/><text class="lbl"><tspan x="24" y="117">Owner</tspan></text></g><g class="nd s-live c-FACT l1" data-n="exports"><title>Local source exports - untracked HTML exports (live, FACT)</title><rect class="bx" x="202" y="40" width="144" height="107" rx="8"/><use class="ic" href="#arch-ch-google-ic-file" x="211" y="49" width="16" height="16"/><text class="tc" font-size="14"><tspan x="233" y="61.5">untracked</tspan><tspan x="212" y="77.5">HTML exports</tspan></text><circle class="sg live" cx="335" cy="57" r="4.5"/><text class="lbl"><tspan x="212" y="117">Local source</tspan><tspan x="212" y="135">exports</tspan></text></g><g class="nd s-live c-FACT l1" data-n="authored"><title>In-repo authored pages - hand-edited HTML (live, FACT)</title><rect class="bx" x="14" y="165" width="144" height="107" rx="8"/><use class="ic" href="#arch-ch-google-ic-doc" x="23" y="174" width="16" height="16"/><text class="tc" font-size="14"><tspan x="45" y="186.5">hand-edit-</tspan><tspan x="24" y="202.5">ed HTML</tspan></text><circle class="sg live" cx="147" cy="182" r="4.5"/><text class="lbl"><tspan x="24" y="242">In-repo</tspan><tspan x="24" y="260">authored pages</tspan></text></g><g class="nd s-live c-FACT l1" data-n="sibling"><title>Private sibling copy - byte-identical copy of one page (live, FACT)</title><rect class="bx" x="202" y="165" width="144" height="107" rx="8"/><use class="ic" href="#arch-ch-google-ic-external" x="211" y="174" width="16" height="16"/><text class="tc" font-size="14"><tspan x="233" y="186.5">byte-iden-</tspan><tspan x="212" y="202.5">tical copy of</tspan><tspan x="212" y="218.5">one page</tspan></text><circle class="sg live" cx="335" cy="182" r="4.5"/><text class="lbl"><tspan x="212" y="242">Private sibling</tspan><tspan x="212" y="260">copy</tspan></text></g><g class="nd s-live c-FACT l2" data-n="sweep"><title>Pre-publish sweep - repo-wide search before push (live, FACT)</title><rect class="bx" x="14" y="326" width="144" height="107" rx="8"/><use class="ic" href="#arch-ch-google-ic-function" x="23" y="335" width="16" height="16"/><text class="tc" font-size="14"><tspan x="45" y="347.5">repo-wide</tspan><tspan x="24" y="363.5">search before</tspan><tspan x="24" y="379.5">push</tspan></text><circle class="sg live" cx="147" cy="343" r="4.5"/><text class="lbl"><tspan x="24" y="403">Pre-publish</tspan><tspan x="24" y="421">sweep</tspan></text></g><g class="nd s-live c-FACT l3" data-n="pageset"><title>Published page set - artifacts/gws-ai-pages/*.html (live, FACT)</title><rect class="bx" x="14" y="487" width="144" height="107" rx="8"/><use class="ic" href="#arch-ch-google-ic-file" x="23" y="496" width="16" height="16"/><text class="tc" font-size="14"><tspan x="45" y="508.5">artifacts-</tspan><tspan x="24" y="524.5">/gws-ai-pages-</tspan><tspan x="24" y="540.5">/*.html</tspan></text><circle class="sg live" cx="147" cy="504" r="4.5"/><text class="lbl"><tspan x="24" y="564">Published page</tspan><tspan x="24" y="582">set</tspan></text></g><g class="nd s-live c-FACT l3" data-n="landing"><title>Landing page - root index.html (live, FACT)</title><rect class="bx" x="202" y="487" width="144" height="107" rx="8"/><use class="ic" href="#arch-ch-google-ic-doc" x="211" y="496" width="16" height="16"/><text class="tc" font-size="14"><tspan x="233" y="508.5">root</tspan><tspan x="212" y="524.5">index.html</tspan></text><circle class="sg live" cx="335" cy="504" r="4.5"/><text class="lbl"><tspan x="212" y="564">Landing page</tspan></text></g><g class="nd s-live c-FACT l3" data-n="repo"><title>Public git repository - main branch, world-readable (live, FACT)</title><rect class="bx" x="14" y="612" width="144" height="107" rx="8"/><use class="ic" href="#arch-ch-google-ic-repo" x="23" y="621" width="16" height="16"/><text class="tc" font-size="14"><tspan x="45" y="633.5">main</tspan><tspan x="24" y="649.5">branch,</tspan><tspan x="24" y="665.5">world-readable</tspan></text><circle class="sg live" cx="147" cy="629" r="4.5"/><text class="lbl"><tspan x="24" y="689">Public git</tspan><tspan x="24" y="707">repository</tspan></text></g><g class="nd s-unverified c-unverified l3" data-n="ci"><title>Template CI workflows - CI and Security on push and PR (unverified, unverified)</title><rect class="bx" x="202" y="612" width="144" height="107" rx="8"/><use class="ic" href="#arch-ch-google-ic-pipeline" x="211" y="621" width="16" height="16"/><text class="tc" font-size="14"><tspan x="233" y="633.5">CI and</tspan><tspan x="212" y="649.5">Security on</tspan><tspan x="212" y="665.5">push and PR</tspan></text><circle class="sg unverified" cx="335" cy="629" r="6.5"/><path class="q" d="M333 627.6a2 2 0 1 1 2.8 1.8q-.8.4-.8 1.2M335 631.9v.2"/><text class="lbl"><tspan x="212" y="689">Template CI</tspan><tspan x="212" y="707">workflows</tspan></text></g><g class="nd s-live c-FACT l4" data-n="pages"><title>GitHub Pages - branch main, folder root (live 2026-09-21, FACT)</title><rect class="bx" x="14" y="773" width="144" height="107" rx="8"/><use class="ic" href="#arch-ch-google-ic-app" x="23" y="782" width="16" height="16"/><text class="tc" font-size="14"><tspan x="45" y="794.5">branch</tspan><tspan x="24" y="810.5">main, folder</tspan><tspan x="24" y="826.5">root</tspan></text><circle class="sg live" cx="147" cy="790" r="4.5"/><text class="lbl"><tspan x="24" y="850">GitHub Pages</tspan></text></g><g class="nd s-live c-FACT l4" data-n="cdn"><title>Public CDNs - CSS, charts and icon assets (live, FACT)</title><rect class="bx" x="202" y="773" width="144" height="107" rx="8"/><use class="ic" href="#arch-ch-google-ic-external" x="211" y="782" width="16" height="16"/><text class="tc" font-size="14"><tspan x="233" y="794.5">CSS,</tspan><tspan x="212" y="810.5">charts and</tspan><tspan x="212" y="826.5">icon assets</tspan></text><circle class="sg live" cx="335" cy="790" r="4.5"/><text class="lbl"><tspan x="212" y="850">Public CDNs</tspan></text></g><g class="nd s-live c-FACT l4" data-n="reader"><title>Public readers - any web browser (live, FACT)</title><rect class="bx" x="14" y="898" width="144" height="107" rx="8"/><use class="ic" href="#arch-ch-google-ic-role" x="23" y="907" width="16" height="16"/><text class="tc" font-size="14"><tspan x="45" y="919.5">any web</tspan><tspan x="24" y="935.5">browser</tspan></text><circle class="sg live" cx="147" cy="915" r="4.5"/><text class="lbl"><tspan x="24" y="975">Public readers</tspan></text></g></g><g class="lhs" font-size="14"><text class="lh l1"><tspan x="18" y="26">AUTHORING</tspan></text><text class="lh l2"><tspan x="18" y="312">REVIEW GATE</tspan></text><text class="lh l3"><tspan x="18" y="473">REPOSITORY</tspan></text><text class="lh l4"><tspan x="18" y="759">HOSTING AND READERS</tspan></text></g><g class="ov" aria-hidden="true"></g></svg></div>
+<figcaption><p class="cap"><span class="k">Overview</span>Publishes static HTML one-pagers to the public through GitHub Pages, straight from the main branch of a public repo. All 12 components and 11 flows; choose a step or press Play.</p></figcaption>
+<div class="tb" role="toolbar" aria-label="Diagram playback" hidden><span class="grp"><button type="button" data-act="restart">Restart</button><button type="button" data-act="prev" aria-label="Previous step">Prev</button><button type="button" data-act="play">Play</button><button type="button" data-act="next" aria-label="Next step">Next</button></span><span class="grp"><label for="arch-ch-google-speed">Speed</label><select id="arch-ch-google-speed" class="speed"><option value="0.5">0.5x</option><option value="1" selected>1x</option><option value="2">2x</option></select></span><span class="grp"><label for="arch-ch-google-seek">Step</label><input id="arch-ch-google-seek" class="seek" type="range" min="0" max="7" step="1" value="0" aria-valuetext="Overview"></span><span class="ctr" aria-hidden="true">Overview / 7</span><button type="button" data-act="static" aria-pressed="false">Static view</button></div>
+<ol class="steps" aria-label="Walkthrough steps"><li><a href="#step=0" data-k="0" aria-current="step"><span class="n">0</span>Overview: all components and flows</a></li><li><a href="#step=1" data-k="1"><span class="n">1</span>The owner writes a page in the repo, or receives a local export, or takes a copy from a private sibling project.</a></li><li><a href="#step=2" data-k="2"><span class="n">2</span>Each page lands in the published page set under a web-safe filename; that file is the source of truth, with no build step.</a></li><li><a href="#step=3" data-k="3"><span class="n">3</span>Before a push the repo is searched for sensitive markers, secrets and tracked env files; a hit is fixed at the source.</a></li><li><a href="#step=4" data-k="4"><span class="n">4</span>The root landing page is committed with the pages and pushed to the main branch of the public repo.</a></li><li><a href="#step=5" data-k="5"><span class="n">5</span>GitHub Pages serves the main branch root as static files and redeploys on each push.</a></li><li><a href="#step=6" data-k="6"><span class="n">6</span>Readers open the pages in a browser; styles, charts and icons are fetched from public CDNs at view time.</a></li><li><a href="#step=7" data-k="7"><span class="n">7</span>Template CI and security workflow files sit in the repo; no passing run is recorded.</a></li></ol>
+<div class="live sr" aria-live="polite"></div>
+<ul class="legend" aria-label="Legend"><li><span class="sw l1" aria-hidden="true"></span>Authoring</li><li><span class="sw l2" aria-hidden="true"></span>Review gate</li><li><span class="sw l3" aria-hidden="true"></span>Repository</li><li><span class="sw l4" aria-hidden="true"></span>Hosting and readers</li><li><svg viewBox="0 0 34 14" aria-hidden="true"><g class="e k-data s-live"><path class="ln" d="M2 7H25"/><path class="ah" d="M32 7L24 2.5L24 11.5Z"/></g></svg>data (solid)</li><li><svg viewBox="0 0 34 14" aria-hidden="true"><g class="e k-control s-live"><path class="ln" d="M2 7H25"/><path class="ah" d="M32 7L24 2.5L24 11.5Z"/></g></svg>control (long dash)</li><li><svg viewBox="0 0 34 14" aria-hidden="true"><g class="e k-manual s-live"><path class="ln" d="M2 7H25"/><path class="ah" d="M32 7L24 2.5L24 11.5Z"/></g></svg>manual (dotted)</li><li><svg viewBox="0 0 34 14" aria-hidden="true"><g class="e k-alert s-live"><path class="ln" d="M2 7H25"/><path class="ah" d="M32 7L24 2.5L24 11.5Z"/><path class="ma" d="M2 3l4 4-4 4-4-4z"/></g></svg>alert (diamond at source)</li><li><svg viewBox="0 0 34 14" aria-hidden="true"><g class="e k-data s-planned"><path class="ln" d="M2 7H25"/><path class="ah" d="M32 7L24 2.5L24 11.5Z"/><circle class="mp" cx="13.5" cy="7" r="4"/></g></svg>planned (ring)</li><li><svg viewBox="0 0 34 14" aria-hidden="true"><g class="e k-data s-decommissioned"><path class="ln" d="M2 7H25"/><path class="ah" d="M32 7L24 2.5L24 11.5Z"/><circle class="mh" cx="13.5" cy="7" r="5"/><path class="mx" d="M10.5 4l6 6M16.5 4l-6 6"/></g></svg>decommissioned (cross)</li><li><svg viewBox="0 0 34 14" aria-hidden="true"><g class="e k-data s-unverified"><path class="ln" d="M2 7H25"/><path class="ah" d="M32 7L24 2.5L24 11.5Z"/><circle class="mu" cx="13.5" cy="7" r="5.5"/><path class="q" d="M11.5 5.6a2 2 0 1 1 2.8 1.8q-.8.4-.8 1.2M13.5 9.9v.2"/></g></svg>unverified (question mark, faded)</li><li><svg viewBox="0 0 34 14" aria-hidden="true"><circle class="sg live" cx="17" cy="7" r="4.5"/></svg>status: live</li><li><svg viewBox="0 0 34 14" aria-hidden="true"><path class="sg decommissioned" d="M13.5 3.5l7 7M20.5 3.5l-7 7"/></svg>status: decommissioned</li><li><svg viewBox="0 0 34 14" aria-hidden="true"><circle class="sg planned" cx="17" cy="7" r="4.5"/></svg>status: planned</li><li><svg viewBox="0 0 34 14" aria-hidden="true"><circle class="sg unverified" cx="17" cy="7" r="6.5"/><path class="q" d="M15 5.6a2 2 0 1 1 2.8 1.8q-.8.4-.8 1.2M17 9.9v.2"/></svg>status: unverified</li><li><svg viewBox="0 0 34 14" aria-hidden="true"><g class="nd c-INFERENCE"><rect class="bx" x="2" y="2" width="30" height="10" rx="3"/></g></svg>dashed box: INFERENCE or unverified</li></ul>
+<p class="note">Motion is an illustrative sequence, not telemetry. Cadence is printed as text and never encoded as speed.</p>
+</figure>
+<section aria-labelledby="arch-ch-google-flows"><h2 id="arch-ch-google-flows">How data moves</h2><div class="tw"><table><thead><tr><th scope="col">#</th><th scope="col">From</th><th scope="col">To</th><th scope="col">What flows</th><th scope="col">Cadence</th><th scope="col">Kind</th><th scope="col">Status</th><th scope="col">Confidence</th><th scope="col">Evidence</th></tr></thead><tbody><tr><td>1</td><td>Owner</td><td>In-repo authored pages</td><td>writes and edits page HTML</td><td>not documented</td><td>manual</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">artifacts/gws-ai-pages/README.md (How to update)</td></tr><tr><td>2</td><td>Local source exports</td><td>Published page set</td><td>web-safe copy replaces the published file</td><td>on new export</td><td>manual</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">artifacts/gws-ai-pages/README.md (How to update)</td></tr><tr><td>3</td><td>Private sibling copy</td><td>Published page set</td><td>byte-identical copy of one page</td><td>not documented</td><td>manual</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">artifacts/gws-ai-pages/README.md (source column)</td></tr><tr><td>4</td><td>In-repo authored pages</td><td>Published page set</td><td>page files saved as the published copy</td><td>not documented</td><td>data</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">artifacts/gws-ai-pages/README.md (table)</td></tr><tr><td>5</td><td>Published page set</td><td>Pre-publish sweep</td><td>files searched for sensitive markers and secrets</td><td>before each push</td><td>control</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md (Verification, standing items)</td></tr><tr><td>6</td><td>Pre-publish sweep</td><td>Public git repository</td><td>clean files committed and pushed to main</td><td>per publish</td><td>manual</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md (What happened)</td></tr><tr><td>7</td><td>Landing page</td><td>Public git repository</td><td>landing page committed with the pages</td><td>per publish</td><td>data</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md (Published set)</td></tr><tr><td>8</td><td>Public git repository</td><td>GitHub Pages</td><td>main branch root served as static files</td><td>on push; about 1 min</td><td>data</td><td>live 2026-09-21</td><td class="cf-FACT">FACT</td><td class="ev">artifacts/gws-ai-pages/README.md (How to update)</td></tr><tr><td>9</td><td>Public git repository</td><td>Template CI workflows</td><td>push and pull request trigger the workflows</td><td>on push and PR</td><td>control</td><td>unverified</td><td class="cf-unverified">unverified</td><td class="ev">.github/workflows/ci.yml (on:)</td></tr><tr><td>10</td><td>GitHub Pages</td><td>Public readers</td><td>HTML pages over the public web</td><td>on request</td><td>data</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">artifacts/gws-ai-pages/README.md (Published URL)</td></tr><tr><td>11</td><td>Public CDNs</td><td>Public readers</td><td>styles, scripts and fonts loaded in the browser</td><td>on page view</td><td>data</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">artifacts/gws-ai-pages/README.md (Dependencies)</td></tr></tbody></table></div></section>
+<section aria-labelledby="arch-ch-google-comp"><h2 id="arch-ch-google-comp">Components</h2><div class="tw"><table><thead><tr><th scope="col">Component</th><th scope="col">Lane (role)</th><th scope="col">Type</th><th scope="col">Technology</th><th scope="col">Status</th><th scope="col">Confidence</th><th scope="col">Evidence</th><th scope="col">Links to</th></tr></thead><tbody><tr><td><a href="#arch-ch-google-fig" data-node="owner" data-for="arch-ch-google">Owner</a></td><td>Authoring</td><td>role</td><td>human author</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">artifacts/gws-ai-pages/README.md (How to update)</td><td>-</td></tr><tr><td><a href="#arch-ch-google-fig" data-node="exports" data-for="arch-ch-google">Local source exports</a></td><td>Authoring</td><td>file</td><td>untracked HTML exports</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">artifacts/gws-ai-pages/README.md (source column)</td><td>-</td></tr><tr><td><a href="#arch-ch-google-fig" data-node="authored" data-for="arch-ch-google">In-repo authored pages</a></td><td>Authoring</td><td>doc</td><td>hand-edited HTML</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">artifacts/gws-ai-pages/README.md (source column)</td><td>-</td></tr><tr><td><a href="#arch-ch-google-fig" data-node="sibling" data-for="arch-ch-google">Private sibling copy</a></td><td>Authoring</td><td>external</td><td>byte-identical copy of one page</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">artifacts/gws-ai-pages/README.md (source column)</td><td>-</td></tr><tr><td><a href="#arch-ch-google-fig" data-node="sweep" data-for="arch-ch-google">Pre-publish sweep</a></td><td>Review gate</td><td>function</td><td>repo-wide search before push</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md (Verification)</td><td>-</td></tr><tr><td><a href="#arch-ch-google-fig" data-node="pageset" data-for="arch-ch-google">Published page set</a></td><td>Repository</td><td>file</td><td>artifacts/gws-ai-pages/*.html</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">artifacts/gws-ai-pages/README.md (table, How to update)</td><td>-</td></tr><tr><td><a href="#arch-ch-google-fig" data-node="landing" data-for="arch-ch-google">Landing page</a></td><td>Repository</td><td>doc</td><td>root index.html</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md (Published set)</td><td>-</td></tr><tr><td><a href="#arch-ch-google-fig" data-node="repo" data-for="arch-ch-google">Public git repository</a></td><td>Repository</td><td>repo</td><td>main branch, world-readable</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">Brain pack CH-Google (Where it lives); docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md</td><td>-</td></tr><tr><td><a href="#arch-ch-google-fig" data-node="ci" data-for="arch-ch-google">Template CI workflows</a></td><td>Repository</td><td>pipeline</td><td>CI and Security on push and PR</td><td>unverified</td><td class="cf-unverified">unverified</td><td class="ev">.github/workflows/ci.yml; .github/workflows/security.yml</td><td>-</td></tr><tr><td><a href="#arch-ch-google-fig" data-node="pages" data-for="arch-ch-google">GitHub Pages</a></td><td>Hosting and readers</td><td>app</td><td>branch main, folder root</td><td>live 2026-09-21</td><td class="cf-FACT">FACT</td><td class="ev">docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md (What happened)</td><td>-</td></tr><tr><td><a href="#arch-ch-google-fig" data-node="cdn" data-for="arch-ch-google">Public CDNs</a></td><td>Hosting and readers</td><td>external</td><td>CSS, charts and icon assets</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">artifacts/gws-ai-pages/README.md (Dependencies)</td><td>-</td></tr><tr><td><a href="#arch-ch-google-fig" data-node="reader" data-for="arch-ch-google">Public readers</a></td><td>Hosting and readers</td><td>role</td><td>any web browser</td><td>live</td><td class="cf-FACT">FACT</td><td class="ev">artifacts/gws-ai-pages/README.md (Published URL)</td><td>-</td></tr></tbody></table></div></section>
+<section aria-labelledby="arch-ch-google-cad"><h2 id="arch-ch-google-cad">Cadence and freshness</h2><div class="card"><p>Documented cadence: 8 of 11 flows (the rest say "not documented"). SLO: not defined - the spec format holds no service-level target, and none is implied by the motion.</p><ul class="plain"><li>Local source exports to Published page set: <strong>on new export</strong> (FACT)</li><li>Published page set to Pre-publish sweep: <strong>before each push</strong> (FACT)</li><li>Pre-publish sweep to Public git repository: <strong>per publish</strong> (FACT)</li><li>Landing page to Public git repository: <strong>per publish</strong> (FACT)</li><li>Public git repository to GitHub Pages: <strong>on push; about 1 min</strong> (FACT)</li><li>Public git repository to Template CI workflows: <strong>on push and PR</strong> (unverified)</li><li>GitHub Pages to Public readers: <strong>on request</strong> (FACT)</li><li>Public CDNs to Public readers: <strong>on page view</strong> (FACT)</li></ul><p>Spec as of 2026-11-16. System status: live 2026-09-21. Claim check: 2026-11-16, 0 issue(s) open.</p></div></section>
+<section aria-labelledby="arch-ch-google-risk"><h2 id="arch-ch-google-risk">Known risks</h2><p class="note">Risks are listed in the internal build only.</p></section>
+</main>
+<footer><p>Generated from architecture.json sha256:3585548c by build-architecture-page.py v1.1.0, as of 2026-11-16.</p><p>Evidence: CH-Google at d32401a. Basis: Static read of the tracked tree at commit d32401a (2026-11-13) plus the Brain pack, on 2026-11-16. Nothing was run and no web address was fetched.</p><p>Sources:</p><ul class="plain"><li class="mono">artifacts/gws-ai-pages/README.md</li><li class="mono">docs/01-session/SESSION-2026-09-21-publish-gws-ai-pages.md</li><li class="mono">README.md</li><li class="mono">AGENTS.md</li><li class="mono">.github/workflows/ci.yml</li><li class="mono">.github/workflows/security.yml</li><li class="mono">Brain pack PROJECTS/CH-Google/PROJECT.md (Where it lives)</li></ul><p>Limitations:</p><ul class="plain"><li>Publishing mechanics only: the subject of each page is deliberately not drawn, and the repo&#x27;s design documents are out of scope.</li><li>Template scaffold folders (apps, packages, compose files) are not part of the published site and are not drawn.</li><li>Pages liveness was recorded on 2026-09-21; it was not re-checked for this spec.</li><li>Claim check 2026-11-16 was a static read of the cited files; every figure is not measured.</li></ul><p>Verification: claim check 2026-11-16, 0 issue(s) open. Privacy class: public-safe.</p><p>Motion is an illustrative sequence, not telemetry.</p></footer>
+<div class="printfoot" aria-hidden="true">Google Workspace AI pages - as of 2026-11-16 - public-safe</div>
+<script type="application/json" id="arch-ch-google-data">{"edges":{"authored-pageset":["authored","pageset"],"cdn-reader":["cdn","reader"],"exports-pageset":["exports","pageset"],"landing-repo":["landing","repo"],"owner-authored":["owner","authored"],"pages-reader":["pages","reader"],"pageset-sweep":["pageset","sweep"],"repo-ci":["repo","ci"],"repo-pages":["repo","pages"],"sibling-pageset":["sibling","pageset"],"sweep-repo":["sweep","repo"]},"geo":{"n":{"authored-pageset":[158,215.5,180,215.5,180,546.5,158,546.5],"cdn-reader":[202,826.5,166,826.5,166,951.5,158,951.5],"exports-pageset":[202,93.5,166,93.5,166,534.5,158,534.5],"landing-repo":[202,534.5,194,534.5,194,665.5,158,665.5],"owner-authored":[86,147,86,165],"pages-reader":[86,880,86,898],"pageset-sweep":[86,487,86,433],"repo-ci":[158,671.5,202,671.5],"repo-pages":[86,719,86,773],"sibling-pageset":[202,221.5,173,221.5,173,540.5,158,540.5],"sweep-repo":[158,379.5,187,379.5,187,659.5,158,659.5]},"w":{"authored-pageset":[209,385.5,240.5,385.5,240.5,193,483.5,193,483.5,132.5,508,132.5],"cdn-reader":[844.5,302,844.5,332],"exports-pageset":[209,251.5,233.5,251.5,233.5,179,469.5,179,469.5,120.5,508,120.5],"landing-repo":[601.5,302,601.5,332],"owner-authored":[209,108.5,226.5,108.5,226.5,379.5,209,379.5],"pages-reader":[938,108.5,949,108.5,949,379.5,938,379.5],"pageset-sweep":[508,114.5,452,114.5],"repo-ci":[601.5,433,601.5,463],"repo-pages":[695,379.5,723,379.5,723,108.5,751,108.5],"sibling-pageset":[209,513.5,247.5,513.5,247.5,186,476.5,186,476.5,126.5,508,126.5],"sweep-repo":[452,108.5,490.5,108.5,490.5,379.5,508,379.5]}},"overview":"Publishes static HTML one-pagers to the public through GitHub Pages, straight from the main branch of a public repo. All 12 components and 11 flows; choose a step or press Play.","steps":[{"caption":"The owner writes a page in the repo, or receives a local export, or takes a copy from a private sibling project.","flows":["owner-authored"],"focus":["owner","authored","exports","sibling"],"reveal":[],"weight":1},{"caption":"Each page lands in the published page set under a web-safe filename; that file is the source of truth, with no build step.","flows":["exports-pageset","sibling-pageset","authored-pageset"],"focus":["exports","sibling","authored","pageset"],"reveal":[],"weight":2},{"caption":"Before a push the repo is searched for sensitive markers, secrets and tracked env files; a hit is fixed at the source.","flows":["pageset-sweep","sweep-repo"],"focus":["pageset","sweep","repo"],"reveal":[],"weight":2},{"caption":"The root landing page is committed with the pages and pushed to the main branch of the public repo.","flows":["landing-repo"],"focus":["landing","repo"],"reveal":[],"weight":1},{"caption":"GitHub Pages serves the main branch root as static files and redeploys on each push.","flows":["repo-pages"],"focus":["repo","pages"],"reveal":[],"weight":2},{"caption":"Readers open the pages in a browser; styles, charts and icons are fetched from public CDNs at view time.","flows":["pages-reader","cdn-reader"],"focus":["pages","cdn","reader"],"reveal":[],"weight":1},{"caption":"Template CI and security workflow files sit in the repo; no passing run is recorded.","flows":["repo-ci"],"focus":["repo","ci"],"reveal":[],"weight":1}],"tvn":false}</script>
+<script>(function () {
+'use strict';
+var RM = (typeof window !== 'undefined' && window.matchMedia) ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+function reduced() { return !!(RM && RM.matches); }
+function smooth(x) { x = x < 0 ? 0 : (x > 1 ? 1 : x); return x * x * (3 - 2 * x); }
+function now() { return (window.performance && performance.now) ? performance.now() : Date.now(); }
+function each(list, fn) { Array.prototype.forEach.call(list, fn); }
+function measure(flat) {
+var pts = [], acc = 0;
+for (var i = 0; i + 1 < flat.length; i += 2) {
+if (pts.length) {
+var p = pts[pts.length - 1];
+acc += Math.abs(flat[i] - p.x) + Math.abs(flat[i + 1] - p.y);
+}
+pts.push({ x: flat[i], y: flat[i + 1], d: acc });
+}
+return { pts: pts, total: acc };
+}
+function pointAt(m, d) {
+var pts = m.pts;
+for (var i = 1; i < pts.length; i++) {
+if (d <= pts[i].d || i === pts.length - 1) {
+var a = pts[i - 1], b = pts[i], span = (b.d - a.d) || 1, f = Math.max(0, Math.min(1, (d - a.d) / span));
+return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f };
+}
+}
+return pts.length ? { x: pts[0].x, y: pts[0].y } : { x: 0, y: 0 };
+}
+function map() { return Object.create(null); }
+function cueTable(steps) {
+var wsum = 0, unit, i, it, fixed, rest, u2, cue = [], acc = 0;
+steps.forEach(function (s) { wsum += s.weight; });
+unit = Math.min(4, 30 / (wsum || 1));
+for (it = 0; it < steps.length + 1; it++) {
+fixed = 0; rest = 0;
+for (i = 0; i < steps.length; i++) {
+if (steps[i].weight * unit < 2.5) { fixed += 2.5; } else { rest += steps[i].weight; }
+}
+u2 = rest ? Math.min(4, Math.max(0, 30 - fixed) / rest) : unit;
+if (Math.abs(u2 - unit) < 1e-9) { break; }
+unit = u2;
+}
+steps.forEach(function (s) {
+var dur = Math.max(2.5, s.weight * unit);
+cue.push({ start: acc, dur: dur });
+acc += dur;
+});
+return { cue: cue, total: acc };
+}
+function adjacency(edges) {
+var down = map(), up = map();
+Object.keys(edges).forEach(function (id) {
+var e = edges[id];
+(down[e[0]] = down[e[0]] || []).push([id, e[1]]);
+(up[e[1]] = up[e[1]] || []).push([id, e[0]]);
+});
+return { down: down, up: up };
+}
+function Player(fig) {
+var pre = fig.getAttribute('data-prefix');
+var dataEl = document.getElementById(pre + '-data');
+if (!dataEl) { return; }
+var data = JSON.parse(dataEl.textContent);
+var steps = data.steps, n = steps.length;
+var svgs = fig.querySelectorAll('svg.dg');
+var tb = fig.querySelector('.tb');
+var cap = fig.querySelector('.cap');
+var live = fig.querySelector('.live');
+var ctr = fig.querySelector('.ctr');
+var seek = fig.querySelector('.seek');
+var bPlay = fig.querySelector('[data-act=play]');
+var bStatic = fig.querySelector('[data-act=static]');
+var speedSel = fig.querySelector('.speed');
+var links = fig.querySelectorAll('ol.steps a');
+var ct = cueTable(steps), cue = ct.cue, T = ct.total;
+var revealAt = map();
+steps.forEach(function (s, i) {
+(s.reveal || []).forEach(function (id) { if (!(id in revealAt)) { revealAt[id] = i + 1; } });
+});
+var geo = [];
+each(svgs, function (svg) {
+var g = data.geo[svg.getAttribute('data-layout')] || {}, m = map();
+Object.keys(g).forEach(function (k) { m[k] = measure(g[k]); });
+geo.push({ svg: svg, ov: svg.querySelector('.ov'), m: m, dots: [] });
+});
+var tvOf = map();
+if (data.tvn && svgs.length) {
+each(svgs[0].querySelectorAll('.e'), function (el) {
+var th = el.classList.contains('tv-then'), nw = el.classList.contains('tv-now');
+if (th !== nw) { tvOf[el.getAttribute('data-e')] = th ? 'then' : 'now'; }
+});
+}
+function setTvn(act) {
+geo.forEach(function (G) { G.svg.setAttribute('data-tvn', act); });
+each(fig.querySelectorAll('[data-act=then],[data-act=now]'), function (x) {
+x.setAttribute('aria-pressed', x.getAttribute('data-act') === act ? 'true' : 'false');
+});
+}
+var t = 0, ov = true, playing = false, speed = 1, raf = 0, lastPaint = 0;
+var visible = true, statik = false, shown = -1;
+function stepAt(time) {
+for (var i = 0; i < n; i++) { if (time < cue[i].start + cue[i].dur) { return i + 1; } }
+return n;
+}
+function current() { return ov ? 0 : stepAt(t); }
+function label(k) {
+return k === 0 ? 'Overview' : 'Step ' + k + ' of ' + n + ': ' + steps[k - 1].caption;
+}
+function setClass(el, cls, on) { if (on) { el.classList.add(cls); } else { el.classList.remove(cls); } }
+function applyStep(k) {
+shown = k;
+var st = k ? steps[k - 1] : null;
+var focus = map(), flows = map();
+if (st) {
+st.focus.forEach(function (id) { focus[id] = 1; });
+(st.reveal || []).forEach(function (id) { focus[id] = 1; });
+st.flows.forEach(function (id) { flows[id] = 1; });
+if (data.tvn && st.flows.length) {
+var view = tvOf[st.flows[0]];
+st.flows.forEach(function (id) { if (tvOf[id] !== view) { view = null; } });
+if (view) { setTvn(view); }
+}
+}
+geo.forEach(function (G) {
+setClass(G.svg, 'focusing', !!st);
+each(G.svg.querySelectorAll('.nd'), function (el) {
+var id = el.getAttribute('data-n');
+setClass(el, 'f', !!focus[id]);
+setClass(el, 'pre', !!st && (id in revealAt) && k < revealAt[id]);
+});
+each(G.svg.querySelectorAll('.e'), function (el) { setClass(el, 'hl', !!flows[el.getAttribute('data-e')]); });
+while (G.ov && G.ov.firstChild) { G.ov.removeChild(G.ov.firstChild); }
+G.dots = [];
+if (st && G.ov) {
+st.flows.forEach(function (id) {
+if (!G.m[id]) { return; }
+var c = document.createElementNS(G.svg.namespaceURI, 'circle');
+c.setAttribute('r', '5.5');
+c.setAttribute('class', 'dot');
+c.setAttribute('visibility', 'hidden');
+G.ov.appendChild(c);
+G.dots.push({ el: c, m: G.m[id] });
+});
+}
+});
+cap.innerHTML = '';
+var kspan = document.createElement('span');
+kspan.className = 'k';
+kspan.textContent = k ? (k + '/' + n) : 'Overview';
+cap.appendChild(kspan);
+cap.appendChild(document.createTextNode(k ? st.caption : data.overview));
+each(links, function (a) {
+if (Number(a.getAttribute('data-k')) === k) { a.setAttribute('aria-current', 'step'); }
+else { a.removeAttribute('aria-current'); }
+});
+if (seek) { seek.value = String(k); seek.setAttribute('aria-valuetext', label(k)); }
+if (ctr) { ctr.textContent = k ? ('Step ' + k + ' / ' + n) : ('Overview / ' + n); }
+}
+function placeDots() {
+var k = current();
+var moving = playing && k > 0 && !reduced() && !statik;
+var p = k ? (t - cue[k - 1].start) / cue[k - 1].dur : 0;
+geo.forEach(function (G) {
+var M = G.dots.length;
+G.dots.forEach(function (D, j) {
+var a = (j / M) * 0.9, b = ((j + 1) / M) * 0.9, q = (p - a) / (b - a);
+if (!moving || q < 0 || q > 1) { D.el.setAttribute('visibility', 'hidden'); return; }
+var pt = pointAt(D.m, smooth(q) * D.m.total);
+D.el.setAttribute('cx', pt.x.toFixed(1));
+D.el.setAttribute('cy', pt.y.toFixed(1));
+D.el.setAttribute('visibility', 'visible');
+});
+});
+}
+function render() {
+var k = current();
+if (k !== shown) { applyStep(k); }
+placeDots();
+if (bPlay) {
+bPlay.textContent = playing ? 'Pause' : 'Play';
+bPlay.setAttribute('aria-label', playing ? 'Pause the walkthrough' : 'Play the walkthrough');
+}
+}
+function suspended() { return document.hidden || !visible; }
+function schedule() {
+if (!raf && playing && !suspended()) { lastPaint = now(); raf = requestAnimationFrame(frame); }
+}
+function frame(ts) {
+raf = 0;
+if (!playing || suspended()) { return; }
+if (ts - lastPaint >= 1000 / 30) {
+var dt = Math.min((ts - lastPaint) / 1000, 0.1);
+lastPaint = ts;
+t += dt * speed;
+if (t >= T) { t = T; playing = false; ov = true; }
+render();
+}
+if (playing) { raf = requestAnimationFrame(frame); }
+}
+function setStatic(on) {
+statik = on;
+setClass(fig, 'is-static', on);
+if (bStatic) { bStatic.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+}
+function play() {
+if (statik) { setStatic(false); }
+if (ov || t >= T) { t = 0; ov = false; }
+playing = true;
+render();
+schedule();
+}
+function pause() {
+playing = false;
+if (raf) { cancelAnimationFrame(raf); raf = 0; }
+render();
+}
+function goTo(k, manual) {
+k = Math.max(0, Math.min(n, k | 0));
+playing = false;
+if (raf) { cancelAnimationFrame(raf); raf = 0; }
+if (k > 0 && statik) { setStatic(false); }
+if (k === 0) { ov = true; t = 0; } else { ov = false; t = cue[k - 1].start; }
+render();
+if (manual && live) { live.textContent = label(k); }
+}
+var adj = adjacency(data.edges), down = adj.down, up = adj.up;
+function walk(start, adj, nodes, edges) {
+var queue = [start];
+while (queue.length) {
+var cur = queue.shift();
+(adj[cur] || []).forEach(function (pair) {
+edges[pair[0]] = 1;
+if (!nodes[pair[1]]) { nodes[pair[1]] = 1; queue.push(pair[1]); }
+});
+}
+}
+function highlight(id) {
+var nodes = map(), edges = map();
+if (id) { nodes[id] = 1; walk(id, down, nodes, edges); walk(id, up, nodes, edges); }
+geo.forEach(function (G) {
+setClass(G.svg, 'pathing', !!id);
+each(G.svg.querySelectorAll('.nd'), function (el) { setClass(el, 'pa', !!nodes[el.getAttribute('data-n')]); });
+each(G.svg.querySelectorAll('.e'), function (el) { setClass(el, 'pa', !!edges[el.getAttribute('data-e')]); });
+});
+}
+geo.forEach(function (G) {
+G.svg.addEventListener('mouseover', function (ev) {
+var nd = ev.target.closest ? ev.target.closest('.nd') : null;
+highlight(nd ? nd.getAttribute('data-n') : null);
+});
+G.svg.addEventListener('mouseleave', function () { highlight(null); });
+});
+each(document.querySelectorAll('a[data-node][data-for="' + pre + '"]'), function (a) {
+var id = a.getAttribute('data-node');
+a.addEventListener('focus', function () { highlight(id); });
+a.addEventListener('mouseenter', function () { highlight(id); });
+a.addEventListener('blur', function () { highlight(null); });
+a.addEventListener('mouseleave', function () { highlight(null); });
+});
+if (tb) { tb.hidden = false; }
+fig.addEventListener('click', function (ev) {
+var b = ev.target.closest ? ev.target.closest('[data-act]') : null;
+if (!b || !fig.contains(b)) { return; }
+var act = b.getAttribute('data-act'), k = current();
+if (act === 'play') { if (playing) { pause(); } else { play(); } }
+else if (act === 'prev') { goTo(k - 1, true); }
+else if (act === 'next') { goTo(k + 1, true); }
+else if (act === 'restart') { if (reduced()) { goTo(1, true); } else { goTo(0, false); play(); } }
+else if (act === 'static') { if (statik) { setStatic(false); } else { goTo(0, true); setStatic(true); } }
+else if (act === 'then' || act === 'now') {
+setTvn(act);
+if (live) { live.textContent = b.textContent; }
+}
+});
+if (speedSel) {
+speedSel.addEventListener('change', function () { speed = Number(speedSel.value) || 1; lastPaint = now(); });
+}
+if (seek) {
+seek.addEventListener('input', function () { goTo(Number(seek.value), true); });
+}
+each(links, function (a) {
+a.addEventListener('click', function (ev) {
+ev.preventDefault();
+goTo(Number(a.getAttribute('data-k')), true);
+try { history.replaceState(null, '', '#step=' + a.getAttribute('data-k')); } catch (e) {  }
+});
+});
+fig.addEventListener('keydown', function (ev) {
+if (ev.altKey || ev.ctrlKey || ev.metaKey || ev.shiftKey) { return; }
+var tag = ev.target.tagName, k = current(), key = ev.key;
+var native = tag === 'BUTTON' || tag === 'SELECT' || tag === 'INPUT' || tag === 'A';
+if ((key === ' ' || key === 'Spacebar') && !native) { ev.preventDefault(); if (playing) { pause(); } else { play(); } }
+else if ((key === 'k' || key === 'K') && tag !== 'INPUT') { if (playing) { pause(); } else { play(); } }
+else if (key === 'ArrowRight' && tag !== 'INPUT' && tag !== 'SELECT') { ev.preventDefault(); goTo(k + 1, true); }
+else if (key === 'ArrowLeft' && tag !== 'INPUT' && tag !== 'SELECT') { ev.preventDefault(); goTo(k - 1, true); }
+else if (key === 'Home' && tag !== 'INPUT' && tag !== 'SELECT') { ev.preventDefault(); goTo(0, true); }
+else if (key === 'End' && tag !== 'INPUT' && tag !== 'SELECT') { ev.preventDefault(); goTo(n, true); }
+});
+document.addEventListener('visibilitychange', function () { if (!suspended()) { schedule(); } });
+if (window.IntersectionObserver) {
+new IntersectionObserver(function (entries) {
+visible = entries[entries.length - 1].isIntersecting;
+if (!suspended()) { schedule(); }
+}).observe(fig);
+}
+if (RM) {
+var onRM = function () { if (reduced()) { pause(); } render(); };
+if (RM.addEventListener) { RM.addEventListener('change', onRM); } else if (RM.addListener) { RM.addListener(onRM); }
+}
+window.addEventListener('hashchange', function () {
+var m = /^#step=(\d+)$/.exec(location.hash);
+if (m) { goTo(Number(m[1]), true); }
+});
+var hm = /^#step=(\d+)$/.exec(location.hash);
+if (data.tvn) { setTvn('now'); }
+if (hm) { goTo(Number(hm[1]), false); }
+else if (!reduced()) { play(); }
+else { goTo(0, false); }
+}
+function themeToggle(btn) {
+var order = ['auto', 'light', 'dark'], root = document.documentElement;
+btn.hidden = false;
+btn.addEventListener('click', function () {
+var cur = root.getAttribute('data-theme') || 'auto';
+var next = order[(order.indexOf(cur) + 1) % order.length];
+if (next === 'auto') { root.removeAttribute('data-theme'); } else { root.setAttribute('data-theme', next); }
+btn.textContent = 'Theme: ' + next;
+});
+}
+if (typeof module === 'object' && module && module.exports) { module.exports = { cueTable: cueTable, adjacency: adjacency }; return; }
+function start() {
+each(document.querySelectorAll('figure.archfig[data-prefix]'), function (fig) { Player(fig); });
+each(document.querySelectorAll('button.theme'), themeToggle);
+}
+if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', start); } else { start(); }
+})();
+</script>
+</body>
+</html>
