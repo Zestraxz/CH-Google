@@ -14,6 +14,7 @@ publicly via GitHub Pages.
 | `AIVC_LowConf_Workflow.html` | authored in-repo 2026-11-12 | AIVC Low-Confidence Workflow — Factory PC to Google Drive, Sheet & Chat |
 | `Task-tracker-workflow.html` | authored in-repo 2026-11-12 | Task Tracker Workflow — App to Google Sheet, automated Meet, Calendar & Gmail |
 | `GWS_AI_Architecture_Animation.html` | authored in-repo 2026-11-13 | Enterprise Architecture & Workflow Integration Terminal (animated replay & multi-flow topology) |
+| `R&D DPM Automation architecture.html` | authored in-repo 2026-11-23 | Top Glove R&D — DPM Automation Architecture (v2.1 Critic Enhanced) |
 
 - **Published URL:** `https://zestraxz.github.io/CH-Google/` (landing page = repo-root `index.html`;
   each page under `artifacts/gws-ai-pages/<name>.html`). Pages serves branch `main`, folder `/ (root)`.
