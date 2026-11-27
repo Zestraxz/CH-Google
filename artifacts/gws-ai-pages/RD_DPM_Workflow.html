@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Top Glove R&D — Monthly DPM Automation Workflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: schematic (Local / PowerBI zone -> Google Cloud zone), the dual pipeline routines (Local Python & Google Apps Script),
+   QA audit rules, what happens on failure, and where every file lives. */
+:root {
+  --bg: #f4f6f8;
+  --panel: #ffffff;
+  --ink: #17212b;
+  --muted: #56636f;
+  --line: #c7d0d8;
+  --zone-pc: #e8eef3;
+  --zone-g: #e9f2ee;
+  --accent: #1f6fb2;        /* Local -> Google Drive traffic */
+  --accent-soft: #d6e6f4;
+  --green: #2f7d5b;         /* Inside Google Cloud */
+  --amber: #a5651a;         /* Timed & Master Templates */
+  --warn: #b33a3a;          /* DPM > Group Average / Failure */
+  --warn-soft: #f6e1df;
+  --yellow-highlight: #fef08a; /* Top 3 High DPM Highlight */
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11171d; --panel: #18212a; --ink: #e3e9ee; --muted: #9aa8b4; --line: #34424f;
+    --zone-pc: #17222c; --zone-g: #152520; --accent: #6aa9e0; --accent-soft: #1d3346;
+    --green: #6cc19b; --amber: #e0a35a; --warn: #ef8a80; --warn-soft: #3a2224; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11171d; --panel: #18212a; --ink: #e3e9ee; --muted: #9aa8b4; --line: #34424f;
+  --zone-pc: #17222c; --zone-g: #152520; --accent: #6aa9e0; --accent-soft: #1d3346;
+  --green: #6cc19b; --amber: #e0a35a; --warn: #ef8a80; --warn-soft: #3a2224; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 48px;
+}
+.wrap { max-width: 1220px; margin: 0 auto; display: grid; gap: 28px; }
+header { display: grid; gap: 6px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { margin: 0; font-size: clamp(24px, 3.4vw, 34px); line-height: 1.15; font-weight: 700; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 82ch; }
+h2 { margin: 0 0 4px; font-size: 18px; font-weight: 600; text-wrap: balance; }
+.when { margin: 0 0 12px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--amber); }
+
+.diagram { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 1060px; height: auto; }
+
+/* SVG styling from tokens */
+.z-pc { fill: var(--zone-pc); stroke: var(--line); }
+.z-g  { fill: var(--zone-g); stroke: var(--line); }
+.zl   { fill: var(--muted); font: 600 12px var(--font-mono); letter-spacing: .06em; }
+.box  { fill: var(--panel); stroke: var(--line); stroke-width: 1.2; }
+.box-key { fill: var(--panel); stroke: var(--accent); stroke-width: 2; }
+.box-time { fill: var(--panel); stroke: var(--amber); stroke-width: 1.6; }
+.box-g { fill: var(--panel); stroke: var(--green); stroke-width: 1.6; }
+.box-warn { fill: var(--warn-soft); stroke: var(--warn); stroke-width: 1.4; }
+.box-opt { fill: var(--panel); stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 5 4; }
+.t-h { fill: var(--ink); font: 600 13.5px var(--font-body); }
+.t-b { fill: var(--muted); font: 400 12px var(--font-body); }
+.t-m { fill: var(--ink); font: 400 11px var(--font-mono); }
+.t-step { fill: var(--accent); font: 600 11.5px var(--font-mono); }
+.t-time { fill: var(--amber); font: 600 11px var(--font-mono); }
+.t-warn { fill: var(--warn); font: 600 11.5px var(--font-mono); }
+.t-arrow { fill: var(--muted); font: 500 11px var(--font-body); }
+.t-up { fill: var(--accent); font: 600 11.5px var(--font-body); }
+.t-g { fill: var(--green); font: 600 11.5px var(--font-body); }
+.a   { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+.a-up { fill: none; stroke: var(--accent); stroke-width: 2.8; }
+.a-st { fill: none; stroke: var(--accent); stroke-width: 1.6; }
+.a-upd { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 6 4; }
+.a-g { fill: none; stroke: var(--green); stroke-width: 1.8; }
+.a-time { fill: none; stroke: var(--amber); stroke-width: 1.8; }
+.a-warn { fill: none; stroke: var(--warn); stroke-width: 1.5; }
+.a-opt { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; }
+.pill { fill: var(--accent-soft); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 12px 22px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.sw { width: 26px; height: 0; border-top: 3px solid var(--accent); display: inline-block; }
+.sw.s { border-top: 2px solid var(--accent); }
+.sw.u { border-top: 2px dashed var(--accent); }
+.sw.g { border-top: 2px solid var(--green); }
+.sw.t { border-top: 2px solid var(--amber); }
+.sw.w { border-top: 2px solid var(--warn); }
+.sw.m { border-top: 2px solid var(--muted); }
+
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px; align-items: start; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; min-width: 0; }
+ol.steps { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+ol.steps li { padding-left: 2px; }
+ol.steps li::marker { font-family: var(--font-mono); color: var(--accent); font-weight: 600; }
+ul.notes { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+code { font-family: var(--font-mono); font-size: 13px; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+.tablewrap { overflow-x: auto; }
+table.grid { width: 100%; border-collapse: collapse; font-size: 14px; }
+.grid th, .grid td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.grid th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
+.grid td:first-child { font-weight: 600; min-width: 170px; }
+.grid td code { font-size: 12px; }
+.flag { display: inline-block; font-family: var(--font-mono); font-size: 11.5px; font-weight: 600; padding: 1px 7px; border-radius: 999px; background: var(--warn-soft); color: var(--warn); white-space: nowrap; }
+.flag.ok { background: var(--accent-soft); color: var(--accent); }
+.flag.amber { background: #fef3c7; color: var(--amber); }
+.badge-top3 { background: #fef08a; color: #854d0e; font-family: var(--font-mono); font-weight: 700; font-size: 11.5px; padding: 2px 6px; border-radius: 4px; }
+footer { color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Top Glove R&D · Monthly DPM Automation Workflow · Production Release</div>
+    <h1>How Monthly DPM Raw Exports Reach Trackers, Validation Audits & Executive Master Decks</h1>
+    <p class="lede">Each month, PowerBI raw DPM exports for <strong>NR, NBR & Surgical</strong> are processed into integer metrics, sorted descending by Total DPM, and audited with <code>=MAX()</code> defect formulas. The pipeline synchronizes the Monthly Trackers, updates the DPM Automation Controller, clones the official Google Slides master templates, and exports 100% formatted PowerPoint (.pptx) presentations ready for executive review.</p>
+  </header>
+
+  <section class="diagram" aria-label="Workflow diagram">
+    <svg viewBox="0 0 1180 840" role="img" aria-labelledby="dtitle">
+      <title id="dtitle">Top Glove R&D Monthly DPM End-to-End Pipeline: Raw PowerBI exports and local Python engine on the left; Google Drive, DPM Automation Controller, Google Apps Script engine, master slide cloning, and exported PPTX decks on the right.</title>
+      <defs>
+        <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker>
+        <marker id="mu" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker>
+        <marker id="ms" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker>
+        <marker id="mg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--green)"/></marker>
+        <marker id="mt" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--amber)"/></marker>
+        <marker id="mw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--warn)"/></marker>
+      </defs>
+
+      <!-- ZONE 1: INPUT & LOCAL PYTHON PIPELINE -->
+      <rect class="z-pc" x="20" y="20" width="560" height="800" rx="12"/>
+      <text class="zl" x="40" y="46">LOCAL WORKSPACE / FACTORY RUNTIME · POWERBI & PYTHON</text>
+
+      <!-- Zone 1: Left Column -->
+      <rect class="box" x="40" y="66" width="245" height="106" rx="8"/>
+      <text class="t-h" x="54" y="88">Raw PowerBI DPM Exports</text>
+      <text class="t-m" x="54" y="108">DPM - NBR (&lt;Month&gt;) &lt;Date&gt;.xlsx</text>
+      <text class="t-m" x="54" y="125">DPM - NR (&lt;Month&gt;) &lt;Date&gt;.xlsx</text>
+      <text class="t-m" x="54" y="142">DPM - Surgical (&lt;Month&gt;) &lt;Date&gt;.xlsx</text>
+      <text class="t-b" x="54" y="160">Full defect matrix: Major, Minor, NFC, Pinhole</text>
+
+      <rect class="box" x="40" y="190" width="245" height="145" rx="8"/>
+      <text class="t-h" x="54" y="212">Mandatory PowerBI Filters</text>
+      <text class="t-b" x="54" y="232">• VerificationStatus: Verified</text>
+      <text class="t-b" x="54" y="249">• InspectionStatus: NEW (Count: 1)</text>
+      <text class="t-b" x="54" y="266">• InspectionPlan: Exclude 2ND / Sample</text>
+      <text class="t-b" x="54" y="283">• SourceTable: FG · Line not blank</text>
+      <text class="t-b" x="54" y="300">• ProductionDate: 1st to 1st of month</text>
+      <text class="t-b" x="54" y="317">• ProductType: NCRFT, NCRFTT, NPFD...</text>
+
+      <rect class="box" x="40" y="352" width="245" height="118" rx="8"/>
+      <text class="t-h" x="54" y="374">Master Monthly Trackers</text>
+      <text class="t-m" x="54" y="394">Monthly NR DPM Data.xlsx</text>
+      <text class="t-m" x="54" y="411">Monthly NBR DPM Data.xlsx</text>
+      <text class="t-m" x="54" y="428">Monthly Surgical DPM Data.xlsx</text>
+      <text class="t-b" x="54" y="448">Tabs: Total, Major, Minor, NFC/NFG, Pinhole</text>
+
+      <rect class="box" x="40" y="488" width="245" height="154" rx="8"/>
+      <text class="t-h" x="54" y="510">Processed Raw Exports</text>
+      <text class="t-m" x="54" y="530">Total Tab (High DPM Top Sort)</text>
+      <text class="t-b" x="54" y="547">Top 3 factories in </text><text class="t-warn" x="156" y="547">YELLOW</text><text class="t-b" x="202" y="547"> (#FFFF00)</text>
+      <text class="t-m" x="54" y="565">Major, Minor, NFC, Pinhole Tabs</text>
+      <text class="t-b" x="54" y="582">• Column AJ =MAX() Highest Defect</text>
+      <text class="t-b" x="54" y="600">• No decimals applied (#,#0 format)</text>
+      <text class="t-b" x="54" y="618">• Top defect code extracted per factory</text>
+
+      <rect class="box-warn" x="40" y="660" width="245" height="142" rx="8"/>
+      <text class="t-warn" x="54" y="682">Local PPTX Master Decks</text>
+      <text class="t-m" x="54" y="702">NBR DPM for &lt;Month&gt; Master.pptx</text>
+      <text class="t-m" x="54" y="720">NR &amp; Surgical DPM Master.pptx</text>
+      <text class="t-b" x="54" y="740">• 13-Column Summary (Slide 1 &amp; 5)</text>
+      <text class="t-b" x="54" y="758">• Red bold font: Cells &gt; Group Avg</text>
+      <text class="t-b" x="54" y="776">• Slides 2-4, 6: Bottom Factory Pareto</text>
+
+      <!-- Zone 1: Right Column (Python Engine) -->
+      <rect class="box-time" x="305" y="66" width="255" height="84" rx="8"/>
+      <text class="t-time" x="320" y="88">LOCAL EXECUTION RUNTIMES</text>
+      <text class="t-h" x="320" y="108">Interactive GUI / CLI</text>
+      <text class="t-m" x="320" y="128">python dpm_gui.py / dpm_automation.py</text>
+
+      <rect class="box-key" x="305" y="168" width="255" height="248" rx="8"/>
+      <text class="t-h" x="320" y="190">Python DPM Core Pipeline</text>
+      <text class="t-step" x="320" y="214">1</text><text class="t-b" x="338" y="214">Parse raw export &amp; filter verification</text>
+      <text class="t-step" x="320" y="236">2</text><text class="t-b" x="338" y="236">Round numbers to integer (no decimal)</text>
+      <text class="t-step" x="320" y="258">3</text><text class="t-b" x="338" y="258">Sort Total DPM descending (worst top)</text>
+      <text class="t-step" x="320" y="280">4</text><text class="t-b" x="338" y="280">Highlight Top 3 worst factories yellow</text>
+      <text class="t-step" x="320" y="302">5</text><text class="t-b" x="338" y="302">Generate category tabs + =MAX() formula</text>
+      <text class="t-step" x="320" y="324">6</text><text class="t-b" x="338" y="324">Append target month into Trackers</text>
+      <text class="t-step" x="320" y="346">7</text><text class="t-b" x="338" y="346">Clone master PPTX &amp; update tables</text>
+      <text class="t-step" x="320" y="368">8</text><text class="t-b" x="338" y="368">Highlight cells &gt; Group Avg in RED</text>
+      <text class="t-step" x="320" y="390">9</text><text class="t-b" x="338" y="390">Update Top 3 lowest DPM remarks</text>
+
+      <rect class="box" x="305" y="432" width="255" height="152" rx="8"/>
+      <text class="t-h" x="320" y="454">dpm_core/ Modules</text>
+      <text class="t-m" x="320" y="474">excel_processor.py</text>
+      <text class="t-b" x="320" y="491">Raw parsing, rounding, QA tabs, sorting</text>
+      <text class="t-m" x="320" y="512">pptx_generator.py</text>
+      <text class="t-b" x="320" y="529">Slide 1/5 13-col tables, Pareto slides</text>
+      <text class="t-m" x="320" y="550">defect_catalog.json</text>
+      <text class="t-b" x="320" y="567">Code-to-name dictionary (e.g. F07C➔Pinhole)</text>
+
+      <rect class="box-opt" x="305" y="602" width="255" height="200" rx="8"/>
+      <text class="t-h" x="320" y="624">Automated Pytest Suite</text>
+      <text class="t-m" x="320" y="644">tests/test_dpm_pipeline.py</text>
+      <text class="t-b" x="320" y="664">✓ Raw processing integrity test</text>
+      <text class="t-b" x="320" y="682">✓ Integer rounding &amp; #,#0 format test</text>
+      <text class="t-b" x="320" y="700">✓ High DPM sorting &amp; Top 3 yellow test</text>
+      <text class="t-b" x="320" y="718">✓ Monthly tracker sync &amp; pinhole test</text>
+      <text class="t-b" x="320" y="736">✓ Master presentation updater test</text>
+      <text class="t-b" x="320" y="754">✓ Bottom factory Pareto analysis test</text>
+      <text class="t-g" x="320" y="780">STATUS: 6/6 PASSED (100% GREEN)</text>
+
+      <!-- Connectors in Zone 1 -->
+      <path class="a" d="M162,172 V186" marker-end="url(#m)"/>
+      <path class="a" d="M285,119 H301" marker-end="url(#m)"/>
+      <path class="a" d="M285,411 H301" marker-end="url(#m)"/>
+      <path class="a" d="M432,416 V428" marker-end="url(#m)"/>
+      <path class="a" d="M432,584 V598" marker-end="url(#m)"/>
+      <path class="a" d="M285,565 H301" marker-end="url(#m)"/>
+      <path class="a" d="M285,731 H301" marker-end="url(#m)"/>
+
+      <!-- ZONE 2: GOOGLE CLOUD DRIVE & APPS SCRIPT -->
+      <rect class="z-g" x="600" y="20" width="560" height="800" rx="12"/>
+      <text class="zl" x="620" y="46">GOOGLE WORKSPACE CLOUD · DRIVE, APPS SCRIPT &amp; SLIDES</text>
+
+      <!-- Central Bridge Traffic (Upload / Sync) -->
+      <path class="a-up" d="M560,119 H596" marker-end="url(#mu)"/>
+      <rect class="pill" x="556" y="80" width="88" height="34" rx="6"/>
+      <text class="t-up" x="562" y="96">Upload Raw</text>
+      <text class="t-up" x="562" y="108">&amp; Trackers</text>
+
+      <!-- Zone 2: Left Column (Apps Script & Master Templates) -->
+      <rect class="box-g" x="620" y="66" width="250" height="120" rx="8"/>
+      <text class="t-h" x="635" y="88">Google Drive Structure</text>
+      <text class="t-m" x="635" y="108">Shared Root DPM Folder</text>
+      <text class="t-b" x="635" y="126">Numbered Month Subfolders:</text>
+      <text class="t-m" x="635" y="144">1. Jan26 ... 9. Sep26 ... 10. Oct26</text>
+      <text class="t-b" x="635" y="162">Auto-heals weird *ed folders to *26</text>
+
+      <rect class="box-key" x="620" y="202" width="250" height="236" rx="8"/>
+      <text class="t-h" x="635" y="224">Google Apps Script Engine</text>
+      <text class="t-m" x="635" y="244">google_apps_script/Code.gs</text>
+      <text class="t-step" x="635" y="268">1</text><text class="t-b" x="653" y="268">Auto-converts .xlsx &amp; .pptx uploads</text>
+      <text class="t-step" x="635" y="288">2</text><text class="t-b" x="653" y="288">Builds Total (sort desc + Top 3 yellow)</text>
+      <text class="t-step" x="635" y="308">3</text><text class="t-b" x="653" y="308">Builds Major, Minor, NFC, Pinhole (=MAX)</text>
+      <text class="t-step" x="635" y="328">4</text><text class="t-b" x="653" y="328">Generates Validation_Summary tab</text>
+      <text class="t-step" x="635" y="348">5</text><text class="t-b" x="653" y="348">Generates Slide_Summary tab (13-col)</text>
+      <text class="t-step" x="635" y="368">6</text><text class="t-b" x="653" y="368">Clones Master Google Slides Decks</text>
+      <text class="t-step" x="635" y="388">7</text><text class="t-b" x="653" y="388">Exports PowerPoint (.pptx) via API</text>
+      <text class="t-step" x="635" y="408">8</text><text class="t-b" x="653" y="408">Auto-organizes files into monthly subfolder</text>
+
+      <rect class="box-time" x="620" y="452" width="250" height="154" rx="8"/>
+      <text class="t-time" x="635" y="474">OFFICIAL MASTER SLIDE TEMPLATES</text>
+      <text class="t-h" x="635" y="494">Top Glove Corporate Master IDs</text>
+      <text class="t-m" x="635" y="514">TEMPLATE_NBR_ID</text>
+      <text class="t-m" x="635" y="529">1o-y53Ss_OS76kNNaggKgg98XUJRFPtdq</text>
+      <text class="t-m" x="635" y="549">TEMPLATE_NR_SURGICAL_ID</text>
+      <text class="t-m" x="635" y="564">1IsEZL_Hhz6fnLLvsk5DFKF0pyxtXZDeL</text>
+      <text class="t-b" x="635" y="586">Preserves logos, headers, remarks &amp; Pareto</text>
+
+      <rect class="box-opt" x="620" y="622" width="250" height="180" rx="8"/>
+      <text class="t-h" x="635" y="644">Cloud Interactive Menu</text>
+      <text class="t-m" x="635" y="664">🧤 DPM Automation</text>
+      <text class="t-b" x="635" y="682">▶️ Run DPM Automation for Latest Month</text>
+      <text class="t-b" x="635" y="700">📊 Rebuild Validation Summary (Audit)</text>
+      <text class="t-b" x="635" y="718">📽️ Rebuild Slide Summary (Executive)</text>
+      <text class="t-b" x="635" y="736">📑 Generate Master Executive Slides &amp; PPTX</text>
+      <text class="t-b" x="635" y="754">🗂️ Organize Month Files into Subfolder</text>
+      <text class="t-b" x="635" y="772">📁 Fix Weird Folder Names (*ed ➔ *26)</text>
+      <text class="t-b" x="635" y="790">📁 Create 12 Numbered Folders (1-12)</text>
+
+      <!-- Zone 2: Right Column (Sheets, Slides, Deliverables) -->
+      <rect class="box-g" x="890" y="66" width="250" height="190" rx="8"/>
+      <text class="t-h" x="905" y="88">DPM Automation Controller</text>
+      <text class="t-m" x="905" y="108">Master Google Spreadsheet</text>
+      <text class="t-h" x="905" y="130">Tab 1: Validation_Summary</text>
+      <text class="t-b" x="905" y="148">• Granular QA audit view per category</text>
+      <text class="t-b" x="905" y="165">• Compares raw file totals with formulas</text>
+      <text class="t-h" x="905" y="188">Tab 2: Slide_Summary</text>
+      <text class="t-b" x="905" y="206">• 13-column executive presentation format</text>
+      <text class="t-b" x="905" y="223">• Red bold text: Values &gt; Group Average</text>
+      <text class="t-b" x="905" y="240">• Auto-calculates Top 3 lowest DPM</text>
+
+      <rect class="box-g" x="890" y="272" width="250" height="106" rx="8"/>
+      <text class="t-h" x="905" y="294">Cloud Monthly Trackers</text>
+      <text class="t-m" x="905" y="314">Monthly NR / NBR / Surgical DPM</text>
+      <text class="t-b" x="905" y="332">• Appends new target month column</text>
+      <text class="t-b" x="905" y="349">• Synchronizes Total &amp; category tabs</text>
+      <text class="t-b" x="905" y="366">• Recalculates FY &amp; category group avgs</text>
+
+      <rect class="box-key" x="890" y="394" width="250" height="206" rx="8"/>
+      <text class="t-h" x="905" y="416">Identical Cloned Google Slides</text>
+      <text class="t-m" x="905" y="436">NBR DPM for &lt;Month&gt; Master</text>
+      <text class="t-b" x="905" y="454">• Slide 1: 18x13 NBR Executive Table</text>
+      <text class="t-b" x="905" y="471">• Remarks: Top 3 lowest NBR DPM</text>
+      <text class="t-b" x="905" y="488">• Slides 2-4: Bottom 3 NBR Pareto Action</text>
+      <text class="t-m" x="905" y="508">NR &amp; Surgical DPM Master</text>
+      <text class="t-b" x="905" y="526">• Slide 1: 19x13 NR Executive Table</text>
+      <text class="t-b" x="905" y="543">• Slides 2-4: Bottom 3 NR Pareto Action</text>
+      <text class="t-b" x="905" y="560">• Slide 5: 6x13 Surgical Executive Table</text>
+      <text class="t-b" x="905" y="577">• Slide 6: Surgical Bottom Factory Pareto</text>
+
+      <rect class="box-g" x="890" y="616" width="250" height="186" rx="8"/>
+      <text class="t-h" x="905" y="638">Final Deliverables in Monthly Folder</text>
+      <text class="t-m" x="905" y="658">📄 NBR DPM for &lt;Month&gt; Master.pptx</text>
+      <text class="t-m" x="905" y="676">📄 NR &amp; Surgical DPM Master.pptx</text>
+      <text class="t-b" x="905" y="696">• Exported directly via Drive OAuth</text>
+      <text class="t-b" x="905" y="714">• Saved inside: &lt;MonthNum&gt;. &lt;Month&gt;</text>
+      <text class="t-b" x="905" y="732">• Complete corporate design &amp; layout</text>
+      <text class="t-b" x="905" y="750">• Ready for executive management deck</text>
+      <text class="t-g" x="905" y="774">STATUS: 100% IDENTICAL TO MASTERS</text>
+
+      <!-- Connectors in Zone 2 -->
+      <path class="a-g" d="M870,126 H886" marker-end="url(#mg)"/>
+      <path class="a-g" d="M870,272 H886" marker-end="url(#mg)"/>
+      <path class="a-g" d="M870,320 H886" marker-end="url(#mg)"/>
+      <path class="a-time" d="M870,529 H886" marker-end="url(#mt)"/>
+      <path class="a-g" d="M1015,256 V268" marker-end="url(#mg)"/>
+      <path class="a-g" d="M1015,378 V390" marker-end="url(#mg)"/>
+      <path class="a-g" d="M1015,600 V612" marker-end="url(#mg)"/>
+      <path class="a-st" d="M745,438 V448" marker-end="url(#ms)"/>
+      <path class="a-st" d="M745,606 V618" marker-end="url(#ms)"/>
+    </svg>
+  </section>
+
+  <div class="legend" aria-label="Legend">
+    <span><i class="sw"></i>Raw Data Upload</span>
+    <span><i class="sw s"></i>Automated Step Transition</span>
+    <span><i class="sw g"></i>Google Cloud Native Component</span>
+    <span><i class="sw t"></i>Master Presentation Template</span>
+    <span><i class="sw w"></i>Cells Exceeding Average (Red) / Alert</span>
+    <span><i class="sw m"></i>Local Python Runtime</span>
+    <span><span class="badge-top3">Top 3</span> Highest DPM Yellow Highlight (#FFFF00)</span>
+  </div>
+
+  <div class="cols">
+    <section class="card">
+      <h2>1. Local Python Engine Workflow</h2>
+      <p class="when">Monthly Execution · Python 3.10+ / OpenPyXL / Python-PPTX</p>
+      <ol class="steps">
+        <li><strong>PowerBI Ingestion:</strong> Ingests raw export files for NR, NBR, and Surgical. Verifies that all 10 mandatory PowerBI filters match the QA specification.</li>
+        <li><strong>Integer Formatting:</strong> Applies mathematical rounding (<code>round()</code>) and number format <code>#,##0</code> to all DPM metrics. No decimals are stored or displayed.</li>
+        <li><strong>High DPM Sorting:</strong> Sorts factory rows descending by overall Total DPM so the highest defect factory sits at the top (Row 2).</li>
+        <li><strong>Top 3 Yellow Highlighting:</strong> Evaluates the top 3 worst-performing factories (highest DPM) and applies bright yellow fill (<code>#FFFF00</code>) to Column A with bold text across <code>Total</code> and all category tabs.</li>
+        <li><strong>Granular QA Tabs:</strong> Generates intermediate tabs (<code>Major</code>, <code>Minor</code>, <code>NFC</code>, <code>Pinhole</code>) with dynamic formula <code>=MAX(B3:AI3)</code> in Column AJ to pinpoint each factory's peak defect.</li>
+        <li><strong>Tracker Synchronization:</strong> Appends the new target month column into <code>Monthly NR/NBR/Surgical DPM Data.xlsx</code>, properly handling Pinhole's historical column offset.</li>
+        <li><strong>PowerPoint Master Generation:</strong> Clones local master decks, populates the 13-column executive summary tables (Slide 1 &amp; Slide 5), marks numbers exceeding group average in bold red (<code>#FF0000</code>), updates the Top 3 Lowest DPM remarks, and generates the Bottom 3 Factory Pareto action plan slides.</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>2. Google Cloud Apps Script Workflow</h2>
+      <p class="when">Google Drive · DPM Automation Controller · Code.gs</p>
+      <ol class="steps">
+        <li><strong>Drive Auto-Detection:</strong> Script detects its folder location (Production: <code>1vBX43PyWWhhMAG1YXZcqDEQCTrfRxgfR</code> or Test: <code>1Y-7byz1vyhuzRzddfDHEPkWJ1C7Wc-i3</code>) and accesses/creates numbered month subfolders (<code>1. Jan26</code> to <code>12. Dec26</code>).</li>
+        <li><strong>Excel/PPTX Conversion:</strong> Automatically converts uploaded <code>.xlsx</code> and <code>.pptx</code> files to native Google Sheets and Google Slides formats via Drive API.</li>
+        <li><strong>QA Audit &amp; Slide Summary Tabs:</strong> Rebuilds <code>Validation_Summary</code> (full audit view with formula comparisons) and <code>Slide_Summary</code> (13-column executive format with RED styling) in the controller spreadsheet.</li>
+        <li><strong>Master Template Cloning (100% Identical):</strong> Instead of blank slides, the script clones the official master Google Slides templates:
+          <br>• NBR Template: <code>1o-y53Ss_OS76kNNaggKgg98XUJRFPtdq</code>
+          <br>• NR &amp; Surgical Template: <code>1IsEZL_Hhz6fnLLvsk5DFKF0pyxtXZDeL</code></li>
+        <li><strong>Executive Table Population:</strong> Populates the 18x13 (NBR), 19x13 (NR), and 6x13 (Surgical) tables cell-by-cell. Formats month labels (FY, Prev, Curr), and applies red bold text to any metric higher than the Category Group Average.</li>
+        <li><strong>Remarks &amp; Pareto Update:</strong> Recalculates the Top 3 lowest total DPM factories and writes the official Remarks box. Updates Bottom Factory slides with subtitle <code>In &lt;Month&gt;</code> and top defects.</li>
+        <li><strong>PowerPoint (.pptx) Export:</strong> Exports both cloned presentations as <code>.pptx</code> files into the monthly folder using OAuth token and <code>UrlFetchApp</code>, ready for immediate download.</li>
+      </ol>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>Quality Assurance &amp; Data Integrity Rules</h2>
+    <div class="tablewrap">
+      <table class="grid">
+        <thead><tr><th>Rule</th><th>Standard Specification</th><th>Implementation &amp; Validation</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Zero Decimals</td>
+            <td>All DPM metrics must be rounded integers with comma separators (e.g. <code>32,936</code>, not <code>32936.45</code>)</td>
+            <td><span class="flag ok">Enforced</span> <code>Math.round(val)</code> + NumberFormat <code>#,##0</code> applied in Python &amp; Apps Script.</td>
+          </tr>
+          <tr>
+            <td>High DPM Ranking</td>
+            <td>Factory rows must be sorted descending by Total DPM (highest defect factory at top)</td>
+            <td><span class="flag ok">Enforced</span> <code>factoryRows.sort((a,b) =&gt; b.total - a.total)</code> before writing to sheets.</td>
+          </tr>
+          <tr>
+            <td>Top 3 High DPM Highlight</td>
+            <td>Top 3 worst factories (highest total DPM) must be highlighted in Column A</td>
+            <td><span class="flag amber">Yellow</span> Cell background set to <code>#FFFF00</code> with bold text on Row 2, 3, 4.</td>
+          </tr>
+          <tr>
+            <td>Red Text Exceeding Average</td>
+            <td>In Slide 1 / Slide 5 tables, any factory metric greater than the Category Group Average must be styled RED</td>
+            <td><span class="flag">#DC2626</span> Applied to Current &amp; Previous month columns when <code>val &gt; groupAvg</code>.</td>
+          </tr>
+          <tr>
+            <td>Top 3 Lowest DPM Remarks</td>
+            <td>Slide 1 remarks box must name the Top 3 best factories (lowest non-zero total DPM)</td>
+            <td><span class="flag ok">Enforced</span> Filtered non-zero, sorted ascending, and formatted as e.g. <code>F10, F8A &amp; F18B</code>.</td>
+          </tr>
+          <tr>
+            <td>Granular Defect Audit</td>
+            <td>Category sheets (Major, Minor, NFC, Pinhole) must show highest individual defect code and value</td>
+            <td><span class="flag ok">Enforced</span> Column AJ injected with formula <code>=MAX(B3:AI3)</code> matching raw PowerBI export.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>When Something Goes Wrong</h2>
+    <div class="tablewrap">
+      <table class="grid">
+        <thead><tr><th>Problem</th><th>What happens by itself</th><th>Where you see it &amp; How to resolve</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>PowerBI Export missing category tabs</td>
+            <td>Engine automatically falls back to raw <code>Export</code> sheet to extract metrics and defect codes</td>
+            <td><span class="flag ok">Auto-Handled</span> Verified in <code>extractTopDefectFromRawExport</code>.</td>
+          </tr>
+          <tr>
+            <td>Weird folder name created (e.g. <code>10. Octed</code>)</td>
+            <td>Engine detects <code>*ed</code> pattern and automatically renames/merges to <code>10. Oct26</code></td>
+            <td><span class="flag ok">Self-Healing</span> Handled by <code>fixWeirdFolderNames</code> in Drive.</td>
+          </tr>
+          <tr>
+            <td>Pinhole Tracker column mismatch</td>
+            <td>Dynamic date scan identifies the correct month column, avoiding the extra historical column</td>
+            <td><span class="flag ok">Auto-Handled</span> Category header search dynamically matches target year &amp; month.</td>
+          </tr>
+          <tr>
+            <td>Slide generation fails with <code>has no text</code></td>
+            <td>Cell check verifies <code>str.length &gt; 0</code> before applying styles to avoid empty-cell API errors</td>
+            <td><span class="flag ok">Resolved</span> Guard condition implemented in <code>setSlideCellText</code>.</td>
+          </tr>
+          <tr>
+            <td>Java SimpleDateFormat syntax error (<code>MMM'yy</code>)</td>
+            <td>Replaced with right-single quote <code>MMM’yy</code> so Apps Script avoids quote-escaping crashes</td>
+            <td><span class="flag ok">Resolved</span> Formats as e.g. <code>Oct’26</code> cleanly.</td>
+          </tr>
+          <tr>
+            <td>Master Template ID unreachable or permission denied</td>
+            <td>Engine gracefully falls back to generating a clean dynamic presentation without breaking the run</td>
+            <td><span class="flag amber">Fallback</span> Logged in Apps Script Logger; deck still generated.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Where Everything Lives</h2>
+    <div class="tablewrap">
+      <table class="grid">
+        <thead><tr><th>Component</th><th>File / Location</th><th>Role &amp; Responsibility</th></tr></thead>
+        <tbody>
+          <tr><td>Apps Script Code</td><td><code>google_apps_script/Code.gs</code></td><td>Primary cloud automation script attached to DPM Automation Controller</td></tr>
+          <tr><td>Controller Sheet</td><td><code>DPM Automation Controller</code> (Google Sheet in Drive)</td><td>Master control interface, Validation_Summary, Slide_Summary, and menu triggers</td></tr>
+          <tr><td>NBR Slide Master</td><td>Google Slides ID: <code>1o-y53Ss_OS76kNNaggKgg98XUJRFPtdq</code></td><td>Official Top Glove corporate master template for NBR FG DPM analysis</td></tr>
+          <tr><td>NR/Surgical Master</td><td>Google Slides ID: <code>1IsEZL_Hhz6fnLLvsk5DFKF0pyxtXZDeL</code></td><td>Official Top Glove corporate master template for NR FG &amp; Surgical SFG analysis</td></tr>
+          <tr><td>Shared Drive Folder</td><td><code>1vBX43PyWWhhMAG1YXZcqDEQCTrfRxgfR</code> (Test: <code>1Y-7byz1vyhuzRzddfDHEPkWJ1C7Wc-i3</code>)</td><td>Root directory containing monthly subfolders (<code>1. Jan26</code> to <code>12. Dec26</code>)</td></tr>
+          <tr><td>Python Processor</td><td><code>dpm_core/excel_processor.py</code></td><td>Core local engine for rounding, sorting, yellow highlighting, and QA tabs</td></tr>
+          <tr><td>Python PPTX Engine</td><td><code>dpm_core/pptx_generator.py</code></td><td>Local engine for updating master <code>.pptx</code> presentations with exact slide tables</td></tr>
+          <tr><td>Defect Catalog</td><td><code>config/defect_catalog.json</code></td><td>Mapping dictionary translating defect codes (e.g. <code>F07C</code>) to names (<code>Pinhole</code>)</td></tr>
+          <tr><td>Pytest Test Suite</td><td><code>tests/test_dpm_pipeline.py</code></td><td>Automated unit &amp; regression tests validating all 6 core pipeline stages</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>Top Glove Corporation Bhd · Research &amp; Development Department · Quality Assurance &amp; Data Automation Systems. All pipeline routines adhere to ISO / Top Glove R&amp;D QA standards.</footer>
+</div>
+</body>
+</html>

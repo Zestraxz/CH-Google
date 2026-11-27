@@ -15,6 +15,7 @@ publicly via GitHub Pages.
 | `Task-tracker-workflow.html` | authored in-repo 2026-11-12 | Task Tracker Workflow — App to Google Sheet, automated Meet, Calendar & Gmail |
 | `GWS_AI_Architecture_Animation.html` | authored in-repo 2026-11-13 | Enterprise Architecture & Workflow Integration Terminal (animated replay & multi-flow topology) |
 | `R&D DPM Automation architecture.html` | authored in-repo 2026-11-23 | Top Glove R&D — DPM Automation Architecture (v2.1 Critic Enhanced) |
+| `RD_DPM_Workflow.html` | authored in-repo 2026-11-27 | Top Glove R&D — Monthly DPM Automation Workflow (Local Python & Google Apps Script dual pipeline) |
 
 - **Published URL:** `https://zestraxz.github.io/CH-Google/` (landing page = repo-root `index.html`;
   each page under `artifacts/gws-ai-pages/<name>.html`). Pages serves branch `main`, folder `/ (root)`.
